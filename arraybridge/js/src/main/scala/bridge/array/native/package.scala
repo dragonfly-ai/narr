@@ -1,4 +1,4 @@
-package arraybridge
+package bridge.array
 
 package object native {
 

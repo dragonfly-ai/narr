@@ -1,4 +1,6 @@
-package arraybridge
+package bridge
+
+import bridge.array.*
 
 object Demo extends App {
 
