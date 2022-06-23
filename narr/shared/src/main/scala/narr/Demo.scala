@@ -1,6 +1,4 @@
-package bridge
-
-import bridge.array.*
+package narr
 
 object Demo extends App {
 

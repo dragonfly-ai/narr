@@ -1,4 +1,4 @@
-package bridge.array
+package narr
 
 package object native {
 
