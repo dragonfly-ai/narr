@@ -1,2 +1,13 @@
 *.class
 *.log
+/.bsp/
+/.idea/
+/target/
+/narr/js/target/
+/narr/jvm/target/
+/narr/shared/target/
+/project/project/target/
+/project/target/
+/demo/js/target/
+/demo/jvm/target/
+/demo/shared/target/
