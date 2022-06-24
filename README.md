@@ -26,6 +26,51 @@ a.length   // read length
 ```
 </li>
 </ul>
+
+<b>When to use narr</b>:
+<table>
+<tr>
+    <td rowspan="2"><b>Native Array Dependency</b></td>    
+    <td rowspan="2"><b>Convenience</b></td>
+    <td colspan="2"><b>Performance</b></td>
+    <td rowspan="2">Notes</td>
+</tr>
+<tr>
+    <td><b>JS</b></td>
+    <td><b>JVM</b></td>
+</tr>
+<tr>
+    <td>No Arrays</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>narr offers no utility for projects that do not use Array[T] types.</td>
+</tr>
+<tr>
+    <td>js.Array[T]</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>js.Array[T] will suffice</td>
+</tr>
+<tr>
+    <td>Array[T]</td>
+    <td>☆☆☆</td>
+    <td>★☆☆</td>
+    <td>☆☆☆</td>
+    <td>Array[T] might not perform as optimally as the native js.Array[T] in JavaScript environments.</td>
+</tr>
+<tr>
+    <td>js.Array[T] and Array[T]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+</table>
+
+narr has no impact on JVM performance, but it can dramatically speed up JavaScript by making use of the natively optimized data structure and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, bit mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
+
 To use this library with SBT:
 
 ```scala
