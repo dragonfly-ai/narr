@@ -1,14 +1,30 @@
-import narr.ARRAY
+import InteropExperiments.*
+import ai.dragonfly.democrossy.XApp
+import ai.dragonfly.democrossy.native.DivConsole
+import narr.*
+import narr.native.Extensions.given
 
-object Demo extends App {
+object Demo extends XApp(DivConsole(style = "padding: 8px; overflow: scroll;")) with App {
 
-  val arr1: ARRAY[String] = ARRAY("Testing", "1", "2", "3")
-  val arr2: ARRAY[Int] = ARRAY(1, 2, 3)
+  val arr1: NArray[String] = NArray("Testing", "1", "2", "3")
+  val arr2: NArray[Int] = NArray(1, 2, 3)
 
-  for (i <- arr1.indices) println(arr1(i))
+  for (i <- arr1.indices) {
+    arr1(i) = arr1(i) + " OK!"
+  }
 
-  println("")
+  for (i <- 0 until arr1.length) println(s"\tarr1($i) is ${arr1(i)}")
 
-  for (i <- arr2.indices) println(arr2(i))
+  print("\n")
+
+  for (i <- arr2.indices) arr2(i) = arr2(i) * 2
+  for (i <- 0 until arr2.length) println(s"\tarr2($i) is ${arr2(i)}")
+
+  readNarrayInt(arr2)
+
+  val arr3:NArray[Int] = makeNarrayInt(12)
+  for (i <- 0 until arr3.length) println(s"\tarr2($i) is ${arr3(i)}")
+
+  arr2.foreach((d:Int) => println(d))
 
 }

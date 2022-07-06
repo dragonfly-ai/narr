@@ -2,10 +2,13 @@ package narr
 
 package object native {
 
-  type ARRAY[T] = Array[T]
+  type NArray[T] = Array[T]
 
-  object ARRAY {
+  object NArray {
     export Array.*
   }
 
+  object Extensions {
+
+  }
 }

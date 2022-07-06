@@ -6,16 +6,18 @@ ThisBuild / scalacOptions ++= Seq("-feature", "-deprecation")
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform).settings(
   name := "narr",
-  version := "0.01",
+  version := "0.02",
 ).jvmSettings().jsSettings()
 
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).dependsOn(narr).settings(
   name := "demo",
   Compile / mainClass := Some("Demo"),
-  //  libraryDependencies ++= Seq(
-  //    "ai.dragonfly.code" %%% "DemoCrossy" % "0.01"
-  //  )
+  libraryDependencies ++= Seq(
+    "ai.dragonfly.code" %%% "democrossy" % "0.0105"
+  )
 ).jsSettings(
+  Compile / fastOptJS / artifactPath := file("./demo/public_html/js/main.js"),
+  Compile / fullOptJS / artifactPath := file("./demo/public_html/js/main.js"),
   scalaJSUseMainModuleInitializer := true
 ).jvmSettings()

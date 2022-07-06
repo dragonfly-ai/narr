@@ -1,6 +1,7 @@
 package object narr {
 
-  type ARRAY[T] = narr.native.ARRAY[T]
-  val ARRAY: narr.native.ARRAY.type = narr.native.ARRAY
+  type NArray[T] = narr.native.NArray[T]
+  val NArray: narr.native.NArray.type = narr.native.NArray
 
+  export narr.native.Extensions.*
 }
