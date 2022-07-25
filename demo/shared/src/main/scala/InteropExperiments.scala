@@ -1,9 +1,16 @@
 import narr.NArray
 
-import scala.scalajs.js.annotation.JSExportTopLevel
+import scala.scalajs.js.annotation.{JSExportTopLevel}
 import scala.util.Random
+import narr.*
+import Extensions.given
+
+import scala.language.implicitConversions
+import scala.scalajs.js
+
 
 object InteropExperiments {
+
 
   val r:Random = Random()
   /**
@@ -38,6 +45,7 @@ var nai0 = new Int32Array(6); for (i in nai0) {nai0[i] = 2*i;} narrayInt(nai0);
   def makeArrayInt(length:Int): Array[Int] = {
     println(s"makeArrayInt($length)")
     val out:Array[Int] = new Array[Int](length)
+    out.last
     for (i <- 0 until length) out(i) = r.nextInt(777)
     out
   }
