@@ -6,7 +6,7 @@ ThisBuild / scalacOptions ++= Seq("-feature", "-deprecation", "-explain")
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform).settings(
   name := "narr",
-  version := "0.021"
+  version := "0.03"
 ).jvmSettings().jsSettings()
 
 

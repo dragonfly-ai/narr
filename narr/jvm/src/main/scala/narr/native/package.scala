@@ -3,37 +3,40 @@ package narr
 import narr.native.NArr
 
 import scala.collection.ArrayOps
+import scala.compiletime.erasedValue
 import scala.reflect.ClassTag
+import scala.language.implicitConversions
 
 package object native {
 
-  type TypedArrayPrimitive = Byte | Short | Int | Float | Double
+  type ByteArray = Array[Byte]
+  type ShortArray = Array[Short]
+  type IntArray = Array[Int]
+  type FloatArray = Array[Float]
+  type DoubleArray = Array[Double]
+  type NativeArray[T] = Array[T]
 
   type NArray[T] = Array[T]
-  type TArray[T <: TypedArrayPrimitive] = Array[T]
-  type NArrayOps[T] = ArrayOps[T]
-  type TypedArrayOps[T] = ArrayOps[T]
+
   type NArr[T] = Array[T]
 
-  type JsArrayOps[T] = ArrayOps[T]
-
-  object NArrayOps {
-//    inline def apply[T](xs:NArray[T]): NArrayOps[T] = ArrayOps[T](xs)
-
-
-  }
+  inline def makeNativeArrayOfSize[A:ClassTag](n:Int):NativeArray[A] = new Array[A](n)
 
   object NArray {
     export Array.*
   }
 
   object Extensions {
-    inline def byteNArrayOps(xs:NArray[Byte]): TypedArrayOps[Byte] = new ArrayOps[Byte](xs)
-    inline def shortNArrayOps(xs:NArray[Short]): TypedArrayOps[Short] = new ArrayOps[Short](xs)
-    inline def intNArrayOps(xs:NArray[Int]): TypedArrayOps[Int] = new ArrayOps[Int](xs)
-    inline def floatNArrayOps(xs:NArray[Float]): TypedArrayOps[Float] = new ArrayOps[Float](xs)
-    inline def doubleNArrayOps(xs:NArray[Double]): TypedArrayOps[Double] = new ArrayOps[Double](xs)
 
-    inline def refNArrayOps[T <: Any](xs:NArray[T]): NArrayOps[T] = new ArrayOps[T](xs)
+    @inline implicit def refNArrayOps[AT <: NativeTypedArray](xs:AT): ArrayOps[_] = xs match {
+      case ab: ByteArray => new ArrayOps(ab)
+      case as: ShortArray => new ArrayOps(as)
+      case ai: IntArray => new ArrayOps(ai)
+      case af: FloatArray => new ArrayOps(af)
+      case ad: DoubleArray => new ArrayOps(ad)
+      case _ => new ArrayOps[ArrayElementType[AT]](xs.asInstanceOf[Array[ArrayElementType[AT]]])
+    }
+
   }
+
 }

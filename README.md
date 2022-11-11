@@ -101,13 +101,13 @@ val a6:NArray[NArray[String]] = new NArray[NArray[String]](10)
 </tr>
 </table>
 
-narr has no impact on JVM performance, but it can dramatically speed up JavaScript by making use of the natively optimized data structure and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, bit mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
+narr has no impact on JVM performance, but it can dramatically speed up JavaScript by making use of natively optimized data structures and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, but mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
 
 To use this library with SBT:
 
 ```scala
 resolvers += "dragonfly.ai" at "https://code.dragonfly.ai/"
-libraryDependencies += "ai.dragonfly.code" %%% "narr" % "0.02"
+libraryDependencies += "ai.dragonfly.code" %%% "narr" % "0.03"
 ```
 
 How to use narr:
