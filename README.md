@@ -3,6 +3,7 @@ pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
 &nbsp;&nbsp;&nbsp;This library provides Scala.js cross projects with an abstraction over features common to scala.Array, as well as js.Array and the most relevant subset of the js.typedarray family: Int8Array, Int16Array, Int32Array, Float32Array, Float64Array.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: indices, tabulate and fill.  Using NArray[T] ensures that a project will always use the native Array type of the platform it compiles to.
 
+
 <b>Advantages</b>:<br />
 <ul>
 <li>Performance!<br />&nbsp;&nbsp;&nbsp;When a Scala.js cross project uses the NArray type internally it implicitly takes advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native Array types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
@@ -62,17 +63,21 @@ val a6:NArray[NArray[String]] = new NArray[NArray[String]](10)
 <b>When to use narr</b>:
 <table>
 <tr>
-    <td rowspan="2"><b>Native Array Dependency</b></td>    
-    <td rowspan="2"><b>Convenience</b></td>
-    <td colspan="2"><b>Performance</b></td>
-    <td rowspan="2">Notes</td>
+    <td><b>Array Dependency</b></td>    
+    <td><b>Convenience</b></td>
+    <td colspan="3"><b>Performance Increase</b></td>
+    <td><b>Notes</b></td>
 </tr>
 <tr>
+    <td colspan="2"></td>
     <td><b>JS</b></td>
     <td><b>JVM</b></td>
+    <td><b>Native</b></td>
+    <td></td>
 </tr>
 <tr>
     <td>No Arrays</td>
+    <td>☆☆☆</td>
     <td>☆☆☆</td>
     <td>☆☆☆</td>
     <td>☆☆☆</td>
@@ -83,12 +88,14 @@ val a6:NArray[NArray[String]] = new NArray[NArray[String]](10)
     <td>☆☆☆</td>
     <td>☆☆☆</td>
     <td>☆☆☆</td>
+    <td>☆☆☆</td>
     <td>js.Array[T] will suffice</td>
 </tr>
 <tr>
     <td>Array[T]</td>
     <td>☆☆☆</td>
     <td>★☆☆</td>
+    <td>☆☆☆</td>
     <td>☆☆☆</td>
     <td>Array[T] might not perform as optimally as the native js.Array[T] in JavaScript environments.</td>
 </tr>
@@ -97,17 +104,66 @@ val a6:NArray[NArray[String]] = new NArray[NArray[String]](10)
     <td>★★★</td>
     <td>★★★</td>
     <td>☆☆☆</td>
+    <td>☆☆☆</td>
     <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Int8Array or Array[Byte]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Int16Array or Array[Short]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Int32Array or Array[Int]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Float32Array or Array[Float]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Float64Array or Array[Double]</td>
+    <td>★★★</td>
+    <td>★★★</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Seamless optimized interop with native code on both platforms without any conversions or wrappers.</td>
+</tr>
+<tr>
+    <td>Other JavaScript Typed Arrays</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>☆☆☆</td>
+    <td>Good JVM analogues do not exist.  NArr can't help, but what can?</td>
 </tr>
 </table>
 
-narr has no impact on JVM performance, but it can dramatically speed up JavaScript by making use of natively optimized data structures and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, but mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
+narr has no impact on JVM or Native performance, but it can dramatically speed up JavaScript by making use of natively optimized data structures and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, but mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
 
 To use this library with SBT:
 
 ```scala
 resolvers += "dragonfly.ai" at "https://code.dragonfly.ai/"
-libraryDependencies += "ai.dragonfly.code" %%% "narr" % "0.03"
+libraryDependencies += "ai.dragonfly.code" %%% "narr" % "0.0321"
 ```
 
 How to use narr:

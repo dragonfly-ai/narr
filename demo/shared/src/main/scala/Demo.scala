@@ -1,11 +1,17 @@
-import InteropExperiments.*
+//import InteropExperiments.*
 import ai.dragonfly.democrossy.*
 import narr.*
 import Extensions.given
+
 import scala.collection.ArrayOps
-
 import scala.language.implicitConversions
+import scala.util.Random
 
+object DemoScope {
+  val r:Random = Random()
+}
+
+import DemoScope.*
 case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String, nar: AT) extends Demonstration {
 
   type A = ArrayElementType[AT]
@@ -15,6 +21,7 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
     case i:Int => i.toDouble
     case f:Float => f.toDouble
   }
+
 
   def demo():Unit = {
     //val nArr0:TypedArrayOps[AT] = new TypedArrayOps[AT](nArr0)

@@ -1,12 +1,10 @@
-import narr.NArray
-
-import scala.scalajs.js.annotation.{JSExportTopLevel}
-import scala.util.Random
+import narr.Extensions.given
 import narr.*
-import Extensions.given
 
 import scala.language.implicitConversions
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSExportTopLevel
+import scala.util.Random
 
 
 object InteropExperiments {
