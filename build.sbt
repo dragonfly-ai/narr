@@ -9,7 +9,7 @@ ThisBuild / startYear := Some(2023)
 ThisBuild / licenses := Seq(License.Apache2)
 ThisBuild / developers := List( tlGitHubDev("dragonfly-ai", "dragonfly.ai") )
 ThisBuild / scalaVersion := globalScalaVersion
-r
+
 ThisBuild / tlBaseVersion := appVersion
 ThisBuild / tlCiReleaseBranches := Seq()
 ThisBuild / tlSonatypeUseLegacyHost := false
