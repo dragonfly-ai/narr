@@ -28,14 +28,14 @@ package object native {
 
   object Extensions {
 
-    @inline implicit def refNArrayOps[AT <: NativeTypedArray](xs:AT): ArrayOps[_] = xs match {
-      case ab: ByteArray => new ArrayOps(ab)
-      case as: ShortArray => new ArrayOps(as)
-      case ai: IntArray => new ArrayOps(ai)
-      case af: FloatArray => new ArrayOps(af)
-      case ad: DoubleArray => new ArrayOps(ad)
+    @inline implicit def refNArrayOps[AT <: NativeTypedArray](xs:AT): ArrayOps[ArrayElementType[AT]] = (xs match {
+      case ab: ByteArray => new ArrayOps[Byte](ab)
+      case as: ShortArray => new ArrayOps[Short](as)
+      case ai: IntArray => new ArrayOps[Int](ai)
+      case af: FloatArray => new ArrayOps[Float](af)
+      case ad: DoubleArray => new ArrayOps[Double](ad)
       case _ => new ArrayOps[ArrayElementType[AT]](xs.asInstanceOf[Array[ArrayElementType[AT]]])
-    }
+    }).asInstanceOf[ArrayOps[ArrayElementType[AT]]]
 
   }
 

@@ -88,7 +88,7 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
   }
 }
 
-object Demo extends XApp(DivConsole(style = "padding: 8px; overflow: scroll;")) with App {
+object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;")) with App {
 
 //  readNarrayInt(NArray(1, 2, 3))
 

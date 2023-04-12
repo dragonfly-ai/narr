@@ -3,7 +3,6 @@ pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
 &nbsp;&nbsp;&nbsp;This library provides Scala.js cross projects with an abstraction over features common to scala.Array, as well as js.Array and the most relevant subset of the js.typedarray family: Int8Array, Int16Array, Int32Array, Float32Array, Float64Array.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: indices, tabulate and fill.  Using NArray[T] ensures that a project will always use the native Array type of the platform it compiles to.
 
-
 <b>Advantages</b>:<br />
 <ul>
 <li>Performance!<br />&nbsp;&nbsp;&nbsp;When a Scala.js cross project uses the NArray type internally it implicitly takes advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native Array types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
