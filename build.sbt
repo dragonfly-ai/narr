@@ -1,8 +1,6 @@
 val appVersion:String = "0.101"
 val globalScalaVersion = "3.2.1"
 
-ThisBuild / tlBaseVersion := "0.1" // your current series x.y
-
 ThisBuild / organization := "ai.dragonfly"
 ThisBuild / organizationName := "dragonfly.ai"
 ThisBuild / startYear := Some(2023)

@@ -156,7 +156,7 @@ NArr has no impact on JVM or Native performance, but it can dramatically speed u
 To use this library with SBT:
 
 ```scala
-libraryDependencies += "ai.dragonfly.code" %%% "NArr" % "<LATEST_VERSION>"
+libraryDependencies += "ai.dragonfly" %%% "NArr" % "<LATEST_VERSION>"
 ```
 
 How to use NArr:
