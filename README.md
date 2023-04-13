@@ -1,7 +1,7 @@
 # NArr
 pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
-&nbsp;&nbsp;&nbsp;This library (now hosted on the Apache Maven Central Repository) provides Scala.js cross projects with an abstraction over features common to scala.Array, as well as js.Array and the most relevant subset of the js.typedarray family: Int8Array, Int16Array, Int32Array, Float32Array, Float64Array.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: indices, tabulate and fill.  Using NArray[T] ensures that a project will always use the native Array type of the platform it compiles to.
+&nbsp;&nbsp;&nbsp;This library (now hosted on the Apache Maven Central Repository) provides Scala.js cross projects with an abstraction over features common to scala.Array, as well as js.Array and the most relevant subset of the js.typedarray family: Int8Array, Int16Array, Int32Array, Float32Array, Float64Array.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: indices, tabulate and fill.  Using NArray[T] ensures that a project will always use the native Array type of the platform it compiles to.  <a href="https://dragonfly-ai.github.io/narr/">Try the demo</a>!
 
 <b>Advantages</b>:<br />
 <ul>
@@ -23,9 +23,35 @@ a(0)              // read element
 a(0) = "Gnarly!"  // write element
 a.length          // read length
 ```
+</li>
+<li>
+
+Output from `toString()` differs by platform.  For example:
+
+```scala
+println(new NArray[Int](3))
+```
+
+yields different results depending on the platform on which it runs. 
+<ul>
+<li>
+
+Scala.js prints the contents of the array: `0,0,0`
 
 </li>
+<li>
 
+On the JVM, it prints something like: `[I@176c3251`
+
+</li>
+<li>
+
+In Scala Native, it prints something like: `scala.scalanative.runtime.IntArray@24da9104`
+
+</li>
+</ul>
+
+</li>
 </ul>
 
 <b>When to use NArr</b>:
@@ -170,7 +196,8 @@ def copy(a0:NArray[Double]): NArray[Double] = NArray.tabulate[Double](a0.length)
 )
 
 ```
-
+<a href="https://dragonfly-ai.github.io/narr/">Try the demo</a>!
+<hr />
 Projects that rely on NArr:
 
 https://github.com/dragonfly-ai/bitfrost
