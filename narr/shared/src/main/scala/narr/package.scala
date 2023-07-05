@@ -89,7 +89,7 @@ package object narr {
       val out: NArray[A] = ofSize[A](arr.length)
       var i: Int = 0
       while (i < arr.length) {
-        out(i) = arr(0)
+        out(i) = arr(i)
         i += 1
       }
       out
