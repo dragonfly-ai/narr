@@ -1,4 +1,4 @@
-val appVersion:String = "0.101"
+val appVersion:String = "0.102"
 val globalScalaVersion = "3.2.1"
 
 ThisBuild / organization := "ai.dragonfly"
@@ -15,8 +15,7 @@ ThisBuild / tlSonatypeUseLegacyHost := false
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .settings(
-    name := "narr",
-    description := "Native Typed Arrays with Scala Semantics for Scala JVM, ScalaJS, and Scala Native!"
+    description := "Native Typed Arrays with Scala Semantics for Scala JVM, ScalaJS, and Scala Native!",
   )
   .jvmSettings()
   .jsSettings()

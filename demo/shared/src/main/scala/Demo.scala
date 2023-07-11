@@ -105,8 +105,6 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
 
 object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;")) with App {
 
-//  readNarrayInt(NArray(1, 2, 3))
-
   val demonstrations: Array[Demonstration] = Array[Demonstration](
     TArrayDemonstration( "NArray[Byte](1, 2, 3)", {
       val ba:ByteArray = new ByteArray(5)
