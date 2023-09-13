@@ -36,6 +36,7 @@ object Extensions {
 
 
   extension (a: ByteArray) {
+    inline def head: Byte = a(0)
     def sort(): ByteArray = sortByteArray(a)
     def sort(ord: Ordering[Byte]): ByteArray = sortByteArray(a, ord)
 
@@ -46,6 +47,7 @@ object Extensions {
   }
 
   extension (a: ShortArray) {
+    inline def head: Short = a(0)
     def sort(): ShortArray = sortShortArray(a)
     def sort(ord: Ordering[Short]): ShortArray = sortShortArray(a, ord)
 
