@@ -1,20 +1,32 @@
 # NArr
 pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
-&nbsp;&nbsp;&nbsp;This library (now hosted on the Apache Maven Central Repository) provides Scala.js cross projects with an abstraction over features common to scala.Array, as well as js.Array and the most relevant subset of the js.typedarray family: Int8Array, Int16Array, Int32Array, Float32Array, Float64Array.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: indices, tabulate and fill.  Using NArray[T] ensures that a project will always use the native Array type of the platform it compiles to.  <a href="https://dragonfly-ai.github.io/narr/">Try the demo</a>!
+&nbsp;&nbsp;&nbsp;This library (now hosted on the Apache Maven Central Repository) provides Scala.js cross projects with an abstraction over features common to `scala.Array`, as well as `js.Array` and the most relevant subset of the `js.typedarray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.  Using `NArray[T]` ensures that a project will always use the native Array type of the platform it compiles to.
+<br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
+<br />
+<br /><a href="https://dragonfly-ai.github.io/narr/">Try the demo</a>!
+
 
 <b>Advantages</b>:<br />
 <ul>
-<li>Performance!<br />&nbsp;&nbsp;&nbsp;When a Scala.js cross project uses the NArray type internally it implicitly takes advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native Array types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
-<li>Native Interoperability without Boilerplate<br />&nbsp;&nbsp;When writing a cross compiled Scala.js library with accessibility from native languages, developers have to pay attention to @JSExport annotations and make sure that every method or field of type Array has an analagous js.Array exposed in the JavaScript build.  By simply replacing all references to js.Array or Array with NArray, the same methods and fields will interoperate seamlessly with code in either run time environment.</li>
+<li>Performance!<br />
+
+&nbsp;&nbsp;&nbsp;When a Scala.js cross project uses the `NArray` type internally it implicitly takes advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native `Array` types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
+<li>Native Interoperability without Boilerplate<br />
+
+&nbsp;&nbsp;When writing a cross compiled Scala.js library with accessibility from native languages, developers have to pay attention to `@JSExport` annotations and make sure that every method or field of type Array has an analogous `js.Array` exposed in the JavaScript build.  By simply replacing all references to `js.Array` or `Array` with `NArray`, the same methods and fields will interoperate seamlessly with code in either run time environment.</li>
 </ul>
 
 <b>Caveats</b>:<br />
-&nbsp;&nbsp;&nbsp;Although the TypedArray family of data structures avoids the following issues, they pertain to the more ubiquitous js.Array.
+&nbsp;&nbsp;&nbsp;Although the `TypedArray` family of data structures avoids the following issues, they pertain to the more ubiquitous `js.Array`.
 <ul>
-<li>Type Safety concerns<br />&nbsp;&nbsp;&nbsp;Because the JVM Array has a reference to the type of its elements and the JavaScript Array has no concept of type at all, careless or malicious JavaScript developers could spike a js.Array with unexpected or dangerous values before passing it to an unsuspecting Scala.js method that takes parameters of type NArray[T].  Security concerns aside, if abused, these type system distinctions could cause unwanted run time differences between the behavior of JVM and JavaScript versions of a program.  However, using js.Array[T] explicitly doesn't solve these issues, either.  These concerns argue against js.Array in general as much as they argue against NArray.
+<li>Type Safety Concerns.<br />
+
+&nbsp;&nbsp;&nbsp;Because the JVM `Array` has a reference to the type of its elements and the JavaScript `Array` has no concept of type at all, careless or malicious JavaScript developers could spike a js.Array with unexpected or dangerous values before passing it to an unsuspecting Scala.js method that takes parameters of type `NArray[T]`.  Security concerns aside, if abused, these type system distinctions could cause unwanted run time differences between the behavior of JVM and JavaScript versions of a program.  However, using `js.Array[T]` explicitly doesn't solve these issues, either.  These concerns argue against `js.Array` in general as much as they argue against `NArray`.
 </li>
-<li>Size Inconsistency and Mutability Concerns.<br />&nbsp;&nbsp;&nbsp;The JVM Array has a fixed, immutable length while the length of a JavaScript Array can change dynamically.  To mitigate all of the usual dangers involved with exposure to this kind of shared mutable state, users of NArr should treat all instances of NArray as JVM arrays.  More specifically, restrict all interaction with instances of NArray[T] to only three operations:<br />
+<li>Size Inconsistency and Mutability Concerns.<br />
+
+&nbsp;&nbsp;&nbsp;The JVM `Array` has a fixed, immutable length while the length of a JavaScript `Array` can change dynamically.  To mitigate the usual dangers of shared mutable state, users of NArr had better treat all instances of `NArray` like JVM arrays, ideally by restricting all interaction with instances of `NArray[T]` to only three operations:<br />
 
 ```scala
 // assume: val a:NArray[String]
@@ -50,6 +62,26 @@ In Scala Native, it prints something like: `scala.scalanative.runtime.IntArray@2
 
 </li>
 </ul>
+
+</li>
+<li>
+
+In Scala.js, accessing an index of newly allocated Array yields: `undefined` and, on the JVM and Native, yields `null`.   
+
+</li>
+<li>
+
+Sorting in JavaScript environments.<br />
+&nbsp;&nbsp;&nbsp;Every native JavaScript array type has a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">builtin `sort(compareFn)` method</a> where `compareFn` indicates an optional comparison lambda.  For the `TypedArray` family, default sorting behaves like default sorting in Scala, however, the default behavior of `js.Array[T <: AnyRef]` sorts its elements alphabetically by their `toString()` representations.  From Scala development perspectives, we almost never want that, so NArr provides extension methods that connect Scala `Ordering[T]` objects to native JavaScript sorting methods.  In general, you can assure consistent sorting behavior across platforms by explicitly providing the desired sort order.  The most illuminating example comes from trying to sort `NArray[Long]`:
+
+```scala
+// Sorting a NArray[Long]:
+val sla: NArray[Long] = NArray[Long](555L, 4444L, 9L, 11111L, 88L)
+sla.sort() // default JavaScript sorting calls toString() on each element.
+// yields: NArray[Long](11111, 4444, 555, 88, 9) sorted in alphabetical order.  :(
+sla.sort(Ordering.Long) // Better pass the ordering explicitly!
+// yields: NArray[Long](9, 88, 555, 4444, 11111) sorted in alphabetical order.  :)
+```
 
 </li>
 </ul>
@@ -151,7 +183,7 @@ In Scala Native, it prints something like: `scala.scalanative.runtime.IntArray@2
 </tr>
 </table>
 
-NArr has no impact on JVM or Native performance, but it can dramatically speed up JavaScript by making use of natively optimized data structures and eliminating conversions that tend to have O(n) run time complexities.  It also adds convenience methods for js.Array[T] such as fill and tabulate, but mainly eliminates the need for specially crafted and maintained @JSExport methods and fields for JavaScript interop.
+NArr has no impact on JVM or Native performance, but it can dramatically speed up JavaScript by making use of natively optimized data structures and eliminating conversions that tend to have `O(n)` run time complexities.  It also adds convenience methods for `js.Array[T]` such as `fill` and `tabulate`, but mainly eliminates the need for specially crafted and maintained `@JSExport` methods and fields for JavaScript interop.
 
 To use this library with SBT:
 

@@ -24,7 +24,6 @@ import narr.native.Extensions.given
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
-
 package object native {
 
   type ByteArray = Int8Array
@@ -42,6 +41,28 @@ package object native {
     case Double => DoubleArray
     case _ => NativeArray[T]
 
-  inline def makeNativeArrayOfSize[A:ClassTag](n:Int):NativeArray[A] = new scala.scalajs.js.Array[A](n)
+  def sortByteArray(a: ByteArray, ord: Ordering[Byte] = Ordering.Byte): ByteArray = {
+    a.asInstanceOf[SortableNArr[Byte]].sort(ord).asInstanceOf[ByteArray]
+  }
+
+  def sortShortArray(a: ShortArray, ord: Ordering[Short] = Ordering.Short): ShortArray = {
+    a.asInstanceOf[SortableNArr[Short]].sort(ord).asInstanceOf[ShortArray]
+  }
+
+  def sortIntArray(a: IntArray, ord: Ordering[Int] = Ordering.Int): IntArray = {
+    a.asInstanceOf[SortableNArr[Int]].sort(ord).asInstanceOf[IntArray]
+  }
+
+  def sortFloatArray(a: FloatArray, ord: Ordering[Float] = Ordering.Float.TotalOrdering): FloatArray = {
+    a.asInstanceOf[SortableNArr[Float]].sort(ord).asInstanceOf[FloatArray]
+  }
+
+  def sortDoubleArray(a: DoubleArray, ord: Ordering[Double] = Ordering.Double.TotalOrdering): DoubleArray = {
+    a.asInstanceOf[SortableNArr[Double]].sort(ord).asInstanceOf[DoubleArray]
+  }
+
+  inline def makeNativeArrayOfSize[A: ClassTag](n:Int):NativeArray[A] = new scala.scalajs.js.Array[A](n)
+
+  def nativeCopy[T](nArr:NArray[T]):NArray[T] = nArr.asInstanceOf[NArr[T]].slice(0, nArr.length).asInstanceOf[NArray[T]]
 
 }

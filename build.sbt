@@ -1,5 +1,5 @@
-val appVersion:String = "0.102"
-val globalScalaVersion = "3.2.1"
+val appVersion:String = "0.103"
+val globalScalaVersion = "3.3.0"
 
 ThisBuild / organization := "ai.dragonfly"
 ThisBuild / organizationName := "dragonfly.ai"
@@ -36,7 +36,7 @@ lazy val demo = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .jvmSettings()
 
 
-lazy val root = tlCrossRootProject.aggregate(narr).settings(name := "narr")
+lazy val root = tlCrossRootProject.aggregate(narr, tests).settings(name := "narr")
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).settings(
   mdocVariables := Map(
@@ -52,4 +52,13 @@ lazy val unidocs = project
   .settings(
     name := "narr-docs",
     ScalaUnidoc / unidoc / unidocProjectFilter := inProjects(narr.jvm, narr.js, narr.native)
+  )
+
+lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .in(file("tests"))
+  .enablePlugins(NoPublishPlugin)
+  .dependsOn(narr)
+  .settings(
+    name := "narr-tests",
+    libraryDependencies += "org.scalameta" %%% "munit" % "1.0.0-M8" % Test
   )

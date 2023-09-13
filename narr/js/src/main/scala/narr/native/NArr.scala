@@ -24,4 +24,8 @@ trait NArr[T] extends js.Object {
   def length:Int = js.native
   @JSBracketAccess def apply(i:Int):T = js.native
   @JSBracketAccess def update(index: Int, value: T): Unit = js.native
+
+  def slice(start:Int, end:Int): NArr[T] = js.native
+
 }
+

@@ -18,15 +18,14 @@ import ai.dragonfly.democrossy.*
 import narr.*
 import Extensions.given
 
-import scala.collection.ArrayOps
 import scala.language.implicitConversions
-import scala.util.Random
-
-object DemoScope {
-  val r:Random = Random()
+import scala.util.Random as r
+object TArrayDemonstration {
+  def printNArrayInDetail[T](nArr: NArray[T]):Unit = {
+    var i:Int = 0; while (i < nArr.length) { println(s"\tnArr($i) => ${nArr(i)}"); i += 1 }
+  }
 }
 
-import DemoScope.*
 case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String, nar: AT) extends Demonstration {
 
   type A = ArrayElementType[AT]
@@ -36,7 +35,6 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
     case i:Int => i.toDouble
     case f:Float => f.toDouble
   }
-
 
   def demo():Unit = {
     //val nArr0:TypedArrayOps[AT] = new TypedArrayOps[AT](nArr0)
@@ -105,6 +103,10 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
 
 object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;")) with App {
 
+  def printNArrayInline[T](nArr:NArray[T]):Unit = {
+    var i:Int = 0; while (i < nArr.length) { print(s"${nArr(i)}, "); i += 1 }; println()
+  }
+
   val demonstrations: Array[Demonstration] = Array[Demonstration](
     TArrayDemonstration( "NArray[Byte](1, 2, 3)", {
       val ba:ByteArray = new ByteArray(5)
@@ -131,8 +133,9 @@ object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;"
   for (d <- demonstrations) d.demonstrate
 
   val nArr:NArray[Int] = NArray.tabulate[Int](7)( (_:Int) => r.nextInt(777) )
+  //printNArrayInline[Int](nArr.copy)
   nArr foreach ((d:Any) => println(d) )
-  println(NArray.ofSize[String](10))
+  printNArrayInline[String](NArray.ofSize[String](10))
 //val nArr:NArray[Long] = NArray.tabulate[Long](7)( (_:Int) => r.nextLong(777L*777L) )
 //val nArr: NArray[String] = NArray.tabulate[String](10)( _ => r.nextString(7) )
 //val nArr: NArray[Int | String] = NArray.tabulate[Int | String](10)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) )
@@ -140,29 +143,54 @@ object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;"
   //  val nArr: NArray[Long | String] = NArray.tabulate[Long | String](10)((i: Int) => if (i % 2 == 0) r.nextLong() else r.nextString(7) )
 //  println(nArr)
 //  println(s"length => ${nArr.length}")
-//  println(s"size => ${nArr.size}")
+  println(s"size => ${nArr.size}")
 //  println(s"knownSize => ${nArr.knownSize}")
 
-  println(NArray.tabulate[Int](7)( (_:Int) => r.nextInt(777) ))
-  println(NArray.tabulate[Int](7)( (_:Int) => r.nextInt(777) ).size)
+  printNArrayInline[Int](NArray.tabulate[Int](7)( (_:Int) => r.nextInt(777) ))
+  print(NArray.tabulate[Int](7)( (_:Int) => r.nextInt(777) ).size)
 
-  println(NArray.tabulate[Long](10)( (_:Int) => r.nextLong(777L*777L) ))
-  println(NArray.tabulate[Long](10)( (_:Int) => r.nextLong(777L*777L) ).size)
+  printNArrayInline[Long](NArray.tabulate[Long](10)( (_:Int) => r.nextLong(777L*777L) ))
+  print(NArray.tabulate[Long](10)( (_:Int) => r.nextLong(777L*777L) ).size)
 
-  println(NArray.tabulate[String](10)( _ => r.nextString(10) ))
+  printNArrayInline[String](NArray.tabulate[String](10)( _ => r.nextString(10) ))
   println(NArray.tabulate[String](10)( _ => r.nextString(10)).size)
 
-  println(NArray.tabulate[String | Int](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ))
+  printNArrayInline(NArray.tabulate[String | Int](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ))
 //  println(NArray.tabulate[String | Int](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ).size)
 
-  println(NArray.tabulate[Integer | String](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ))
-  println(NArray.tabulate[Integer | String](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ).size)
+  printNArrayInline[Integer | String](NArray.tabulate[Integer | String](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ))
+  print(NArray.tabulate[Integer | String](7)( (i: Int) => if (i % 2 == 0) r.nextInt() else r.nextString(7) ).size)
 
-  println(NArray.tabulate[Long | String](10)( (i: Int) => if (i % 2 == 0) r.nextLong() else r.nextString(7) ))
-  println(NArray.tabulate[Long | String](10)( (i: Int) => if (i % 2 == 0) r.nextLong() else r.nextString(7) ).size)
+  printNArrayInline[Long | String](NArray.tabulate[Long | String](10)( (i: Int) => if (i % 2 == 0) r.nextLong() else r.nextString(7) ))
+  print(NArray.tabulate[Long | String](10)( (i: Int) => if (i % 2 == 0) r.nextLong() else r.nextString(7) ).size)
 
-  println(NArray.tabulate[String | Float](10)( (i: Int) => if (i % 2 == 0) r.nextFloat() else r.nextString(7) ))
+  printNArrayInline(NArray.tabulate[String | Float](10)( (i: Int) => if (i % 2 == 0) r.nextFloat() else r.nextString(7) ))
 //  println(NArray.tabulate[String | Float](10)( (i: Int) => if (i % 2 == 0) r.nextFloat() else r.nextString(7) ).size)
 
+  val ssa: NArray[String] = NArray.tabulate[String](10)( _ => r.nextString(10) )
+  printNArrayInline[String](ssa.copy)
 
+  // Int
+  val sia: NArray[Int] = NArray[Int](555, 4444, 9, 11111, 88)
+  printNArrayInline[Int](sia)
+  printNArrayInline[Int](sia.sorted) // alphabetical default JavaScript sorting.
+  printNArrayInline[Int](sia)
+  printNArrayInline[Int](sia.sorted(Ordering.Int))
+  printNArrayInline[Int](sia.sorted(Ordering.Int.reverse))
+  printNArrayInline[Int](sia.sort(Ordering.Int))
+
+  printNArrayInline[Int](sia.slice(0, sia.length / 2))
+
+  printNArrayInline[Int](sia.copy)
+
+  val sla: NArray[Long] = NArray[Long](555L, 4444L, 9L, 11111L, 88L)
+  printNArrayInline[Long](sla)
+  printNArrayInline[Long](sla.sorted) // alphabetical default JavaScript sorting.
+  printNArrayInline[Long](sla)
+  printNArrayInline[Long](sla.sorted(Ordering.Long))
+  printNArrayInline[Long](sla.sorted(Ordering.Long.reverse))
+  printNArrayInline[Long](sla.sort(Ordering.Long))
+
+
+  printNArrayInline[Long](sla.copy)
 }

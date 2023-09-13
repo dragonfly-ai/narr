@@ -22,7 +22,6 @@ import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
 package object narr {
-  import scala.language.implicitConversions
 
   type ByteArray = narr.native.ByteArray
   type ShortArray = narr.native.ShortArray
@@ -31,7 +30,7 @@ package object narr {
   type DoubleArray = narr.native.DoubleArray
   type NativeArray[T] = narr.native.NativeArray[T]
 
-  private inline def makeNativeArrayOfSize[A](n:Int)(using ClassTag[A]):NativeArray[A] = narr.native.makeNativeArrayOfSize[A](n:Int)
+  private inline def makeNativeArrayOfSize[A:ClassTag](n:Int):NativeArray[A] = narr.native.makeNativeArrayOfSize[A](n:Int)
 
   type NativeTypedArray = ByteArray | ShortArray | IntArray | FloatArray | DoubleArray
 
@@ -63,6 +62,8 @@ package object narr {
       case _: Double => new DoubleArray(length)
       case _ => makeNativeArrayOfSize[A](length)
     }).asInstanceOf[NArr[A] & NArray[A]]
+
+    def copy[T](nArr: NArray[T]): NArray[T] = native.nativeCopy[T](nArr)
 
     inline def fill[A](length: Int)(t: A)(using ClassTag[A]): NArray[A] = {
       val out: NArray[A] = ofSize[A](length)
@@ -97,9 +98,13 @@ package object narr {
   }
 
   type NArr[T] = narr.native.NArr[T]
+
+  type SortableNArr[T] = narr.native.SortableNArr[T]
+
   @inline implicit def nArray2NArr[T](nArr:NArray[T]): NArr[T] & NArray[T] = nArr.asInstanceOf[NArr[T] & NArray[T]]
 
   val Extensions: narr.native.Extensions.type = narr.native.Extensions
   export Extensions.*
+  export Extensions.given
 
 }
