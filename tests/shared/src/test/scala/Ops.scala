@@ -16,6 +16,12 @@
 
 import narr.*
 
+case class NArrayOpsTest[T](a:NArray[T]) {
+  // head
+  // last
+  //
+}
+
 class Ops extends munit.FunSuite:
 
    test(" NArray Ops ") {
@@ -39,13 +45,12 @@ class Ops extends munit.FunSuite:
 
      // Byte
      val baTabulate:NArray[Byte] = NArray.tabulate[Byte](N)((i:Int) => i.toByte)
-     val temp:Byte = (baTabulate.head)
      assertEquals(baTabulate.head, baTabulate(0))
-//     assertEquals( temp, baTabulate(end) )
+     assertEquals(baTabulate.last, baTabulate(end))
 
      // Short
      val saTabulate: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => i.toShort)
-//     assertEquals(saTabulate.head, saTabulate(0))
+     assertEquals(saTabulate.head, saTabulate(0))
      assertEquals(saTabulate.last, saTabulate(end))
 
      // Int

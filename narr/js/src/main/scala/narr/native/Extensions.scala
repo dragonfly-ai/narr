@@ -91,53 +91,6 @@ object Extensions {
       temp.slice(0, temp.length).asInstanceOf[NArray[T]]
     }
 
-    inline def head: T = a(0)
-
-    inline def last: T = try {
-      a(a.length - 1)
-    } catch {
-      case _: ArrayIndexOutOfBoundsException => throw new NoSuchElementException("last of empty array")
-    }
-
-    /**
-     * @return an iterator for this AT
-     */
-    inline def iterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
-      var i: Int = -1
-      override val knownSize: Int = a.length
-      val end: Int = knownSize - 1
-
-      def hasNext: Boolean = i < end
-
-      def next(): T = {
-        i += 1
-        a(i).asInstanceOf[T]
-      }
-    }
-
-    /** Finds index of the first element satisfying some predicate after or at some start index.
-     *
-     * @param p    the predicate used to test elements.
-     * @param from the start index
-     * @return the index `>= from` of the first element of this array that satisfies the predicate `p`,
-     *         or `-1`, if none exists.
-     */
-    def indexWhere(f: T => Boolean, from: Int = 0): Int = {
-      var i = from
-      while (!f(a(i)) && i < a.length) i += 1
-      -1
-    }
-
-    /** Apply `f` to each element for its side effects.
-     * Note: [U] parameter needed to help scalac's type inference.
-     */
-    def foreach[U](f: T => U): Unit = {
-      var i: Int = 0
-      while (i < a.length) {
-        f(a(i))
-        i = i + 1
-      }
-    }
 
     /** Produces the range of all indices of this sequence.
      *
@@ -170,6 +123,14 @@ object Extensions {
      */
     inline def nonEmpty: Boolean = a.length != 0
 
+    inline def head: T = a(0)
+
+    inline def last: T = try {
+      a(a.length - 1)
+    } catch {
+      case _: ArrayIndexOutOfBoundsException => throw new NoSuchElementException("last of empty array")
+    }
+
     /** Optionally selects the first element.
      *
      * @return the first element of this NArray if it is nonempty,
@@ -192,12 +153,11 @@ object Extensions {
      *        x <  0       if this.size <  otherSize
      *        x == 0       if this.size == otherSize
      *        x >  0       if this.size >  otherSize
-     *           }}}
+     *            }}}
      */
     inline def sizeCompare(otherSize: Int): Int = Integer.compare(a.length, otherSize)
 
-    /** Compares the length of this NArray to a test value.
-     *
+    /** Compares the length of this NArray to a test value. *
      *   @p m   len the test value that gets compared with the le h.
      *   @ret n A value `x`  re
      *   {{{
@@ -207,7 +167,6 @@ object Extensions {
      * }}}
      */
     inline def lengthCompare(len: Int): Int = Integer.compare(a.length, len)
-
 
     /** Method mirroring [[SeqOps.sizeIs]] for consistency, except it returns an `Int`
      * because `size` is known and comparison is constant-time.
@@ -264,21 +223,6 @@ object Extensions {
       a.asInstanceOf[NArr[T]].slice(from, until).asInstanceOf[NArray[T]]
     }
 
-    /** Sorts this array according to a comparison function.
-     *
-     * The sort is stable. That is, elements that are equal (as determined by
-     * `lt`) appear in the same order in the sorted sequence as in the original.
-     *
-     * @param lt the comparison function which tests whether
-     *           its first argument precedes its second argument in
-     *           the desired ordering.
-     * @return an array consisting of the elements of this array
-     *         sorted according to the comparison function `lt`.
-     */
-    def sortWith(lt: (T, T) => Boolean): NArray[T] = a.asInstanceOf[SortableNArr[T]].sort(
-      orderingToCompareFunction.apply(Ordering.fromLessThan[T](lt))
-    ).asInstanceOf[NArray[T]]
-
     /** The rest of the NArray without its first element. */
     inline def tail: NArray[T] = slice(1, a.length)
 
@@ -321,5 +265,99 @@ object Extensions {
       slice(i, a.length)
     }
 
+    /**
+     * @return an iterator for this AT
+     */
+    inline def iterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
+      var i: Int = -1
+      override val knownSize: Int = a.length
+      val end: Int = knownSize - 1
+
+      def hasNext: Boolean = i < end
+
+      def next(): T = {
+        i += 1
+        a(i).asInstanceOf[T]
+      }
+    }
+
+    /** Splits this array into two at a given position.
+     * Note: `c splitAt n` is equivalent to `(c take n, c drop n)`.
+     *
+     * @param n the position at which to split.
+     * @return a pair of arrays consisting of the first `n`
+     *         elements of this array, and the other elements.
+     */
+    def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
+
+
+    /** Sorts this array according to a comparison function.
+     *
+     * The sort is stable. That is, elements that are equal (as determined by
+     * `lt`) appear in the same order in the sorted sequence as in the original.
+     *
+     * @param lt the comparison function which tests whether
+     *           its first argument precedes its second argument in
+     *           the desired ordering.
+     * @return an array consisting of the elements of this array
+     *         sorted according to the comparison function `lt`.
+     */
+    def sortWith(lt: (T, T) => Boolean): NArray[T] = a.asInstanceOf[SortableNArr[T]].sort(
+      orderingToCompareFunction.apply(Ordering.fromLessThan[T](lt))
+    ).asInstanceOf[NArray[T]]
+
+    /** Sorts this array according to the Ordering which results from transforming
+     * an implicitly given Ordering with a transformation function.
+     *
+     * @see [[scala.math.Ordering]]
+     * @param f   the transformation function mapping elements
+     *            to some other domain `B`.
+     * @param ord the ordering assumed on domain `B`.
+     * @tparam B the target type of the transformation `f`, and the type where
+     *           the ordering `ord` is defined.
+     * @return an array consisting of the elements of this array
+     *         sorted according to the ordering where `x < y` if
+     *         `ord.lt(f(x), f(y))`.
+     */
+    def sortBy[B](f: T => B)(implicit ord: Ordering[B]): NArray[T] = {
+      val temp = orderingToCompareFunction.apply(ord)
+      a.asInstanceOf[SortableNArr[T]].sort(
+        (t1:T, t2:T) => temp(f(t1), f(t2))
+      ).asInstanceOf[NArray[T]]
+    }
+
+    /** Finds index of the first element satisfying some predicate after or at some star
+       dex.
+     *
+     * @param p    the predicate used to test e
+       nts.
+     * @param from the sta
+       ndex
+     * @return the index `>= from` of the first element of this array that satisfies the predicate
+       `p`,
+     *         or `-1`, if
+        e
+      ts.
+     */
+    def indexWhere(f: T => Boolean, from: Int = 0):Int = {
+      var i = from
+      while (!f(a(i)) && i < a.
+      length) i += 1
+      -1
+    }
+
+    /** Apply `f` to each element for
+       side effects.
+     * Note: [U] parameter needed to help scalac'
+       pe
+      ference.
+     */
+    def foreach[U](f: T => U): Unit = {
+      var i: Int = 0
+      while (i < a.length) {
+        f(a(i))
+        i = i + 1
+      }
+    }
   }
 }

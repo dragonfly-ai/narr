@@ -84,23 +84,23 @@ object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;"
   }
 
   val demonstrations: Array[Demonstration] = Array[Demonstration](
-    TArrayDemonstration( "NArray[Byte](1, 2, 3)", {
-      val ba:ByteArray = new ByteArray(5)
+    TArrayDemonstration[Byte]( "NArray[Byte](1, 2, 3)", {
+      val ba:NArray[Byte] = new NArray[Byte](5)
       var i:Byte = 0; while (i < ba.length) { ba(i) = i; i = (i + 1).toByte }
       ba
     } ),
-    TArrayDemonstration( "NArray[Short](1, 2, 3)", {
-      val sa: ShortArray = new ShortArray(8)
+    TArrayDemonstration[Short]( "NArray[Short](1, 2, 3)", {
+      val sa: NArray[Short] = new NArray[Short](8)
       var i: Short = 0; while (i < sa.length) { sa(i) = i; i = (i + 1).toShort }
       sa
     } ),
-    TArrayDemonstration( "NArray[Int](1, 2, 3)", {
-      val ia: IntArray = new IntArray(13)
+    TArrayDemonstration[Int]( "NArray[Int](1, 2, 3)", {
+      val ia: NArray[Int] = new NArray[Int](13)
       var i: Int = 0; while (i < ia.length) { ia(i) = i; i += 1 }
       ia
     } ),
-    TArrayDemonstration( "NArray.fill[Float](4)( (2.0*Math.PI).toFloat )", NArray.fill[Float](8)( (2.0*Math.PI).toFloat ) ),
-    TArrayDemonstration( "NArray.tabulate[Double](4)( (i:Int) => i * Math.PI ) )", NArray.tabulate[Double](8)( (i:Int) => i * Math.PI ) ),
+    TArrayDemonstration[Float]( "NArray.fill[Float](4)( (2.0*Math.PI).toFloat )", NArray.fill[Float](8)( (2.0*Math.PI).toFloat ) ),
+    TArrayDemonstration[Double]( "NArray.tabulate[Double](4)( (i:Int) => i * Math.PI ) )", NArray.tabulate[Double](8)( (i:Int) => i * Math.PI ) ),
   )
 
   for (d <- demonstrations) d.demonstrate

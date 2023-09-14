@@ -1,7 +1,8 @@
 # NArr
 pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
-&nbsp;&nbsp;&nbsp;This library (now hosted on the Apache Maven Central Repository) provides Scala.js cross projects with an abstraction over features common to `scala.Array`, as well as `js.Array` and the most relevant subset of the `js.typedarray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.  Using `NArray[T]` ensures that a project will always use the native Array type of the platform it compiles to.
+&nbsp;&nbsp;&nbsp;This library provides Scala.js cross projects with an abstraction over features common to `scala.Array`, as well as `js.Array` and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.&nbsp;&nbsp;It also provides extensions for a growing subset of `ArrayOps` methods.&nbsp;&nbsp;Using `NArray[T]` instead of `Array[T]` or `js.Array[T]` ensures that a project will always use the native Array type of the platform it compiles to.
+
 <br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
 <br />
 <br /><a href="https://dragonfly-ai.github.io/narr/">Try the demo</a>!
