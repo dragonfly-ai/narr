@@ -20,24 +20,10 @@ import Extensions.given
 import scala.language.implicitConversions
 import scala.util.Random as r
 
-object Copy {
-
-  import munit.*
-  import munit.Assertions.*
-
-  def assertNArrayEquality[T](nArr1: NArray[T], nArr2: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
-    assertEquals(nArr1.length, nArr2.length)
-    var i: Int = 0
-    while (i < nArr1.length) {
-      assertEquals(nArr1(i), nArr2(i))
-      i += 1
-    }
-  }
-}
+import Comparison.*
 
 class Copy extends munit.FunSuite:
 
-  import Copy.*
   test(" NArray copy ") {
 
     var N:Int = 11

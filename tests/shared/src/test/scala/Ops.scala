@@ -16,82 +16,123 @@
 
 import narr.*
 
-case class NArrayOpsTest[T](a:NArray[T]) {
-  // head
-  // last
-  //
+import Comparison.*
+import scala.reflect.ClassTag
+import scala.util.Random as r
+
+class Ops extends munit.FunSuite {
+
+  val N: Int = 11
+  val lastIndex: Int = N - 1
+
+  private case class NArrayOpsTest[T:ClassTag](a: NArray[T]) {
+
+    def test(): Unit = {
+      assertEquals(a.size, N)
+      assertEquals(a.knownSize, N)
+      assertEquals(a.isEmpty, N == 0)
+      assertEquals(a.nonEmpty, N != 0)
+      assertEquals(a.head, a(0))
+      assertEquals(a.last, a(lastIndex))
+      assertEquals(a.headOption, Some(a(0)))
+      assertEquals(a.lastOption, Some(a(lastIndex)))
+
+      assert(a.sizeCompare(lastIndex) > 0)
+      assert(a.sizeCompare(N) == 0)
+      assert(a.sizeCompare(N + 1) < 0)
+
+      assert(a.lengthCompare(lastIndex) > 0)
+      assert(a.lengthCompare(N) == 0)
+      assert(a.lengthCompare(N + 1) < 0)
+
+      assertEquals(a.sizeIs, N)
+      assertEquals(a.lengthIs, N)
+
+      // slice
+      val middleIndex:Int = N / 2
+      val start:Int = middleIndex - r.nextInt(middleIndex - 1)
+      val end:Int = middleIndex + r.nextInt(middleIndex - 1)
+      assertNArrayEquality[T](
+        a.slice(start, end),
+        NArray.tabulate[T](end - start)((i:Int) => a(start + i))
+      )
+
+      // tail
+      assertNArrayEquality[T](
+        a.tail,
+        NArray.tabulate[T](lastIndex)((i: Int) => a(1 + i))
+      )
+
+      // init
+      assertNArrayEquality[T](
+        a.init,
+        NArray.tabulate[T](lastIndex)((i: Int) => a(i))
+      )
+
+      var fulcrum:Int = 0; while (fulcrum < N) {
+
+        val left:NArray[T] = NArray.tabulate[T](fulcrum)((i: Int) => a(i))
+        val right:NArray[T] = NArray.tabulate[T](N - fulcrum)((i: Int) => a(fulcrum + i))
+
+        // take
+        assertNArrayEquality[T]( a.take(fulcrum), left )
+
+        // drop
+        assertNArrayEquality[T]( a.drop(fulcrum), right )
+
+        // takeRight
+        assertNArrayEquality[T](
+          a.takeRight(fulcrum),
+          NArray.tabulate[T](fulcrum)((i: Int) => a(N - fulcrum + i))
+        )
+
+        // dropRight
+        assertNArrayEquality[T](
+          a.dropRight(fulcrum),
+          NArray.tabulate[T](N - fulcrum)((i: Int) => a(i))
+        )
+
+        // splitAt
+        val (s1:NArray[T], s2:NArray[T]) = a.splitAt(fulcrum)
+        assertNArrayEquality[T](s1, left)
+        assertNArrayEquality[T](s2, right)
+
+        fulcrum += 1
+      }
+
+      // takeWhile
+
+      // dropWhile
+
+      // iterator
+
+      // indexWhere
+
+      // foreach
+
+      // indices
+    }
+  }
+
+  ////////////////
+  // Value Types:
+  ////////////////
+
+  test("NArrayOpsTest[Unit]") { NArrayOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ())).test() }
+  test("NArrayOpsTest[Boolean]") { NArrayOpsTest[Boolean](NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)).test() }
+  test("NArrayOpsTest[Byte]") { NArrayOpsTest[Byte](NArray.tabulate[Byte](N)((i:Int) => i.toByte)).test() }
+  test("NArrayOpsTest[Short]") { NArrayOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort)).test() }
+  test("NArrayOpsTest[Int]") { NArrayOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i)).test() }
+  test("NArrayOpsTest[Long]") { NArrayOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong)).test() }
+  test("NArrayOpsTest[Float]") { NArrayOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat)).test() }
+  test("NArrayOpsTest[Double]") { NArrayOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble)).test() }
+  test("NArrayOpsTest[Char]") { NArrayOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => i.toChar)).test() }
+
+  ////////////////////
+  // Reference Types:
+  ////////////////////
+
+  test("NArrayOpsTest[String]") { NArrayOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString)).test() }
+  test("NArrayOpsTest[AnyRef]") { NArrayOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
+
 }
-
-class Ops extends munit.FunSuite:
-
-   test(" NArray Ops ") {
-
-     val N:Int = 11
-     val end:Int = N - 1
-
-     ////////////////
-     // Value Types:
-     ////////////////
-
-     // Unit
-     val uaTabulate: NArray[Unit] = NArray.tabulate[Unit](N)(_ => ())
-     assertEquals(uaTabulate.head, uaTabulate(0))
-     assertEquals(uaTabulate.last, uaTabulate(end))
-
-     // Boolean
-     val boolArrTabulate: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)
-     assertEquals(boolArrTabulate.head, boolArrTabulate(0))
-     assertEquals(boolArrTabulate.last, boolArrTabulate(end))
-
-     // Byte
-     val baTabulate:NArray[Byte] = NArray.tabulate[Byte](N)((i:Int) => i.toByte)
-     assertEquals(baTabulate.head, baTabulate(0))
-     assertEquals(baTabulate.last, baTabulate(end))
-
-     // Short
-     val saTabulate: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => i.toShort)
-     assertEquals(saTabulate.head, saTabulate(0))
-     assertEquals(saTabulate.last, saTabulate(end))
-
-     // Int
-     val iaTabulate: NArray[Int] = NArray.tabulate[Int](N)((i: Int) => i)
-     assertEquals(iaTabulate.head, iaTabulate(0))
-     assertEquals(iaTabulate.last, iaTabulate(end))
-
-     // Long
-     val laTabulate: NArray[Long] = NArray.tabulate[Long](N)((i: Int) => i.toLong)
-     assertEquals(laTabulate.head, laTabulate(0))
-     assertEquals(laTabulate.last, laTabulate(end))
-
-     // Float
-     val faTabulate: NArray[Float] = NArray.tabulate[Float](N)((i: Int) => i.toFloat)
-     assertEquals(faTabulate.head, faTabulate(0))
-     assertEquals(faTabulate.last, faTabulate(end))
-
-     // Double
-     val daTabulate: NArray[Double] = NArray.tabulate[Double](N)((i: Int) => i.toDouble)
-     assertEquals(daTabulate.head, daTabulate(0))
-     assertEquals(daTabulate.last, daTabulate(end))
-
-     // Char
-     val caTabulate: NArray[Char] = NArray.tabulate[Char](N)((i: Int) => i.toChar)
-     assertEquals(caTabulate.head, caTabulate(0))
-     assertEquals(caTabulate.last, caTabulate(end))
-
-     ////////////////////
-     // Reference Types:
-     ////////////////////
-
-     // String
-     val strArrTabulate: NArray[String] = NArray.tabulate[String](N)((i: Int) => i.toString)
-     assertEquals(strArrTabulate.head, strArrTabulate(0))
-     assertEquals(strArrTabulate.last, strArrTabulate(end))
-
-     // AnyRef
-     val anyRefArrTabulate: NArray[AnyRef] = NArray.tabulate[AnyRef](N)(_ => new AnyRef())
-     assertEquals(anyRefArrTabulate.head, anyRefArrTabulate(0))
-     assertEquals(anyRefArrTabulate.last, anyRefArrTabulate(end))
-
-   }
-
-end Ops

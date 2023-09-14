@@ -43,7 +43,7 @@ object Extensions {
     def sorted: ByteArray = sorted(Ordering.Byte)
     def sorted(ord: Ordering[Byte]): ByteArray = sortByteArray(copy[Byte](a), ord)
 
-    def slice(from: Int, until: Int): ByteArray = a.asInstanceOf[NArr[Byte]].slice(from, until).asInstanceOf[ByteArray]
+//    def slice(from: Int, until: Int): ByteArray = a.asInstanceOf[NArr[Byte]].slice(from, until).asInstanceOf[ByteArray]
   }
 
   extension (a: ShortArray) {
@@ -53,7 +53,7 @@ object Extensions {
 
     def sorted: ShortArray = sorted(Ordering.Short)
     def sorted(ord: Ordering[Short]): ShortArray = sortShortArray(copy[Short](a), ord)
-    def slice(from: Int, until: Int): ShortArray = a.asInstanceOf[NArr[Short]].slice(from, until).asInstanceOf[ShortArray]
+//    def slice(from: Int, until: Int): ShortArray = a.asInstanceOf[NArr[Short]].slice(from, until).asInstanceOf[ShortArray]
   }
 
   extension (a: IntArray) {
@@ -63,7 +63,7 @@ object Extensions {
     def sorted:IntArray = sorted(Ordering.Int)
     def sorted(ord:Ordering[Int]): IntArray = sortIntArray(copy[Int](a), ord)
 
-    def slice(from:Int, until:Int):IntArray = a.asInstanceOf[NArr[Int]].slice(from, until).asInstanceOf[IntArray]
+//    def slice(from:Int, until:Int):IntArray = a.asInstanceOf[NArr[Int]].slice(from, until).asInstanceOf[IntArray]
   }
 
   extension (a: FloatArray) {
@@ -73,7 +73,7 @@ object Extensions {
     def sorted: FloatArray = sorted(Ordering.Float.TotalOrdering)
     def sorted(ord: Ordering[Float]): FloatArray = sortFloatArray(copy[Float](a), ord)
 
-    def slice(from: Int, until: Int): FloatArray = a.asInstanceOf[NArr[Float]].slice(from, until).asInstanceOf[FloatArray]
+//    def slice(from: Int, until: Int): FloatArray = a.asInstanceOf[NArr[Float]].slice(from, until).asInstanceOf[FloatArray]
   }
 
   extension (a: DoubleArray) {
@@ -82,7 +82,7 @@ object Extensions {
 
     def sorted: DoubleArray = sorted(Ordering.Double.TotalOrdering)
     def sorted(ord: Ordering[Double]): DoubleArray = sortDoubleArray(copy[Double](a), ord)
-    def slice(from: Int, until: Int): DoubleArray = a.asInstanceOf[NArr[Double]].slice(from, until).asInstanceOf[DoubleArray]
+//    def slice(from: Int, until: Int): DoubleArray = a.asInstanceOf[NArr[Double]].slice(from, until).asInstanceOf[DoubleArray]
   }
 
   extension[T] (a:NArray[T]) {
@@ -91,12 +91,6 @@ object Extensions {
       temp.slice(0, temp.length).asInstanceOf[NArray[T]]
     }
 
-
-    /** Produces the range of all indices of this sequence.
-     *
-     * @return a `Range` value from `0` to one less than the length of this array.
-     */
-    inline def indices(): Range = Range(0, a.length)
 
     /** The size of this NArray.
      *
@@ -359,5 +353,11 @@ object Extensions {
         i = i + 1
       }
     }
+
+    /** Produces the range of all indices of this sequence.
+     *
+     * @return a `Range` value from `0` to one less than the length of this array.
+     */
+    inline def indices(): Range = Range(0, a.length)
   }
 }

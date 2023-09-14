@@ -4,14 +4,17 @@
 <td>Method Signature</td>
 <td>
 
-`scala.collection.ArrayOps`
+`ArrayOps`
 <br/>(JVM / Native)
 </td>
 <td>
 
-`scala.scalajs.js.ArrayOps`
+`js.ArrayOps`
 <br />(js.Array)</td>
-<td>NArr</td>
+<td>
+
+`narr.Extensions`
+<br />(NArr)</td>
 </tr>
 <tr>
 <td>

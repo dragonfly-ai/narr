@@ -20,22 +20,6 @@ lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .jvmSettings()
   .jsSettings()
 
-lazy val demo = crossProject(JSPlatform, JVMPlatform, NativePlatform)
-  .crossType(CrossType.Full)
-  .enablePlugins(NoPublishPlugin)
-  .dependsOn(narr)
-  .settings(
-    name := "demo",
-    Compile / mainClass := Some("Demo"),
-    libraryDependencies ++= Seq( "ai.dragonfly" %%% "democrossy" % "0.101" )
-  ).jsSettings(
-    Compile / fastOptJS / artifactPath := file("./docs/js/main.js"),
-    Compile / fullOptJS / artifactPath := file("./docs/js/main.js"),
-    scalaJSUseMainModuleInitializer := true
-  )
-  .jvmSettings()
-
-
 lazy val root = tlCrossRootProject.aggregate(narr, tests).settings(name := "narr")
 
 lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).settings(
