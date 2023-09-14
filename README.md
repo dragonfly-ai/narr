@@ -5,7 +5,7 @@ pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 
 <br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
 <br />
-<br /><a href="https://dragonfly-ai.github.io/narr/FeatureGrid">Click here to compare NArr features to those built into Scala JVM/Native and Scala.js</a>.
+<br /><a href="https://dragonfly-ai.github.io/narr/FeatureGrid">Click here</a> to compare NArr features to those built into Scala JVM/Native and Scala.js.
 
 
 <b>Advantages</b>:<br />
