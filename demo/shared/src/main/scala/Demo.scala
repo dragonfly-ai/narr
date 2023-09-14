@@ -26,18 +26,14 @@ object TArrayDemonstration {
   }
 }
 
-case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String, nar: AT) extends Demonstration {
+case class TArrayDemonstration[T] (override val name:String, nar: NArray[T]) extends Demonstration {
 
-  type A = ArrayElementType[AT]
- // def arr2Ops(a:AT): TypedArrayOps[T, AT] = a
-
-  def asDouble(a:A):Double = a match {
+  def asDouble(a:T):Double = a match {
     case i:Int => i.toDouble
     case f:Float => f.toDouble
   }
 
   def demo():Unit = {
-    //val nArr0:TypedArrayOps[AT] = new TypedArrayOps[AT](nArr0)
     println(s"nArr => $nar")
     println(s"TypedArrayOps[T](nArr) => $nar")
     println(s"length => ${nar.length}")
@@ -45,45 +41,25 @@ case class TArrayDemonstration[AT <: NativeTypedArray] (override val name:String
     println(s"size => ${nar.size}")
     println(s"knownSize => ${nar.knownSize}")
     println(s"isEmpty => ${nar.isEmpty}")
-//    println(s"nonEmpty => ${ops.nonEmpty}")
+
     println(s"head => ${nar.head}")
     println(s"last => ${nar.last}")
     println(s"headOption => ${nar.headOption}")
     println(s"lastOption => ${nar.lastOption}")
     println(s"sizeCompare($olen) => ${nar.sizeCompare(olen)}")
-//    println(s"lengthCompare($olen) => ${nArr0.lengthCompare(olen)}")
+
     println(s"sizeIs => ${nar.sizeIs}")
-//    println(s"lengthIs => ${nar.lengthIs}")
-//    println(s"indices => ${nar.indices()}")
+
 
     println(s"ops.slice(1, nArr.length / 2) => ${nar.slice(1, nar.length / 2)}")
     println(s"ops.tail => ${nar.tail}")
     println(s"ops.init => ${nar.init}")
 
-//    val tails = ops.tails
-//    println(s"val tails = ops.tails => $tails")
-//    println("while (tails.hasNext) println(tails.next) {")
-//    while (tails.hasNext) println(tails.next)
-//    println("}")
-//
-//    val inits = ops.inits
-//    println(s"val inits = ops.inits => $inits")
-//    println("while (inits.hasNext) println(inits.next) {")
-//    while (inits.hasNext) println(inits.next)
-//    println("}")
 
     println(s"ops.take(nar.length / 2) => ${nar.take(nar.length / 2)}")
     println(s"ops.drop(nar.length / 2) => ${nar.drop(nar.length / 2)}")
     println(s"ops.takeRight(nar.length / 2) => ${nar.takeRight(nar.length / 2)}")
     println(s"ops.dropRight(nar.length / 2) => ${nar.dropRight(nar.length / 2)}")
-//    println(s"ops.takeWhile((a:T) => asDouble(a) < asDouble(nar(nar.length / 2))) => ${nArr0.takeWhile((a:A) => asDouble(a) < asDouble(nArr0(nArr0.length / 2).asInstanceOf[A]))}")
-//    println(s"ops.dropWhile((a:T) => asDouble(a) < asDouble(nar(nar.length / 2))) => ${nArr0.dropWhile((a:A) => asDouble(a) < asDouble(nArr0(nArr0.length / 2).asInstanceOf[A]))}")
-
-//    val stepper = ops.stepper
-//    println(s"val stepper = ops.stepper => $stepper")
-//    println("while (stepper.hasStep) println(stepper.nextStep()) {")
-//    while (stepper.hasStep) println(stepper.nextStep())
-//    println("}")
 
     println("Iteration/Access:")
 
@@ -125,9 +101,6 @@ object Demo extends XApp(NativeConsole(style = "padding: 8px; overflow: scroll;"
     } ),
     TArrayDemonstration( "NArray.fill[Float](4)( (2.0*Math.PI).toFloat )", NArray.fill[Float](8)( (2.0*Math.PI).toFloat ) ),
     TArrayDemonstration( "NArray.tabulate[Double](4)( (i:Int) => i * Math.PI ) )", NArray.tabulate[Double](8)( (i:Int) => i * Math.PI ) ),
-//    StringNArrayDemonstration( "NArray[String](\"Testing\", \"1\", \"2\", \"3\")", NArray[String]("Testing", "1", "2", "3") ),
-//    CharNArrayDemonstration( "NArray[Char]('a', 'b', 'c', 'X', 'Y', 'Z')", NArray[Char]('a', 'b', 'c', 'X', 'Y', 'Z') ),
-//    LongNArrayDemonstration( "NArray.tabulate[Long](7)( (_:Int) => r.nextLong(777L*777L) )", NArray.tabulate[Long](7)( (_:Int) => r.nextLong(777L*777L) ) ),
   )
 
   for (d <- demonstrations) d.demonstrate

@@ -16,10 +16,7 @@
 
 package narr
 
-import narr.native.NArr
-
 import scala.collection.ArrayOps
-import scala.compiletime.erasedValue
 import scala.reflect.ClassTag
 import scala.language.implicitConversions
 import scala.util.Sorting.*
@@ -60,14 +57,7 @@ package object native {
 
   object Extensions {
 
-    inline implicit def refNArrayOps[AT <: NativeTypedArray](xs:AT): ArrayOps[ArrayElementType[AT]] = (xs match {
-      case ba: ByteArray => new ArrayOps[Byte](ba)
-      case sa: ShortArray => new ArrayOps[Short](sa)
-      case ia: IntArray => new ArrayOps[Int](ia)
-      case fa: FloatArray => new ArrayOps[Float](fa)
-      case da: DoubleArray => new ArrayOps[Double](da)
-      case _ => new ArrayOps[ArrayElementType[AT]](xs.asInstanceOf[Array[ArrayElementType[AT]]])
-    }).asInstanceOf[ArrayOps[ArrayElementType[AT]]]
+    export collection.ArrayOps
 
     extension (ua: NArray[Unit]) {
       inline def sort(): NArray[Unit] = ua
