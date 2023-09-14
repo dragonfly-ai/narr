@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
+    <link rel="icon" href="img/favicon.png" type="image/x-icon" />
+    <title></title>
+    
+    <meta name="author" content="dragonfly.ai"/>
+    
+    
+    <meta name="description" content="docs"/>
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
+    
+    <link rel="stylesheet" type="text/css" href="helium/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="helium/laika-helium.css" />
+    <link rel="stylesheet" type="text/css" href="site/styles.css" />
+
+    
+    
+</head>
+<body>
+<div>
+    <div class="content" style="width:55%; padding: 16px;">
+        <p><b>ArrayOps Features</b>:<br/>
+        <table style="">
+        <tr>
+        <td>Method Signature</td>
+        <td></p>
+        <p><code>scala.collection.ArrayOps</code>
+        <br/>(JVM / Native)
+        </td>
+        <td></p>
+        <p><code>scala.scalajs.js.ArrayOps</code>
+        <br/>(js.Array)</td>
+        <td>NArr</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">size</span><span>: </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">knownSize</span><span>: </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">isEmpty</span><span>: </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">nonEmpty</span><span>: </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">head</span><span>: </span><span class="type-name">A</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">last</span><span>: </span><span class="type-name">A</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">headOption</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lastOption</span><span>: </span><span class="type-name">Option</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sizeCompare</span><span>(</span><span class="identifier">otherSize</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lengthCompare</span><span>(</span><span class="identifier">len</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sizeIs</span><span>: </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lengthIs</span><span>: </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">slice</span><span>(</span><span class="identifier">from</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">until</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">tail</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">init</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">tails</span><span>: </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">inits</span><span>: </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">take</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">drop</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">takeRight</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">dropRight</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">takeWhile</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">dropWhile</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">iterator</span><span>: </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">stepper</span><span>[</span><span class="type-name">S</span><span> &lt;: </span><span class="type-name">Stepper</span><span>[</span><span class="identifier">_</span><span>]](
+  </span><span class="keyword">implicit</span><span> </span><span class="identifier">shape</span><span>: </span><span class="type-name">StepperShape</span><span>[</span><span class="type-name">A</span><span>, </span><span class="type-name">S</span><span>]
+): </span><span class="type-name">S</span><span> </span><span class="keyword">with</span><span> </span><span class="type-name">EfficientSplit</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>❌</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">grouped</span><span>(</span><span class="identifier">size</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">span</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">splitAt</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">partition</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">partitionMap</span><span>[</span><span class="type-name">A1</span><span>: </span><span class="type-name">ClassTag</span><span>, </span><span class="type-name">A2</span><span>: </span><span class="type-name">ClassTag</span><span>](
+  </span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Either</span><span>[</span><span class="type-name">A1</span><span>, </span><span class="type-name">A2</span><span>]
+): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A1</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A2</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reverse</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">reverseIterator</span><span>: </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">filter</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">filterNot</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sorted</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="keyword">implicit</span><span> </span><span class="identifier">ord</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sortWith</span><span>(</span><span class="identifier">lt</span><span>: (</span><span class="type-name">A</span><span>, </span><span class="type-name">A</span><span>) =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sortBy</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">B</span><span>)(</span><span class="keyword">implicit</span><span> </span><span class="identifier">ord</span><span>: </span><span class="type-name">Ordering</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">withFilter</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">ArrayOps</span><span>.</span><span class="type-name">WithFilter</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">indexOf</span><span>(</span><span class="identifier">elem</span><span>: </span><span class="type-name">A</span><span>, </span><span class="identifier">from</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="number-literal">0</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">indexWhere</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>, </span><span class="identifier">from</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="number-literal">0</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lastIndexOf</span><span>(</span><span class="identifier">elem</span><span>: </span><span class="type-name">A</span><span>, </span><span class="identifier">end</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">length</span><span> - </span><span class="number-literal">1</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lastIndexWhere</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>, </span><span class="identifier">end</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="identifier">xs</span><span>.</span><span class="identifier">length</span><span> - </span><span class="number-literal">1</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">find</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Option</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">exists</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">forall</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">foldLeft</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">z</span><span>: </span><span class="type-name">B</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">B</span><span>, </span><span class="type-name">A</span><span>) =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">B</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">scanLeft</span><span>[ </span><span class="type-name">B</span><span> : </span><span class="type-name">ClassTag</span><span> ](</span><span class="identifier">z</span><span>: </span><span class="type-name">B</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">B</span><span>, </span><span class="type-name">A</span><span>) =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">scan</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">z</span><span>: </span><span class="type-name">B</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">B</span><span>, </span><span class="type-name">B</span><span>) =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">scanRight</span><span>[ </span><span class="type-name">B</span><span> : </span><span class="type-name">ClassTag</span><span> ](</span><span class="identifier">z</span><span>: </span><span class="type-name">B</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>) =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">foldRight</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">z</span><span>: </span><span class="type-name">B</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>) =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">B</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">fold</span><span>[</span><span class="type-name">A1</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">z</span><span>: </span><span class="type-name">A1</span><span>)(</span><span class="identifier">op</span><span>: (</span><span class="type-name">A1</span><span>, </span><span class="type-name">A1</span><span>) =&gt; </span><span class="type-name">A1</span><span>): </span><span class="type-name">A1</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">map</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">B</span><span>)(</span><span class="keyword">implicit</span><span> </span><span class="identifier">ct</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">mapInPlace</span><span>(</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">A</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">flatMap</span><span>[</span><span class="type-name">B</span><span> : </span><span class="type-name">ClassTag</span><span>](
+  </span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]
+): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">flatMap</span><span>[</span><span class="type-name">BS</span><span>, </span><span class="type-name">B</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">BS</span><span>)(
+  </span><span class="keyword">implicit</span><span> </span><span class="identifier">asIterable</span><span>: </span><span class="type-name">BS</span><span> =&gt; </span><span class="type-name">Iterable</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">m</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">B</span><span>]
+): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">flatten</span><span>[</span><span class="type-name">B</span><span>](
+  </span><span class="keyword">implicit</span><span> </span><span class="identifier">asIterable</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">m</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">B</span><span>]
+): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">collect</span><span>[</span><span class="type-name">B</span><span>: </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">pf</span><span>: </span><span class="type-name">PartialFunction</span><span>[</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">collectFirst</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">pf</span><span>: </span><span class="type-name">PartialFunction</span><span>[</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>]): </span><span class="type-name">Option</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">zip</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[(</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>)]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">lazyZip</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Iterable</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">LazyZip2</span><span>[</span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>, </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>❌</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">zipAll</span><span>[</span><span class="type-name">A1</span><span> &gt;: </span><span class="type-name">A</span><span>, </span><span class="type-name">B</span><span>](
+  </span><span class="identifier">that</span><span>: </span><span class="type-name">Iterable</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">thisElem</span><span>: </span><span class="type-name">A1</span><span>, </span><span class="identifier">thatElem</span><span>: </span><span class="type-name">B</span><span>
+): </span><span class="type-name">Array</span><span>[(</span><span class="type-name">A1</span><span>, </span><span class="type-name">B</span><span>)]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">zipWithIndex</span><span>: </span><span class="type-name">Array</span><span>[(</span><span class="type-name">A</span><span>, </span><span class="type-name">Int</span><span>)]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">appended</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">x</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> :+ [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">x</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">prepended</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">x</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> +: [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">x</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">prependedAll</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">prefix</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">prependedAll</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">prefix</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> ++: [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">prefix</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> ++: [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">prefix</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">appendedAll</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">appendedAll</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> :++ [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> :++ [</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">concat</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>❌</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">concat</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">suffix</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>❌</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> ++[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">xs</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> ++[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">xs</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="identifier">_</span><span> &lt;: </span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">contains</span><span>(</span><span class="identifier">elem</span><span>: </span><span class="type-name">A</span><span>): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">patch</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](
+  </span><span class="identifier">from</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">other</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">replaced</span><span>: </span><span class="type-name">Int</span><span>
+): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">unzip</span><span>[</span><span class="type-name">A1</span><span>, </span><span class="type-name">A2</span><span>](
+  </span><span class="keyword">implicit</span><span> </span><span class="identifier">asPair</span><span>: </span><span class="type-name">A</span><span> =&gt; (</span><span class="type-name">A1</span><span>, </span><span class="type-name">A2</span><span>), </span><span class="identifier">ct1</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">A1</span><span>], </span><span class="identifier">ct2</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">A2</span><span>]
+): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A1</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A2</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">unzip3</span><span>[</span><span class="type-name">A1</span><span>, </span><span class="type-name">A2</span><span>, </span><span class="type-name">A3</span><span>](
+  </span><span class="keyword">implicit</span><span> </span><span class="identifier">asTriple</span><span>: </span><span class="type-name">A</span><span> =&gt; (</span><span class="type-name">A1</span><span>, </span><span class="type-name">A2</span><span>, </span><span class="type-name">A3</span><span>),
+  </span><span class="identifier">ct1</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">A1</span><span>],
+  </span><span class="identifier">ct2</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">A2</span><span>],
+  </span><span class="identifier">ct3</span><span>: </span><span class="type-name">ClassTag</span><span>[</span><span class="type-name">A3</span><span>]
+): (</span><span class="type-name">Array</span><span>[</span><span class="type-name">A1</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A2</span><span>], </span><span class="type-name">Array</span><span>[</span><span class="type-name">A3</span><span>])</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">transpose</span><span>[</span><span class="type-name">B</span><span>](</span><span class="keyword">implicit</span><span> </span><span class="identifier">asArray</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">foreach</span><span>[</span><span class="type-name">U</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">U</span><span>): </span><span class="type-name">Unit</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>✓</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">distinct</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">distinctBy</span><span>[</span><span class="type-name">B</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">padTo</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">len</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">elem</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">indices</span><span>: </span><span class="type-name">Range</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">groupBy</span><span>[</span><span class="type-name">K</span><span>](</span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">K</span><span>): </span><span class="identifier">immutable</span><span>.</span><span class="type-name">Map</span><span>[</span><span class="type-name">K</span><span>, </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">groupMap</span><span>[</span><span class="type-name">K</span><span>, </span><span class="type-name">B</span><span> : </span><span class="type-name">ClassTag</span><span>](
+  </span><span class="identifier">key</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">K</span><span>
+)(
+  </span><span class="identifier">f</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">B</span><span>): </span><span class="identifier">immutable</span><span>.</span><span class="type-name">Map</span><span>[</span><span class="type-name">K</span><span>, </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">toSeq</span><span>: </span><span class="identifier">immutable</span><span>.</span><span class="type-name">Seq</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">toIndexedSeq</span><span>: </span><span class="identifier">immutable</span><span>.</span><span class="type-name">IndexedSeq</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">copyToArray</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">xs</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">copyToArray</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">xs</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">start</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">copyToArray</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">xs</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">start</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">len</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">toArray</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>: </span><span class="type-name">ClassTag</span><span>]: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">count</span><span>(</span><span class="identifier">p</span><span>: </span><span class="type-name">A</span><span> =&gt; </span><span class="type-name">Boolean</span><span>): </span><span class="type-name">Int</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">startsWith</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">startsWith</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">offset</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">endsWith</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">updated</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span> : </span><span class="type-name">ClassTag</span><span>](</span><span class="identifier">index</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">elem</span><span>: </span><span class="type-name">B</span><span>): </span><span class="type-name">Array</span><span>[</span><span class="type-name">B</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">view</span><span>: </span><span class="type-name">IndexedSeqView</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">diff</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Seq</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">intersect</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Seq</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">sliding</span><span>(</span><span class="identifier">size</span><span>: </span><span class="type-name">Int</span><span>, </span><span class="identifier">step</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="number-literal">1</span><span>): </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">combinations</span><span>(</span><span class="identifier">n</span><span>: </span><span class="type-name">Int</span><span>): </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">permutations</span><span>: </span><span class="type-name">Iterator</span><span>[</span><span class="type-name">Array</span><span>[</span><span class="type-name">A</span><span>]]</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">startsWith</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">IterableOnce</span><span>[</span><span class="type-name">B</span><span>], </span><span class="identifier">offset</span><span>: </span><span class="type-name">Int</span><span> = </span><span class="number-literal">0</span><span>): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        <td></p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">endsWith</span><span>[</span><span class="type-name">B</span><span> &gt;: </span><span class="type-name">A</span><span>](</span><span class="identifier">that</span><span>: </span><span class="type-name">Iterable</span><span>[</span><span class="type-name">B</span><span>]): </span><span class="type-name">Boolean</span></code></pre>
+        <p></td>
+        <td>✓</td>
+        <td>✓</td>
+        <td>❌</td>
+        </tr>
+        <tr>
+        </table></p>
+    </div>
+</div>
+</body>
+</html>
