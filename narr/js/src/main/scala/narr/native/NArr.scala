@@ -27,5 +27,7 @@ trait NArr[T] extends js.Object {
 
   def slice(start:Int, end:Int): NArr[T] = js.native
 
+  def concat(a:Any):NArr[T] = js.native
+
 }
 

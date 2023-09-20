@@ -34,7 +34,6 @@ object Extensions {
   given orderingToCompareFunction[T]: Conversion[Ordering[T], js.Function2[T, T, Int]] with
     def apply(o: Ordering[T]): js.Function2[T, T, Int] = (a: T, b: T) => o.compare(a, b)
 
-
   extension (a: ByteArray) {
     inline def head: Byte = a(0)
     def sort(): ByteArray = sortByteArray(a)
@@ -196,24 +195,31 @@ object Extensions {
      */
     inline def lengthIs: Int = a.length
 
-
-    /** Selects an interval of elements. The returned NArray is made up
+    /** Selects an interval of elements. The returned array is made up
      * of all elements `x` which satisfy the invariant:
      * {{{
      *   from <= indexOf(x) < until
-     *
      * }}}
      *
-     *
-     * **  @param from   the lowest index to include from th
-     * NArray.
-     *
-     * @p am until the lowest index to EXCLUDE from this NA ay.
-     * @return an NArray containing the elements greater than or equal to
-     *         index `from` extending up to (but not including) index `until`
-     *         of this NArray.
+     * @param from  the lowest index to include from this array.
+     * @return an array containing the elements greater than or equal to
+     *         index `from` extending through the end of this array.
      */
-    inline def slice(from: Int, until: Int = a.length): NArray[T] = {
+    inline def slice(from: Int): NArray[T] = slice(from, a.length)
+
+    /** Selects an interval of elements. The returned array is made up
+     * of all elements `x` which satisfy the invariant:
+     * {{{
+     *   from <= indexOf(x) < until
+     * }}}
+     *
+     * @param from  the lowest index to include from this array.
+     * @param until the lowest index to EXCLUDE from this array.
+     * @return an array containing the elements greater than or equal to
+     *         index `from` extending up to (but not including) index `until`
+     *         of this array.
+     */
+    inline def slice(from: Int, until: Int): NArray[T] = {
       a.asInstanceOf[NArr[T]].slice(from, until).asInstanceOf[NArray[T]]
     }
 
@@ -284,6 +290,36 @@ object Extensions {
      */
     def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
 
+    /** Returns a new array with the elements in reversed order. */
+    def reverse: NArray[T] = {
+      val len = a.length
+      val res = slice(0, len)
+      var i = 0
+      while (i < len) {
+        res(len - i - 1) = a(i)
+        i += 1
+      }
+      res
+    }
+
+    /** An iterator yielding elements in reversed order.
+     *
+     * Note: `xs.reverseIterator` is the same as `xs.reverse.iterator` but implemented more efficiently.
+     *
+     * @return an iterator yielding the elements of this array in reversed order
+     */
+    inline def reverseIterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
+      var i: Int = a.length
+      override val knownSize: Int = a.length
+      val end: Int = 0
+
+      def hasNext: Boolean = i > end
+
+      def next(): T = {
+        i -= 1
+        a(i)
+      }
+    }
 
     /** Sorts this array according to a comparison function.
      *
@@ -320,24 +356,177 @@ object Extensions {
       ).asInstanceOf[NArray[T]]
     }
 
-    /** Finds index of the first element satisfying some predicate after or at some star
-       dex.
+    /** Finds index of first occurrence of some value in this array.
      *
-     * @param p    the predicate used to test e
-       nts.
-     * @param from the sta
-       ndex
-     * @return the index `>= from` of the first element of this array that satisfies the predicate
-       `p`,
-     *         or `-1`, if
-        e
-      ts.
+     * @param elem the element value to search for.
+     * @return the index `>= from` of the first element of this array that is equal (as determined by `==`)
+     *         to `elem`, or `-1`, if none exists.
      */
-    def indexWhere(f: T => Boolean, from: Int = 0):Int = {
+    inline def indexOf(elem: T): Int = indexOf(elem, 0)
+
+    /** Finds index of first occurrence of some value in this array after or at some start index.
+     *
+     * @param elem the element value to search for.
+     * @param from the start index
+     * @return the index `>= from` of the first element of this array that is equal (as determined by `==`)
+     *         to `elem`, or `-1`, if none exists.
+     */
+    def indexOf(elem: T, from: Int): Int = {
       var i = from
-      while (!f(a(i)) && i < a.
-      length) i += 1
+      while (i < a.length) {
+        if (elem == a(i)) return i
+        i += 1
+      }
       -1
+    }
+
+    /** Finds index of the first element satisfying some predicate.
+     *
+     * @param p    the predicate used to test elements.
+     * @return the index `>= 0` of the first element of this array that satisfies the predicate `p`,
+     *         or `-1`, if none exists.
+     */
+    inline def indexWhere(p: T => Boolean): Int = indexWhere(p, 0)
+
+    /** Finds index of the first element satisfying some predicate after or at some start index.
+     *
+     * @param p    the predicate used to test elements.
+     * @param from the start index
+     * @return the index `>= from` of the first element of this array that satisfies the predicate `p`,
+     *         or `-1`, if none exists.
+     */
+    def indexWhere(p: T => Boolean, from: Int = 0):Int = {
+      var i = from
+      while (!p(a(i)) && i < a.length) i += 1
+      if (i >= a.length) -1
+      else i
+    }
+
+
+    /** Finds index of last occurrence of some value in this array.
+     *
+     * @param elem the element value to search for.
+     * @return the index `<= length - 1` of the last element of this array that is equal (as determined by `==`)
+     *         to `elem`, or `-1`, if none exists.
+     */
+    inline def lastIndexOf(elem: T): Int = lastIndexOf(elem, a.length - 1)
+
+    /** Finds index of last occurrence of some value in this array before or at a given end index.
+     *
+     * @param elem the element value to search for.
+     * @param end  the end index.
+     * @return the index `<= end` of the last element of this array that is equal (as determined by `==`)
+     *         to `elem`, or `-1`, if none exists.
+     */
+    def lastIndexOf(elem: T, end: Int): Int = {
+      var i = Math.min(end, a.length - 1)
+      while (i >= 0) {
+        if (elem == a(i)) return i
+        i -= 1
+      }
+      -1
+    }
+
+    /** Finds index of last element satisfying some predicate.
+     *
+     * @param p the predicate used to test elements.
+     * @return the index of the last element of this array that satisfies the predicate `p`,
+     *         or `-1`, if none exists.
+     */
+    inline def lastIndexWhere(p: T => Boolean): Int = lastIndexWhere(p, a.length - 1)
+
+    /** Finds index of last element satisfying some predicate before or at given end index.
+     *
+     * @param p the predicate used to test elements.
+     * @return the index `<= end` of the last element of this array that satisfies the predicate `p`,
+     *         or `-1`, if none exists.
+     */
+    def lastIndexWhere(p: T => Boolean, end: Int): Int = {
+      var i = Math.min(end, a.length - 1)
+      while (i >= 0) {
+        if (p(a(i))) return i
+        i -= 1
+      }
+      -1
+    }
+
+    /** Finds the first element of the array satisfying a predicate, if any.
+     *
+     * @param p the predicate used to test elements.
+     * @return an option value containing the first element in the array
+     *         that satisfies `p`, or `None` if none exists.
+     */
+    def find(p: T => Boolean): Option[T] = {
+      val idx = indexWhere(p)
+      if (idx == -1) None else Some(a(idx))
+    }
+
+    /** Tests whether a predicate holds for at least one element of this array.
+     *
+     * @param p the predicate used to test elements.
+     * @return `true` if the given predicate `p` is satisfied by at least one element of this array, otherwise `false`
+     */
+    def exists(p: T => Boolean): Boolean = indexWhere(p) >= 0
+
+    /** Tests whether a predicate holds for all elements of this array.
+     *
+     * @param p the predicate used to test elements.
+     * @return `true` if this array is empty or the given predicate `p`
+     *         holds for all elements of this array, otherwise `false`.
+     */
+    def forall(p: T => Boolean): Boolean = {
+      var i = 0
+      while (i < a.length) {
+        if (!p(a(i))) return false
+        i += 1
+      }
+      true
+    }
+
+//    /** A copy of this array with all elements of a collection appended. */
+//    def appendedAll[B >: A : ClassTag](suffix: IterableOnce[B]): NArray[B] = {
+//      val b = ArrayBuilder.make[B]
+//      val k = suffix.knownSize
+//      if (k >= 0) b.sizeHint(k + xs.length)
+//      b.addAll(xs)
+//      b.addAll(suffix)
+//      b.result()
+//    }
+
+    /** Zips this array with its indices.
+     *
+     * @return A new array containing pairs consisting of all elements of this array paired with their index.
+     *         Indices start at `0`.
+     */
+    def zipWithIndex: NArray[(T, Int)] = NArray.tabulate[(T, Int)](a.length)(
+      (i:Int) => ((a(i), i))
+    )
+
+    /** A copy of this array with all elements of an array appended. */
+    inline def appendedAll[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = {
+      a.asInstanceOf[NArr[T]].concat(suffix).asInstanceOf[NArray[B]]
+    }
+
+//    inline def concat[B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] =
+
+    inline def :++ [B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll(suffix)
+
+    inline def concat[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll(suffix)
+
+    inline def ++[B >: T : ClassTag](xs: NArray[B]): NArray[B] = appendedAll(xs)
+
+    /** Tests whether this array contains a given value as an element.
+     *
+     * @param elem the element to test.
+     * @return `true` if this array has an element that is equal (as
+     *         determined by `==`) to `elem`, `false` otherwise.
+     */
+    def contains(elem: T): Boolean = {
+      var i:Int = 0; while (i < a.length) {
+        if (a(i) == elem) return true
+        i += 1
+      }
+      return false
     }
 
     /** Apply `f` to each element for
@@ -354,10 +543,42 @@ object Extensions {
       }
     }
 
+    /** Builds a new array by applying a function to all elements of this array.
+     *
+     * @param f the function to apply to each element.
+     * @tparam B the element type of the returned array.
+     * @return a new array resulting from applying the given function
+     *         `f` to each element of this array and collecting the results.
+     */
+    def map[B: ClassTag](f: T => B): NArray[B] = {
+      val out:NArray[B] = NArray.ofSize[B](a.length)
+      var i = 0; while (i < a.length) {
+        out(i) = f(a(i))
+        i = i + 1
+      }
+      out
+    }
+
+    /** Maps each element of this array to a new element of the same type.
+     * This 'in place' operation overwrites the original data.
+     *
+     * @param f the function to apply to each element.
+     * @return a reference to this array, after mapping took place.
+     */
+
+    def mapInPlace(f: T => T): NArray[T] = {
+      var i = 0
+      while (i < a.length) {
+        a(i) = f(a(i))
+        i = i + 1
+      }
+      a
+    }
+
     /** Produces the range of all indices of this sequence.
      *
      * @return a `Range` value from `0` to one less than the length of this array.
      */
-    inline def indices(): Range = Range(0, a.length)
+    inline def indices: Range = Range(0, a.length)
   }
 }

@@ -15,8 +15,9 @@
  */
 
 import narr.*
-
 import Comparison.*
+
+import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Random as r
 
@@ -25,9 +26,12 @@ class Ops extends munit.FunSuite {
   val N: Int = 11
   val lastIndex: Int = N - 1
 
-  private case class NArrayOpsTest[T:ClassTag](a: NArray[T]) {
+  private trait HasNArray[T:ClassTag] {
+    val a: NArray[T]
+  }
 
-    def test(): Unit = {
+  private trait UniversalNArrayOpsTest[T:ClassTag] extends HasNArray[T] {
+    def universalTest(): Unit = {
       assertEquals(a.size, N)
       assertEquals(a.knownSize, N)
       assertEquals(a.isEmpty, N == 0)
@@ -52,6 +56,7 @@ class Ops extends munit.FunSuite {
       val middleIndex:Int = N / 2
       val start:Int = middleIndex - r.nextInt(middleIndex - 1)
       val end:Int = middleIndex + r.nextInt(middleIndex - 1)
+
       assertNArrayEquality[T](
         a.slice(start, end),
         NArray.tabulate[T](end - start)((i:Int) => a(start + i))
@@ -68,6 +73,22 @@ class Ops extends munit.FunSuite {
         a.init,
         NArray.tabulate[T](lastIndex)((i: Int) => a(i))
       )
+
+      // reverse
+      val rev:NArray[T] = a.reverse
+      var i:Int = 0; while (i < N) {
+        assertEquals(rev(i), a(lastIndex - i))
+        i += 1
+      }
+
+      // reverseIterator
+      val ritr: Iterator[T] = a.reverseIterator
+      i = 0; while (i < N) {
+        assertEquals(true, ritr.hasNext)
+        assertEquals(a(lastIndex - i), ritr.next())
+        i += 1
+      }
+      assertEquals(false, ritr.hasNext)
 
       var fulcrum:Int = 0; while (fulcrum < N) {
 
@@ -97,20 +118,137 @@ class Ops extends munit.FunSuite {
         assertNArrayEquality[T](s1, left)
         assertNArrayEquality[T](s2, right)
 
+        // appendedAll
+        assertNArrayEquality[T](left.appendedAll(right), a)
+
+        // concat
+        assertNArrayEquality[T]( left.concat(right), a )
+
+        // find
+        a.find((t:T) => t == a(fulcrum)) match {
+          case Some(t:T) => assertEquals( t, a(fulcrum) )
+          case _ => assertEquals(false, true)
+        }
+
+        // exists
+        assertEquals( a.exists((t: T) => t == a(fulcrum)), true)
+
+        // contains
+        assertEquals(true, a.contains(a(fulcrum)))
+
         fulcrum += 1
       }
 
-      // takeWhile
+      // forall
+      assertEquals(
+        true,
+        a.forall((t: T) => a.contains(t))
+      )
 
-      // dropWhile
+      // map
+      val ampd:NArray[Int] = a.map[Int]( (t:T) => t.hashCode() )
+      assertEquals(ampd.length, a.length)
+      i = 0; while (i < N) {
+        assertEquals(a(i).hashCode(), ampd(i))
+        i += 1
+      }
+
+      // zipWithIndex
+      val zippedWithIndex:NArray[(T, Int)] = a.zipWithIndex
+      i = 0; while (i < N) {
+        assertEquals(i, zippedWithIndex(i)._2)
+        assertEquals[T, T](a(i), zippedWithIndex(i)._1)
+        i += 1
+      }
 
       // iterator
-
-      // indexWhere
+      val itr:Iterator[T] = a.iterator
+      i = 0; while (i < N) {
+        assertEquals(true, itr.hasNext)
+        assertEquals(a(i), itr.next())
+        i += 1
+      }
+      assertEquals(false, itr.hasNext)
 
       // foreach
+      i = 0; a.foreach((t:T) => i += 1)
+      assertEquals(i, a.length)
 
       // indices
+      assertEquals(N, a.indices.size)
+    }
+  }
+
+  // only for arrays with unique elements.
+  private trait NArrayOpsSearchTest[T:ClassTag] extends HasNArray[T] {
+
+    def searchTest(): Unit = {
+
+      var fulcrum: Int = 0; while (fulcrum < N) {
+
+        val left: NArray[T] = NArray.tabulate[T](fulcrum)((i: Int) => a(i))
+        val right: NArray[T] = NArray.tabulate[T](N - fulcrum)((i: Int) => a(fulcrum + i))
+
+        assertEquals( a.indexOf( a( fulcrum ) ), fulcrum )
+
+        // indexWhere
+        assertEquals(
+          a.indexWhere((t: T) => t == a(fulcrum)),
+          fulcrum
+        )
+
+        // lastIndexOf
+        assertEquals( a.lastIndexOf( a( fulcrum ) ), fulcrum )
+
+        // takeWhile
+        assertNArrayEquality[T](
+          a.takeWhile((t: T) => t != a(fulcrum)),
+          left
+        )
+
+        // dropWhile
+        assertNArrayEquality[T](
+          a.dropWhile((t: T) => t != a(fulcrum)),
+          right
+        )
+
+        // lastIndexWhere
+        assertEquals(
+          a.lastIndexWhere((t: T) => t == a(fulcrum)),
+          fulcrum
+        )
+
+        fulcrum += 1
+
+      }
+
+    }
+
+  }
+
+  private case class NArrayWithDuplicateElementsOpsTest[T:ClassTag](override val a:NArray[T]) extends UniversalNArrayOpsTest[T] {
+    def test():Unit = universalTest()
+  }
+
+  private case class NArrayOfUniquelyValuedElementsOpsTest[T:ClassTag](override val a:NArray[T]) extends UniversalNArrayOpsTest[T] with NArrayOpsSearchTest[T] {
+    def test(): Unit = {
+      universalTest()
+      searchTest()
+    }
+
+  }
+
+  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], val selfMap: T => T) extends HasNArray[T] {
+    def test(): Unit = {
+
+      // mapInPlace
+      val aCopy:NArray[T] = a.copy
+      aCopy.mapInPlace(selfMap)
+
+      var i:Int = 0; while (i < N) {
+        assertEquals(selfMap(a(i)), aCopy(i))
+        i += 1
+      }
     }
   }
 
@@ -118,21 +256,58 @@ class Ops extends munit.FunSuite {
   // Value Types:
   ////////////////
 
-  test("NArrayOpsTest[Unit]") { NArrayOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ())).test() }
-  test("NArrayOpsTest[Boolean]") { NArrayOpsTest[Boolean](NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)).test() }
-  test("NArrayOpsTest[Byte]") { NArrayOpsTest[Byte](NArray.tabulate[Byte](N)((i:Int) => i.toByte)).test() }
-  test("NArrayOpsTest[Short]") { NArrayOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort)).test() }
-  test("NArrayOpsTest[Int]") { NArrayOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i)).test() }
-  test("NArrayOpsTest[Long]") { NArrayOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong)).test() }
-  test("NArrayOpsTest[Float]") { NArrayOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat)).test() }
-  test("NArrayOpsTest[Double]") { NArrayOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble)).test() }
-  test("NArrayOpsTest[Char]") { NArrayOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => i.toChar)).test() }
+  test("NArrayWithDuplicateElementsOpsTest[Unit]") { NArrayWithDuplicateElementsOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ())).test() }
+  test("NArrayWithDuplicateElementsOpsTest[Boolean]") {
+    val t1 = NArrayWithDuplicateElementsOpsTest[Boolean](NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0))
+    t1.test()
+    NArraySelfMapOpsTest[Boolean](t1.a, (b: Boolean) => !b).test()
+  }
+
+  test("NArrayOfUniquelyValuedElementsOpsTest[Byte]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Byte](NArray.tabulate[Byte](N)((i:Int) => i.toByte))
+    t1.test()
+    NArraySelfMapOpsTest[Byte](t1.a, (b: Byte) => (-b).toByte).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Short]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort))
+    t1.test()
+    NArraySelfMapOpsTest[Short](t1.a, (s: Short) => (-s).toShort).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Int]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i))
+    t1.test()
+    NArraySelfMapOpsTest[Int](t1.a, (i: Int) => -i).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Long]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong))
+    t1.test()
+    NArraySelfMapOpsTest[Long](t1.a, (l: Long) => -l).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Float]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat))
+    t1.test()
+    NArraySelfMapOpsTest[Float](t1.a, (f: Float) => -f).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Double]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble))
+    t1.test()
+    NArraySelfMapOpsTest[Double](t1.a, (d: Double) => -d).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[Char]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => ('a'.toInt + i).toChar))
+    t1.test()
+    NArraySelfMapOpsTest[Char](t1.a, (c: Char) => (c.toInt + 1).toChar).test()
+  }
 
   ////////////////////
   // Reference Types:
   ////////////////////
 
-  test("NArrayOpsTest[String]") { NArrayOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString)).test() }
-  test("NArrayOpsTest[AnyRef]") { NArrayOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
+  test("NArrayOfUniquelyValuedElementsOpsTest[String]") {
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString))
+    t1.test()
+    NArraySelfMapOpsTest[String](t1.a, (s: String) => s.reverse).test()
+  }
+  test("NArrayOfUniquelyValuedElementsOpsTest[AnyRef]") { NArrayOfUniquelyValuedElementsOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
 
 }

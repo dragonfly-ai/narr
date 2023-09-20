@@ -359,7 +359,7 @@ def reverse: Array[A]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -372,7 +372,7 @@ def reverseIterator: Iterator[A]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -449,7 +449,7 @@ def indexOf(elem: A, from: Int = 0): Int
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -471,7 +471,7 @@ def lastIndexOf(elem: A, end: Int = xs.length - 1): Int
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -482,7 +482,7 @@ def lastIndexWhere(p: A => Boolean, end: Int = xs.length - 1): Int
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -493,7 +493,7 @@ def find(p: A => Boolean): Option[A]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -504,7 +504,7 @@ def exists(p: A => Boolean): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -515,7 +515,7 @@ def forall(p: A => Boolean): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -592,7 +592,7 @@ def map[B](f: A => B)(implicit ct: ClassTag[B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -603,7 +603,7 @@ def mapInPlace(f: A => A): Array[A]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -710,7 +710,7 @@ def zipWithIndex: Array[(A, Int)]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -821,7 +821,7 @@ def appendedAll[B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -843,7 +843,7 @@ def :++ [B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -865,7 +865,7 @@ def concat[B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
 </td>
 <td>✓</td>
 <td>❌</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -887,7 +887,7 @@ def ++[B >: A : ClassTag](xs: Array[_ <: B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -898,7 +898,7 @@ def contains(elem: A): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1006,7 +1006,7 @@ def indices: Range
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
