@@ -63,7 +63,7 @@ package object narr {
       case _ => makeNativeArrayOfSize[A](length)
     }).asInstanceOf[NArr[A] & NArray[A]]
 
-    def copy[T](nArr: NArray[T]): NArray[T] = native.nativeCopy[T](nArr)
+    def copy[T](nArr: NArray[T]): NArray[T] = nArr.slice(0, nArr.length)
 
     inline def fill[A](length: Int)(t: A)(using ClassTag[A]): NArray[A] = {
       val out: NArray[A] = ofSize[A](length)

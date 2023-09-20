@@ -63,6 +63,4 @@ package object native {
 
   inline def makeNativeArrayOfSize[A: ClassTag](n:Int):NativeArray[A] = new scala.scalajs.js.Array[A](n)
 
-  def nativeCopy[T](nArr:NArray[T]):NArray[T] = nArr.asInstanceOf[NArr[T]].slice(0, nArr.length).asInstanceOf[NArray[T]]
-
 }
