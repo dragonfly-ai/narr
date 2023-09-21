@@ -41,8 +41,6 @@ object Extensions {
 
     def sorted: ByteArray = sorted(Ordering.Byte)
     def sorted(ord: Ordering[Byte]): ByteArray = sortByteArray(copy[Byte](a), ord)
-
-//    def slice(from: Int, until: Int): ByteArray = a.asInstanceOf[NArr[Byte]].slice(from, until).asInstanceOf[ByteArray]
   }
 
   extension (a: ShortArray) {
@@ -52,7 +50,6 @@ object Extensions {
 
     def sorted: ShortArray = sorted(Ordering.Short)
     def sorted(ord: Ordering[Short]): ShortArray = sortShortArray(copy[Short](a), ord)
-//    def slice(from: Int, until: Int): ShortArray = a.asInstanceOf[NArr[Short]].slice(from, until).asInstanceOf[ShortArray]
   }
 
   extension (a: IntArray) {
@@ -61,8 +58,6 @@ object Extensions {
 
     def sorted:IntArray = sorted(Ordering.Int)
     def sorted(ord:Ordering[Int]): IntArray = sortIntArray(copy[Int](a), ord)
-
-//    def slice(from:Int, until:Int):IntArray = a.asInstanceOf[NArr[Int]].slice(from, until).asInstanceOf[IntArray]
   }
 
   extension (a: FloatArray) {
@@ -71,17 +66,13 @@ object Extensions {
     def sort(ord: Ordering[Float]): FloatArray = sortFloatArray(a, ord)
     def sorted: FloatArray = sorted(Ordering.Float.TotalOrdering)
     def sorted(ord: Ordering[Float]): FloatArray = sortFloatArray(copy[Float](a), ord)
-
-//    def slice(from: Int, until: Int): FloatArray = a.asInstanceOf[NArr[Float]].slice(from, until).asInstanceOf[FloatArray]
   }
 
   extension (a: DoubleArray) {
     def sort(): DoubleArray = sortDoubleArray(a)
     def sort(ord: Ordering[Double]): DoubleArray = sortDoubleArray(a, ord)
-
     def sorted: DoubleArray = sorted(Ordering.Double.TotalOrdering)
     def sorted(ord: Ordering[Double]): DoubleArray = sortDoubleArray(copy[Double](a), ord)
-//    def slice(from: Int, until: Int): DoubleArray = a.asInstanceOf[NArr[Double]].slice(from, until).asInstanceOf[DoubleArray]
   }
 
   extension[T] (a:NArray[T]) {
@@ -281,14 +272,6 @@ object Extensions {
       }
     }
 
-    /** Splits this array into two at a given position.
-     * Note: `c splitAt n` is equivalent to `(c take n, c drop n)`.
-     *
-     * @param n the position at which to split.
-     * @return a pair of arrays consisting of the first `n`
-     *         elements of this array, and the other elements.
-     */
-    def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
 
     /** Returns a new array with the elements in reversed order. */
     def reverse: NArray[T] = {
@@ -309,7 +292,7 @@ object Extensions {
      * @return an iterator yielding the elements of this array in reversed order
      */
     inline def reverseIterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
-      var i: Int = a.length
+      private[this] var i: Int = a.length
       override val knownSize: Int = a.length
       val end: Int = 0
 
@@ -319,7 +302,52 @@ object Extensions {
         i -= 1
         a(i)
       }
+
+      override def drop(n: Int): Iterator[T] = {
+        if (n > 0) i = Math.max(-1, i - n)
+        this
+      }
     }
+
+    def grouped(groupSize: Int): Iterator[NArray[T]] = new scala.collection.AbstractIterator[NArray[T]] {
+      private[this] var i = 0
+
+      def hasNext: Boolean = i < a.length
+
+      def next(): NArray[T] = {
+        if (i >= a.length) throw new NoSuchElementException
+        val r = a.slice(i, i + groupSize)
+        i += groupSize
+        r
+      }
+    }
+
+    /** Splits this array into a prefix/suffix pair according to a predicate.
+     *
+     * Note: `c span p`  is equivalent to (but more efficient than)
+     * `(c takeWhile p, c dropWhile p)`, provided the evaluation of the
+     * predicate `p` does not cause any side-effects.
+     *
+     * @param p the test predicate
+     * @return a pair consisting of the longest prefix of this array whose
+     *         elements all satisfy `p`, and the rest of this array.
+     */
+    def span(p: T => Boolean): (NArray[T], NArray[T]) = {
+      val i = indexWhere(x => !p(x))
+      val idx = if (i < 0) a.length else i
+      (slice(0, idx), slice(idx, a.length))
+    }
+
+
+    /** Splits this array into two at a given position.
+     * Note: `c splitAt n` is equivalent to `(c take n, c drop n)`.
+     *
+     * @param n the position at which to split.
+     * @return a pair of arrays consisting of the first `n`
+     *         elements of this array, and the other elements.
+     */
+    def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
+
 
     /** Sorts this array according to a comparison function.
      *
@@ -580,5 +608,62 @@ object Extensions {
      * @return a `Range` value from `0` to one less than the length of this array.
      */
     inline def indices: Range = Range(0, a.length)
+
+    /** Counts the number of elements in this array which satisfy a predicate */
+    def count(p: T => Boolean): Int = {
+      var i, res = 0
+      val len = a.length
+      while (i < len) {
+        if (p(a(i))) res += 1
+        i += 1
+      }
+      res
+    }
+
+
+    /** Tests whether this array starts with the given array. */
+    inline def startsWith[B >: T](that: NArray[B]): Boolean = startsWith(that, 0)
+
+    /** Tests whether this array contains the given array at a given index.
+     *
+     * @param that   the array to test
+     * @param offset the index where the array is searched.
+     * @return `true` if the array `that` is contained in this array at
+     *         index `offset`, otherwise `false`.
+     */
+    def startsWith[B >: T](that: NArray[B], offset: Int): Boolean = {
+      val safeOffset = offset.max(0)
+      val thatl = that.length
+      if (thatl > a.length - safeOffset) thatl == 0
+      else {
+        var i = 0
+        while (i < thatl) {
+          if (a(i + safeOffset) != that(i)) return false
+          i += 1
+        }
+        true
+      }
+    }
+
+
+    /** Tests whether this array ends with the given array.
+     *
+     * @param that the array to test
+     * @return `true` if this array has `that` as a suffix, `false` otherwise.
+     */
+    def endsWith[B >: T](that: NArray[B]): Boolean = {
+      val thatl = that.length
+      val off = a.length - thatl
+      if (off < 0) false
+      else {
+        var i = 0
+        while (i < thatl) {
+          if (a(i + off) != that(i)) return false
+          i += 1
+        }
+        true
+      }
+    }
+
   }
 }

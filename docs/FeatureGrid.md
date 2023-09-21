@@ -302,7 +302,7 @@ def grouped(size: Int): Iterator[Array[A]]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -313,7 +313,7 @@ def span(p: A => Boolean): (Array[A], Array[A])
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1108,7 +1108,7 @@ def count(p: A => Boolean): Int
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1119,7 +1119,7 @@ def startsWith[B >: A](that: Array[B]): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1130,7 +1130,7 @@ def startsWith[B >: A](that: Array[B], offset: Int): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1141,7 +1141,7 @@ def endsWith[B >: A](that: Array[B]): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>

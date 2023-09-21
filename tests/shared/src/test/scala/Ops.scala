@@ -136,6 +136,13 @@ class Ops extends munit.FunSuite {
         // contains
         assertEquals(true, a.contains(a(fulcrum)))
 
+        // startsWith
+        assertEquals(a.startsWith(left), true)
+        assertEquals(a.startsWith(right, fulcrum), true)
+
+        // endsWith
+        assertEquals(a.endsWith(right), true)
+
         fulcrum += 1
       }
 
@@ -169,6 +176,19 @@ class Ops extends munit.FunSuite {
         i += 1
       }
       assertEquals(false, itr.hasNext)
+
+      // grouped
+      val groupSize:Int = 3
+      val gi:Iterator[NArray[T]] = a.grouped(groupSize)
+      i = 0
+      while (gi.hasNext) {
+        val group: NArray[T] = gi.next()
+        val t = a.slice(i, i + groupSize)
+        assertEquals(t.length, group.length)
+        assertNArrayEquality[T](group, t)
+        i += groupSize
+      }
+
 
       // foreach
       i = 0; a.foreach((t:T) => i += 1)
@@ -212,10 +232,29 @@ class Ops extends munit.FunSuite {
           right
         )
 
+        val (spanLeft, spanRight) = a.span((t: T) => t != a(fulcrum))
+        // span
+        assertNArrayEquality[T](spanLeft, left)
+        assertNArrayEquality[T](spanRight, right)
+
         // lastIndexWhere
         assertEquals(
           a.lastIndexWhere((t: T) => t == a(fulcrum)),
           fulcrum
+        )
+
+        // count
+        assertEquals(
+          fulcrum, a.count( (t:T) => t match {
+            case t0:Byte => t0 < a(fulcrum).asInstanceOf[Byte]
+            case t0:Short => t0 < a(fulcrum).asInstanceOf[Short]
+            case t0:Int => t0 < a(fulcrum).asInstanceOf[Int]
+            case t0:Long => t0 < a(fulcrum).asInstanceOf[Long]
+            case t0:Float => t0 < a(fulcrum).asInstanceOf[Float]
+            case t0:Double => t0 < a(fulcrum).asInstanceOf[Double]
+            case t0:Char => t0 < a(fulcrum).asInstanceOf[Char]
+            case t0:String => Integer.parseInt(t0) < Integer.parseInt(a(fulcrum).asInstanceOf[String])
+          } )
         )
 
         fulcrum += 1
@@ -308,6 +347,6 @@ class Ops extends munit.FunSuite {
     t1.test()
     NArraySelfMapOpsTest[String](t1.a, (s: String) => s.reverse).test()
   }
-  test("NArrayOfUniquelyValuedElementsOpsTest[AnyRef]") { NArrayOfUniquelyValuedElementsOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
+  test("NArrayOfUniquelyValuedElementsOpsTest[AnyRef]") { NArrayWithDuplicateElementsOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
 
 }
