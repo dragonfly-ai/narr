@@ -122,6 +122,9 @@ class Ops extends munit.FunSuite {
         assertNArrayEquality[T](left.appendedAll(right), a)
 
         // concat
+        val ritr1: IterableOnce[T] = a.iterator.asInstanceOf[IterableOnce[T]]
+        assertNArrayEquality[T]( left.concat(a), a )
+
         assertNArrayEquality[T]( left.concat(right), a )
 
         // find
