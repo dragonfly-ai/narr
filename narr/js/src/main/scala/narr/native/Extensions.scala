@@ -42,9 +42,9 @@ object Extensions {
     def sorted: ByteArray = sorted(Ordering.Byte)
     def sorted(ord: Ordering[Byte]): ByteArray = sortByteArray(copy[Byte](a), ord)
 
-    inline def concat(suffix: IterableOnce[Byte]): ByteArray = {
-      concat(a, scala.scalajs.js.typedarray.Int8Array.from(suffix.asInstanceOf[Iterable[Byte]]))
-    }
+//    inline def concat(suffix: IterableOnce[Byte]): ByteArray = {
+//      concat(a, scala.scalajs.js.typedarray.Int8Array.from(suffix.asInstanceOf[Iterable[Byte]]))
+//    }
 
   }
 
@@ -56,9 +56,9 @@ object Extensions {
     def sorted: ShortArray = sorted(Ordering.Short)
     def sorted(ord: Ordering[Short]): ShortArray = sortShortArray(copy[Short](a), ord)
 
-    inline def concat(suffix: IterableOnce[Short]): ShortArray = {
-      concat(a, scala.scalajs.js.typedarray.Int16Array.from(suffix.asInstanceOf[Iterable[Short]]))
-    }
+//    inline def concat(suffix: IterableOnce[Short]): ShortArray = {
+//      concat(a, scala.scalajs.js.typedarray.Int16Array.from(suffix.asInstanceOf[Iterable[Short]]))
+//    }
   }
 
   extension (a: IntArray) {
@@ -68,9 +68,9 @@ object Extensions {
     def sorted:IntArray = sorted(Ordering.Int)
     def sorted(ord:Ordering[Int]): IntArray = sortIntArray(copy[Int](a), ord)
 
-    inline def concat(suffix: IterableOnce[Int]): IntArray = {
-      concat(a, scala.scalajs.js.typedarray.Int32Array.from(suffix.asInstanceOf[Iterable[Int]]))
-    }
+//    inline def concat(suffix: IterableOnce[Int]): IntArray = {
+//      concat(a, scala.scalajs.js.typedarray.Int32Array.from(suffix.asInstanceOf[Iterable[Int]]))
+//    }
   }
 
   extension (a: FloatArray) {
@@ -80,9 +80,9 @@ object Extensions {
     def sorted: FloatArray = sorted(Ordering.Float.TotalOrdering)
     def sorted(ord: Ordering[Float]): FloatArray = sortFloatArray(copy[Float](a), ord)
 
-    inline def concat(suffix: IterableOnce[Float]): FloatArray = {
-      concat(a, scala.scalajs.js.typedarray.Float32Array.from(suffix.asInstanceOf[Iterable[Float]]))
-    }
+//    inline def concat(suffix: IterableOnce[Float]): FloatArray = {
+//      concat(a, scala.scalajs.js.typedarray.Float32Array.from(suffix.asInstanceOf[Iterable[Float]]))
+//    }
   }
 
   extension (a: DoubleArray) {
@@ -91,9 +91,9 @@ object Extensions {
     def sorted: DoubleArray = sorted(Ordering.Double.TotalOrdering)
     def sorted(ord: Ordering[Double]): DoubleArray = sortDoubleArray(copy[Double](a), ord)
 
-    inline def concat(suffix: IterableOnce[Double]): DoubleArray = {
-      concat(a, scala.scalajs.js.typedarray.Float64Array.from(suffix.asInstanceOf[Iterable[Double]]))
-    }
+//    inline def concat(suffix: IterableOnce[Double]): DoubleArray = {
+//      concat(a, scala.scalajs.js.typedarray.Float64Array.from(suffix.asInstanceOf[Iterable[Double]]))
+//    }
   }
 
   extension[T] (a:NArray[T]) {
