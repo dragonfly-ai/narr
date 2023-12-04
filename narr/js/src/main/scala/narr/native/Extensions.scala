@@ -93,6 +93,10 @@ object Extensions {
 //    }
   }
 
+  extension[T <: AnyRef | Boolean | Char | Long | Unit] (a:NArray[T]) {
+    def sort(ord: Ordering[T]): NArray[T] = a.asInstanceOf[SortableNArr[T]].sort(ord).asInstanceOf[NArray[T]]
+  }
+
   extension[T] (a:NArray[T]) {
     inline def copy: NArray[T] = {
       var temp = a.asInstanceOf[NArr[T]]
@@ -365,7 +369,6 @@ object Extensions {
      *         elements of this array, and the other elements.
      */
     def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
-
 
     /** Sorts this array according to a comparison function.
      *

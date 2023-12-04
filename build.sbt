@@ -1,3 +1,8 @@
+import laika.config.SyntaxHighlighting
+import laika.format.Markdown
+import laika.helium.Helium
+import laika.helium.config.{HeliumIcon, IconLink}
+
 val appVersion:String = "0.105"
 val globalScalaVersion = "3.3.1"
 
@@ -22,13 +27,28 @@ lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
 lazy val root = tlCrossRootProject.aggregate(narr, tests).settings(name := "narr")
 
-lazy val docs = project.in(file("site")).enablePlugins(TypelevelSitePlugin).settings(
-  mdocVariables := Map(
-    "VERSION" -> appVersion,
-    "SCALA_VERSION" -> globalScalaVersion
-  ),
-  laikaConfig ~= { _.withRawContent }
-)
+lazy val docs = project
+  .in(file("site"))
+  .dependsOn(narr.jvm)
+  .settings(
+    laikaExtensions := Seq(Markdown.GitHubFlavor, SyntaxHighlighting),
+    laikaConfig ~= { _.withRawContent },
+    tlSiteHelium := {
+      Helium.defaults.site.metadata(
+          title = Some("S"),
+          language = Some("en"),
+          description = Some("S"),
+          authors = Seq("one"),
+        )
+        .site
+        .topNavigationBar(
+          homeLink = IconLink.internal(laika.ast.Path(List("index.md")), HeliumIcon.home),
+          navLinks = Seq(IconLink.external("https://github.com/dragonfly-ai/narr", HeliumIcon.github))
+        )
+    }
+  )
+  .enablePlugins(TypelevelSitePlugin)
+  .enablePlugins(NoPublishPlugin)
 
 lazy val unidocs = project
   .in(file("unidocs"))
