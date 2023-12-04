@@ -15,10 +15,8 @@
  */
 
 import narr.*
-import Extensions.given
 
 import scala.language.implicitConversions
-import scala.util.Random as r
 
 import Comparison.*
 

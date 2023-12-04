@@ -17,7 +17,6 @@
 import narr.*
 import Comparison.*
 
-import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.Random as r
 

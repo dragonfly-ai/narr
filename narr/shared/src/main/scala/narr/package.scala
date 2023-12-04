@@ -16,7 +16,6 @@
 
 import scala.compiletime.*
 import narr.native.Extensions.*
-import narr.native.Extensions.given
 
 import scala.language.implicitConversions
 import scala.reflect.ClassTag

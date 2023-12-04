@@ -18,10 +18,7 @@ package narr.native
 
 import narr.*
 
-import scala.compiletime.*
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSBracketAccess
-import scala.scalajs.js.typedarray.*
 import scala.language.implicitConversions
 import scala.math.Ordering
 import scala.reflect.ClassTag
