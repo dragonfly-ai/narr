@@ -35,13 +35,13 @@ package object narr {
 
   type TypedArrayPrimitive = Byte | Short | Int | Float | Double
 
-  type ArrayElementType[T <: NativeTypedArray | NativeArray[T]] = T match
+  type ArrayElementType[T <: NativeTypedArray | NativeArray[?]] = T match
     case ByteArray => Byte
     case ShortArray => Short
     case IntArray => Int
     case FloatArray => Float
     case DoubleArray => Double
-    case NativeArray[T] => T
+    case NativeArray[t] => t
 
   type NArray[T] = narr.native.NArray[T]
 
