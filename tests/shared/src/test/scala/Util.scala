@@ -16,7 +16,7 @@
 
 import narr.*
 
-object Comparison {
+object Util {
 
   import munit.*
   import munit.Assertions.*
@@ -29,4 +29,15 @@ object Comparison {
       i += 1
     }
   }
+
+  def assertThrows[T <: Throwable]( f: () => Any ): Unit = assert({
+    try {
+      f()
+      false
+    } catch {
+      case t: T => true
+      case _ => false
+    }
+  })
+
 }

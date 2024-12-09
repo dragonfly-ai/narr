@@ -1,7 +1,71 @@
 # NArr
-pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
+Pronounced: <b>(ˈnär, as in gnarly)</b>.<br />
+Stands for: <b>Native Array</b><br />
+Definition: A unified and optimized interface over native array types for Scala cross projects.  
 
-&nbsp;&nbsp;&nbsp;This library provides Scala.js cross projects with an abstraction over features common to `scala.Array`, as well as `js.Array` and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.&nbsp;&nbsp;It also provides extensions for a growing subset of `ArrayOps` methods.&nbsp;&nbsp;Using `NArray[T]` instead of `Array[T]` or `js.Array[T]` ensures that a project will always use the native Array type of the platform it compiles to.
+&nbsp;&nbsp;&nbsp;At its core, NArr provides the `narr.NArray[T]` type which, as a drop in replacement for `scala.Array[T]` and `js.Array[T]`, always reduces to the most optimized native array type available on the compilation target platform.  `NArray[T]` also provides seamless interoperability with native array types without any platform specific code.
+
+Examples:
+<table>
+<tr>
+    <td><b>NArray Declaration</b></td>
+    <td><b>JavaScript</b></td>
+    <td><b>JVM and Native</b></td>
+</tr>
+<tr>
+<td>
+
+```scala
+val ba: NArray[Byte]
+val bs: NArray[Short]
+val bi: NArray[Int]
+val bf: NArray[Float]
+val bd: NArray[Double]
+val bl: NArray[Long]
+val bS: NArray[String]
+val bo: NArray[AnyRef]
+val bai: NArray[NArray[Int]]
+val bao: NArray[NArray[AnyRef]]
+```
+</td>
+<td>
+
+```scala
+val ba: Int8Array
+val bs: Int16Array
+val bi: Int32Array
+val bf: Float32Array
+val bd: Float64Array
+val bl: js.Array[Long]
+val bS: js.Array[String]
+val bo: js.Array[AnyRef]
+val bai: js.Array[Int32Array]
+val bao: js.Array[js.Array[AnyRef]]
+```
+</td>
+<td>
+
+```scala
+val ba: scala.Array[Byte]
+val bs: scala.Array[Short]
+val bi: scala.Array[Int]
+val bf: scala.Array[Float]
+val bd: scala.Array[Double]
+val bl: scala.Array[Long]
+val bS: scala.Array[String]
+val bo: scala.Array[AnyRef]
+val bai: scala.Array[Array[Int]]
+val bao: scala.Array[Array[AnyRef]]
+```
+</td>
+</tr>
+</table>
+
+NArr saves time; run time, code time, maintenance time.<br />
+NArr shrinks the code base and the memory footprint.<br />
+NArr simplifies native interoperability.<br />
+
+and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.&nbsp;&nbsp;It also provides extensions for a growing subset of `ArrayOps` methods.&nbsp;&nbsp;Using `NArray[T]` instead of `Array[T]` or `js.Array[T]` ensures that a project will always use the native Array type of the platform it compiles to.
 
 <br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
 <br />
@@ -12,7 +76,7 @@ pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
 <ul>
 <li>Performance!<br />
 
-&nbsp;&nbsp;&nbsp;When a Scala.js cross project uses the `NArray` type internally it implicitly takes advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native `Array` types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
+&nbsp;&nbsp;&nbsp;When Scala.js cross projects use the `NArray` type internally they implicitly take advantage of each platform's most optimized data structures.  While JVM Arrays inherit the speed and compactness of C/C++ style Arrays, JavaScript Arrays are a special case of JavaScript's Object type: the only data structure it has.  Likewise, making use of native `Array` types eliminates all performance penalties associated with conversions and wrappers at the boundary between a Scala.js library and native code that makes use of it.</li>
 <li>Native Interoperability without Boilerplate<br />
 
 &nbsp;&nbsp;When writing a cross compiled Scala.js library with accessibility from native languages, developers have to pay attention to `@JSExport` annotations and make sure that every method or field of type Array has an analogous `js.Array` exposed in the JavaScript build.  By simply replacing all references to `js.Array` or `Array` with `NArray`, the same methods and fields will interoperate seamlessly with code in either run time environment.</li>
@@ -81,7 +145,7 @@ val sla: NArray[Long] = NArray[Long](555L, 4444L, 9L, 11111L, 88L)
 sla.sort() // default JavaScript sorting calls toString() on each element.
 // yields: NArray[Long](11111, 4444, 555, 88, 9) sorted in alphabetical order.  :(
 sla.sort(Ordering.Long) // Better pass the ordering explicitly!
-// yields: NArray[Long](9, 88, 555, 4444, 11111) sorted in alphabetical order.  :)
+// yields: NArray[Long](9, 88, 555, 4444, 11111) sorted in numerically ascending order.  :)
 ```
 
 </li>

@@ -60,6 +60,89 @@ package object native {
     a.asInstanceOf[SortableNArr[Double]].sort(ord).asInstanceOf[DoubleArray]
   }
 
+  object NArray {
+    /** Copy one array to another.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @see `java.lang.System#arraycopy`
+     */
+
+    inline def copyByteArray(src: ByteArray, dest: ByteArray, destPos: Int): Unit = dest.set(src, destPos)
+    inline def copyShortArray(src: ShortArray, dest: ShortArray, destPos: Int): Unit = dest.set(src, destPos)
+    inline def copyIntArray(src: IntArray, dest: IntArray, destPos: Int): Unit = dest.set(src, destPos)
+    inline def copyFloatArray(src: FloatArray, dest: FloatArray, destPos: Int): Unit = dest.set(src, destPos)
+    inline def copyDoubleArray(src: DoubleArray, dest: DoubleArray, destPos: Int): Unit = dest.set(src, destPos)
+    inline def copyNArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = {
+      //println(s"copyNArray[T](src, dest, $destPos)")
+      val availableSpace = dest.length - destPos
+      if (src.length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
+      var i:Int = 0; while (i < src.length) {
+        dest(destPos + i) = src(i)
+        i = i + 1
+      }
+    }
+    /** Copy one array to another.
+     * Shim for Java's `System.arraycopy(src, srcPos, dest, destPos, length)`,
+     * except that this slices the sub array, temporarily duplicating data.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @param length  the number of array elements to be copied.
+     * @see `java.lang.System#arraycopy`
+     */
+
+    inline def copyByteArray(src: ByteArray, srcPos: Int, dest: ByteArray, destPos: Int, length:Int): Unit = {
+      if (srcPos != 0 || length != src.length) {
+        val subArray:ByteArray = src.asInstanceOf[narr.NArr[Byte]].slice(srcPos, srcPos + length).asInstanceOf[ByteArray]
+        dest.set(subArray, destPos)
+      } else dest.set(src, destPos)
+    }
+    inline def copyShortArray(src: ShortArray, srcPos: Int, dest: ShortArray, destPos: Int, length:Int): Unit = {
+      if (srcPos != 0 || length != src.length) {
+        val subArray:ShortArray = src.asInstanceOf[narr.NArr[Short]].slice(srcPos, srcPos + length).asInstanceOf[ShortArray]
+        dest.set(subArray, destPos)
+      } else dest.set(src, destPos)
+    }
+    inline def copyIntArray(src: IntArray, srcPos: Int, dest: IntArray, destPos: Int, length:Int): Unit = {
+      if (srcPos != 0 || length != src.length) {
+        val subArray:IntArray = src.asInstanceOf[narr.NArr[Int]].slice(srcPos, srcPos + length).asInstanceOf[IntArray]
+        dest.set(subArray, destPos)
+      } else dest.set(src, destPos)
+    }
+    inline def copyFloatArray(src: FloatArray, srcPos: Int, dest: FloatArray, destPos: Int, length:Int): Unit = {
+      if (srcPos != 0 || length != src.length) {
+        val subArray:FloatArray = src.asInstanceOf[narr.NArr[Float]].slice(srcPos, srcPos + length).asInstanceOf[FloatArray]
+        dest.set(subArray, destPos)
+      }
+      else dest.set(src, destPos)
+    }
+    inline def copyDoubleArray(src: DoubleArray, srcPos: Int, dest: DoubleArray, destPos: Int, length:Int): Unit = {
+      if (srcPos != 0 || length != src.length) {
+        val subArray:DoubleArray = src.asInstanceOf[narr.NArr[Double]].slice(srcPos, srcPos + length).asInstanceOf[DoubleArray]
+        dest.set(subArray, destPos)
+      }
+      else dest.set(src, destPos)
+    }
+    inline def copyNArray[T](src: NArray[T], srcPos: Int, dest: NArray[T], destPos: Int, length:Int): Unit = {
+      val availableSpace = dest.length - destPos
+      if (length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
+      var i: Int = 0; while (i < length) {
+        dest(destPos + i) = src(srcPos + i)
+        i = i + 1
+      }
+    }
+  }
+
+
+
   inline def makeNativeArrayOfSize[A: ClassTag](n:Int):NativeArray[A] = new scala.scalajs.js.Array[A](n)
 
 }

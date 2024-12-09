@@ -19,7 +19,7 @@ import narr.*
 import scala.language.implicitConversions
 import scala.util.Random as r
 
-object Sort {
+object SortTest {
 
   import munit.*
   import munit.Assertions.*
@@ -41,13 +41,13 @@ object Sort {
   }
 }
 
-class Sort extends munit.FunSuite:
+class SortTest extends munit.FunSuite {
 
-  import Sort.*
+  import SortTest.*
 
   var N: Int = 11
 
-  test("Sort NArray[AnyRef]") {
+  test("SortTest NArray[AnyRef]") {
     given anyRefOrdering: Ordering[AnyRef] = Ordering.by(_.hashCode())
 
     val sara: NArray[AnyRef] = NArray.tabulate[AnyRef](N)(_ => new AnyRef)
@@ -57,7 +57,7 @@ class Sort extends munit.FunSuite:
     //assertNArraySortedAscending[AnyRef](sara.sortWith((e0:AnyRef)))
   }
 
-  test("Sort NArray[Unit]") {
+  test("SortTest NArray[Unit]") {
     val sba: NArray[Unit] = NArray.tabulate[Unit](N)((_: Int) => ())
     assertNArraySortedAscending[Unit](sba.sort())
     assertNArraySortedAscending[Unit](sba.sorted)
@@ -65,7 +65,7 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Unit](sba.sorted(Ordering.Unit))
   }
 
-  test("Sort NArray[Boolean]") {
+  test("SortTest NArray[Boolean]") {
     val sba: NArray[Boolean] = NArray.tabulate[Boolean](N)((_: Int) => r.nextBoolean())
     assertNArraySortedAscending[Boolean](sba.sort())
     assertNArraySortedAscending[Boolean](sba.sorted)
@@ -73,7 +73,7 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Boolean](sba.sorted(Ordering.Boolean))
   }
 
-  test("Sort NArray[Byte]") {
+  test("SortTest NArray[Byte]") {
     val sba: NArray[Byte] = NArray.tabulate[Byte](N)((_: Int) => r.nextBytes(1)(0))
     assertNArraySortedAscending[Byte](sba.sort())
     assertNArraySortedAscending[Byte](sba.sorted)
@@ -81,7 +81,7 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Byte](sba.sorted(Ordering.Byte))
   }
 
-  test("Sort NArray[Short]") {
+  test("SortTest NArray[Short]") {
     val ssa: NArray[Short] = NArray.tabulate[Short](N)((_: Int) => r.nextInt(Short.MaxValue).toShort)
     assertNArraySortedAscending[Short](ssa.sort())
     assertNArraySortedAscending[Short](ssa.sorted)
@@ -89,7 +89,7 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Short](ssa.sorted(Ordering.Short))
   }
 
-  test("Sort NArray[Int]") {
+  test("SortTest NArray[Int]") {
     val sia: NArray[Int] = NArray.tabulate[Int](N)((_: Int) => r.nextInt())
     assertNArraySortedAscending[Int](sia.sort())
     assertNArraySortedAscending[Int](sia.sorted)
@@ -97,14 +97,14 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Int](sia.sorted(Ordering.Int))
   }
 
-  test("Sort NArray[Long]") {
+  test("SortTest NArray[Long]") {
     val sla: NArray[Long] = NArray.tabulate[Long](N)((_: Int) => r.nextLong(9999L))
     assertNArraySortedAscending[Long](sla.sort(Ordering.Long))
     assertNArraySortedDescending[Long](sla.sort(Ordering.Long.reverse))
     assertNArraySortedAscending[Long](sla.sorted(Ordering.Long))
   }
 
-  test("Sort NArray[Float]") {
+  test("SortTest NArray[Float]") {
     val sfa: NArray[Float] = NArray.tabulate[Float](N)((_: Int) => r.nextFloat())
     assertNArraySortedAscending[Float](sfa.sort())
     assertNArraySortedAscending[Float](sfa.sorted)
@@ -112,7 +112,7 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Float](sfa.sorted(Ordering.Float.TotalOrdering))
   }
 
-  test("Sort NArray[Double]") {
+  test("SortTest NArray[Double]") {
     val sda: NArray[Double] = NArray.tabulate[Double](N)((_: Int) => r.nextDouble())
     assertNArraySortedAscending[Double](sda.sort())
     assertNArraySortedAscending[Double](sda.sorted)
@@ -120,18 +120,17 @@ class Sort extends munit.FunSuite:
     assertNArraySortedAscending[Double](sda.sorted(Ordering.Double.TotalOrdering))
   }
 
-  test("Sort NArray[Char]") {
+  test("SortTest NArray[Char]") {
     val sca: NArray[Char] = NArray.tabulate[Char](N)((_: Int) => r.nextPrintableChar())
     assertNArraySortedAscending[Char](sca.sort())
     assertNArraySortedDescending[Char](sca.sort(Ordering.Char.reverse))
     assertNArraySortedAscending[Char](sca.sorted(Ordering.Char))
   }
 
-  test("Sort NArray[String]") {
+  test("SortTest NArray[String]") {
     val sstra: NArray[String] = NArray.tabulate[String](N)((_: Int) => r.nextString(11))
     assertNArraySortedAscending[String](sstra.sort())
     assertNArraySortedDescending[String](sstra.sort(Ordering.String.reverse))
     assertNArraySortedAscending[String](sstra.sorted(Ordering.String))
   }
-
-end Sort
+}

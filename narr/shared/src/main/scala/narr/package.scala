@@ -64,6 +64,43 @@ package object narr {
 
     def copy[T](nArr: NArray[T]): NArray[T] = nArr.slice(0, nArr.length)
 
+    /** Copy one array to another.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @see `java.lang.System#arraycopy`
+     */
+    inline def copyByteArray(src: ByteArray, dest: ByteArray, destPos: Int): Unit = native.NArray.copyByteArray(src, 0, dest, destPos, src.length)
+    inline def copyShortArray(src: ShortArray, dest: ShortArray, destPos: Int): Unit = native.NArray.copyShortArray(src, 0, dest, destPos, src.length)
+    inline def copyIntArray(src: IntArray, dest: IntArray, destPos: Int): Unit = native.NArray.copyIntArray(src, 0, dest, destPos, src.length)
+    inline def copyFloatArray(src: FloatArray, dest: FloatArray, destPos: Int): Unit = native.NArray.copyFloatArray(src, 0, dest, destPos, src.length)
+    inline def copyDoubleArray(src: DoubleArray, dest: DoubleArray, destPos: Int): Unit = native.NArray.copyDoubleArray(src, 0, dest, destPos, src.length)
+    inline def copyNArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = native.NArray.copyNArray(src, 0, dest, destPos, src.length)
+
+    /** Copy one array to another.
+     * Equivalent to Java's
+     * `System.arraycopy(src, srcPos, dest, destPos, length)`,
+     * except that this also works for polymorphic and boxed arrays.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @param length  the number of array elements to be copied.
+     * @see `java.lang.System#arraycopy`
+     */
+    inline def copyByteArray(src: ByteArray, srcPos: Int, dest: ByteArray, destPos: Int, length: Int): Unit = native.NArray.copyByteArray(src, srcPos, dest, destPos, length)
+    inline def copyShortArray(src: ShortArray, srcPos: Int, dest: ShortArray, destPos: Int, length: Int): Unit = native.NArray.copyShortArray(src, srcPos, dest, destPos, length)
+    inline def copyIntArray(src: IntArray, srcPos: Int, dest: IntArray, destPos: Int, length: Int): Unit = native.NArray.copyIntArray(src, srcPos, dest, destPos, length)
+    inline def copyFloatArray(src: FloatArray, srcPos: Int, dest: FloatArray, destPos: Int, length: Int): Unit = native.NArray.copyFloatArray(src, srcPos, dest, destPos, length)
+    inline def copyDoubleArray(src: DoubleArray, srcPos: Int, dest: DoubleArray, destPos: Int, length: Int): Unit = native.NArray.copyDoubleArray(src, srcPos, dest, destPos, length)
+    inline def copyNArray[T](src: NArray[T], srcPos: Int, dest: NArray[T], destPos: Int, length: Int): Unit = native.NArray.copyNArray(src, srcPos, dest, destPos, length)
+
     inline def fill[A](length: Int)(t: A)(using ClassTag[A]): NArray[A] = {
       val out: NArray[A] = ofSize[A](length)
       var i: Int = 0

@@ -15,12 +15,12 @@
  */
 
 import narr.*
-import Comparison.*
+import Util.*
 
 import scala.reflect.ClassTag
 import scala.util.Random as r
 
-class Ops extends munit.FunSuite {
+class NArrayOpsTest extends munit.FunSuite {
 
   val N: Int = 11
   val lastIndex: Int = N - 1
@@ -279,7 +279,7 @@ class Ops extends munit.FunSuite {
 
   }
 
-  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], val selfMap: T => T) extends HasNArray[T] {
+  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], selfMap: T => T) extends HasNArray[T] {
     def test(): Unit = {
 
       // mapInPlace

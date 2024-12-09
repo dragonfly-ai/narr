@@ -40,6 +40,43 @@ package object native {
 
   object NArray {
     export Array.*
+
+    /** Copy one array to another.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @see `java.lang.System#arraycopy`
+     */
+    inline def copyByteArray(src: ByteArray, dest: ByteArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyShortArray(src: ShortArray, dest: ShortArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyIntArray(src: IntArray, dest: IntArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyFloatArray(src: FloatArray, dest: FloatArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyDoubleArray(src: DoubleArray, dest: DoubleArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyNArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+
+    /** Copy one array to another.
+     * Equivalent to Java's
+     * `System.arraycopy(src, srcPos, dest, destPos, length)`,
+     * except that this also works for polymorphic and boxed arrays.
+     *
+     * Note that the passed-in `dest` array will be modified by this call.
+     *
+     * @param src     the source array.
+     * @param srcPos  starting position in the source array.
+     * @param dest    destination array.
+     * @param destPos starting position in the destination array.
+     * @param length  the number of array elements to be copied.
+     * @see `java.lang.System#arraycopy`
+     */
+    inline def copyByteArray(src: ByteArray, srcPos: Int, dest: ByteArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
+    inline def copyShortArray(src: ShortArray, srcPos: Int, dest: ShortArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
+    inline def copyIntArray(src: IntArray, srcPos: Int, dest: IntArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
+    inline def copyFloatArray(src: FloatArray, srcPos: Int, dest: FloatArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
+    inline def copyDoubleArray(src: DoubleArray, srcPos: Int, dest: DoubleArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
+    inline def copyNArray[T](src: NArray[T], srcPos: Int, dest: NArray[T], destPos: Int, length: Int): Unit = Array.copy(src, srcPos, dest, destPos, length)
   }
 
   object Extensions {

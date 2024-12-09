@@ -18,13 +18,13 @@ import narr.*
 
 import scala.language.implicitConversions
 
-import Comparison.*
+import Util.*
 
-class Copy extends munit.FunSuite:
+class CopyTest extends munit.FunSuite {
 
   test(" NArray copy ") {
 
-    var N:Int = 11
+    var N: Int = 11
 
     ////////////////
     // Value Types:
@@ -44,7 +44,7 @@ class Copy extends munit.FunSuite:
 
     N += 1
     // Byte
-    val baTabulate:NArray[Byte] = NArray.tabulate[Byte](N)((i:Int) => i.toByte)
+    val baTabulate: NArray[Byte] = NArray.tabulate[Byte](N)((i: Int) => i.toByte)
     assertNArrayEquality[Byte](baTabulate, baTabulate.copy)
     assertNArrayEquality[Byte](baTabulate, copy(baTabulate))
 
@@ -100,5 +100,4 @@ class Copy extends munit.FunSuite:
     assertNArrayEquality[AnyRef](anyRefArrTabulate, copy(anyRefArrTabulate))
 
   }
-
-end Copy
+}
