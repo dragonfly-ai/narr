@@ -35,7 +35,7 @@ object Util {
       f()
       false
     } catch {
-      case t: T => true
+      case t: Throwable => true
       case _ => false
     }
   })
