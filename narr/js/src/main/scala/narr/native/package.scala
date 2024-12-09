@@ -17,7 +17,7 @@
 package narr
 
 import scala.scalajs.js.typedarray.*
-import narr.native.Extensions.*
+//import narr.native.Extensions.*
 import narr.native.Extensions.given
 
 import scala.language.implicitConversions

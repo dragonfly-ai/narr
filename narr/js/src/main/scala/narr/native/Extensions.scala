@@ -164,8 +164,8 @@ object Extensions {
     inline def sizeCompare(otherSize: Int): Int = Integer.compare(a.length, otherSize)
 
     /** Compares the length of this NArray to a test value. *
-     *   @p m   len the test value that gets compared with the le h.
-     *   @ret n A value `x`  re
+     *   @param   len the test value that gets compared with the le h.
+     *   @return A value `x`  re
      *   {{{
      *        x <  0       if this.length <  len
      *        x == 0       if this.length == len
@@ -281,7 +281,7 @@ object Extensions {
     /**
      * @return an iterator for this AT
      */
-    inline def iterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
+    def iterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
       var i: Int = -1
       override val knownSize: Int = a.length
       val end: Int = knownSize - 1
@@ -313,7 +313,7 @@ object Extensions {
      *
      * @return an iterator yielding the elements of this array in reversed order
      */
-    inline def reverseIterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
+    def reverseIterator: Iterator[T] = new scala.collection.AbstractIterator[T] {
       private[this] var i: Int = a.length
       override val knownSize: Int = a.length
       val end: Int = 0
@@ -573,7 +573,7 @@ object Extensions {
         if (a(i) == elem) return true
         i += 1
       }
-      return false
+      false
     }
 
     /** Apply `f` to each element for
