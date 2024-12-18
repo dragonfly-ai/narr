@@ -17,7 +17,9 @@
 package narr.native
 
 import narr.*
+import narr.NArray.builderFor
 
+import scala.collection.{IndexedSeqView, immutable, mutable}
 import scala.scalajs.js
 import scala.language.implicitConversions
 import scala.math.Ordering
@@ -27,6 +29,9 @@ import scala.reflect.ClassTag
 
 
 object Extensions {
+
+  /** Avoid an allocation in [[collect]]. */
+  private val fallback: Any => Any = _ => fallback
 
   given orderingToCompareFunction[T]: Conversion[Ordering[T], js.Function2[T, T, Int]] with
     def apply(o: Ordering[T]): js.Function2[T, T, Int] = (a: T, b: T) => o.compare(a, b)
@@ -38,11 +43,6 @@ object Extensions {
 
     def sorted: ByteArray = sorted(Ordering.Byte)
     def sorted(ord: Ordering[Byte]): ByteArray = sortByteArray(copy[Byte](a), ord)
-
-//    inline def concat(suffix: IterableOnce[Byte]): ByteArray = {
-//      concat(a, scala.scalajs.js.typedarray.Int8Array.from(suffix.asInstanceOf[Iterable[Byte]]))
-//    }
-
   }
 
   extension (a: ShortArray) {
@@ -52,10 +52,6 @@ object Extensions {
 
     def sorted: ShortArray = sorted(Ordering.Short)
     def sorted(ord: Ordering[Short]): ShortArray = sortShortArray(copy[Short](a), ord)
-
-//    inline def concat(suffix: IterableOnce[Short]): ShortArray = {
-//      concat(a, scala.scalajs.js.typedarray.Int16Array.from(suffix.asInstanceOf[Iterable[Short]]))
-//    }
   }
 
   extension (a: IntArray) {
@@ -64,10 +60,6 @@ object Extensions {
 
     def sorted:IntArray = sorted(Ordering.Int)
     def sorted(ord:Ordering[Int]): IntArray = sortIntArray(copy[Int](a), ord)
-
-//    inline def concat(suffix: IterableOnce[Int]): IntArray = {
-//      concat(a, scala.scalajs.js.typedarray.Int32Array.from(suffix.asInstanceOf[Iterable[Int]]))
-//    }
   }
 
   extension (a: FloatArray) {
@@ -76,10 +68,6 @@ object Extensions {
     def sort(ord: Ordering[Float]): FloatArray = sortFloatArray(a, ord)
     def sorted: FloatArray = sorted(Ordering.Float.TotalOrdering)
     def sorted(ord: Ordering[Float]): FloatArray = sortFloatArray(copy[Float](a), ord)
-
-//    inline def concat(suffix: IterableOnce[Float]): FloatArray = {
-//      concat(a, scala.scalajs.js.typedarray.Float32Array.from(suffix.asInstanceOf[Iterable[Float]]))
-//    }
   }
 
   extension (a: DoubleArray) {
@@ -87,10 +75,6 @@ object Extensions {
     def sort(ord: Ordering[Double]): DoubleArray = sortDoubleArray(a, ord)
     def sorted: DoubleArray = sorted(Ordering.Double.TotalOrdering)
     def sorted(ord: Ordering[Double]): DoubleArray = sortDoubleArray(copy[Double](a), ord)
-
-//    inline def concat(suffix: IterableOnce[Double]): DoubleArray = {
-//      concat(a, scala.scalajs.js.typedarray.Float64Array.from(suffix.asInstanceOf[Iterable[Double]]))
-//    }
   }
 
   extension[T <: AnyRef | Boolean | Char | Long | Unit] (a:NArray[T]) {
@@ -99,19 +83,18 @@ object Extensions {
 
   extension[T] (a:NArray[T]) {
     inline def copy: NArray[T] = {
-      var temp = a.asInstanceOf[NArr[T]]
+      val temp = a.asInstanceOf[NArr[T]]
       temp.slice(0, temp.length).asInstanceOf[NArray[T]]
     }
 
-
-    /** The size of this NArray.
+    /** The width of this NArray.
      *
      * @return the number of elements in this NArray.
      */
     inline def size: Int = a.length
 
 
-    /** The size of this NArray.
+    /** The width of this NArray.
      *
      * @return the number of elements in this NArray.
      */
@@ -151,14 +134,14 @@ object Extensions {
      */
     inline def lastOption: Option[T] = if (isEmpty) None else Some(last)
 
-    /** Compares the size of this NArray to a test value.
+    /** Compares the width of this NArray to a test value.
      *
-     * @param otherSize the test value that gets compared with the size.
+     * @param otherSize the test value that gets compared with the width.
      * @return A value `x` where
      * {{{
-     *        x <  0       if this.size <  otherSize
-     *        x == 0       if this.size == otherSize
-     *        x >  0       if this.size >  otherSize
+     *        x <  0       if this.width <  otherSize
+     *        x == 0       if this.width == otherSize
+     *        x >  0       if this.width >  otherSize
      *            }}}
      */
     inline def sizeCompare(otherSize: Int): Int = Integer.compare(a.length, otherSize)
@@ -175,18 +158,18 @@ object Extensions {
     inline def lengthCompare(len: Int): Int = Integer.compare(a.length, len)
 
     /** Method mirroring [[SeqOps.sizeIs]] for consistency, except it returns an `Int`
-     * because `size` is known and comparison is constant-time.
+     * because `width` is known and comparison is constant-time.
      *
      * These operations are equivalent to [[sizeCompare(Int) `sizeCompare(Int)`]], and
      * allow the following more readable usages:
      *
      * {{{
-     * this.sizeIs < size     // this.sizeCompare(size) < 0
-     * this.sizeIs <= size    // this.sizeCompare(size) <= 0
-     * this.sizeIs == size    // this.sizeCompare(size) == 0
-     * this.sizeIs != size    // this.sizeCompare(size) != 0
-     * this.sizeIs >= size    // this.sizeCompare(size) >= 0
-     * this.sizeIs > size     // this.sizeCompare(size) > 0
+     * this.sizeIs < width     // this.sizeCompare(width) < 0
+     * this.sizeIs <= width    // this.sizeCompare(width) <= 0
+     * this.sizeIs == width    // this.sizeCompare(width) == 0
+     * this.sizeIs != width    // this.sizeCompare(width) != 0
+     * this.sizeIs >= width    // this.sizeCompare(width) >= 0
+     * this.sizeIs > width     // this.sizeCompare(width) > 0
      * }}}
      */
     inline def sizeIs: Int = a.length
@@ -370,6 +353,19 @@ object Extensions {
      */
     def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
 
+    /** A pair of, first, all elements that satisfy predicate `p` and, second, all elements that do not. */
+    def partition(p: T => Boolean)(using ClassTag[T], ClassTag[NArray[T]]): (NArray[T], NArray[T]) = {
+      val nab1 = builderFor[T]()
+      val nab2 = builderFor[T]()
+
+      var i = 0; while (i < a.length) {
+        val x = a(i)
+        if (p(x)) nab1 += x else nab2 += x
+        i += 1
+      }
+      (nab1.result, nab2.result)
+    }
+
     /** Sorts this array according to a comparison function.
      *
      * The sort is stable. That is, elements that are equal (as determined by
@@ -532,63 +528,132 @@ object Extensions {
       true
     }
 
-//    /** A copy of this array with all elements of a collection appended. */
-//    def appendedAll[B >: A : ClassTag](suffix: IterableOnce[B]): NArray[B] = {
-//      val b = ArrayBuilder.make[B]
-//      val k = suffix.knownSize
-//      if (k >= 0) b.sizeHint(k + xs.length)
-//      b.addAll(xs)
-//      b.addAll(suffix)
-//      b.result()
-//    }
 
-    /** Zips this array with its indices.
+    /** Applies the given binary operator `op` to the given initial value `z` and
+     * all elements of this array, going left to right. Returns the initial value
+     * if this array is empty.
      *
-     * @return A new array containing pairs consisting of all elements of this array paired with their index.
-     *         Indices start at `0`.
-     */
-    def zipWithIndex: NArray[(T, Int)] = NArray.tabulate[(T, Int)](a.length)(
-      (i:Int) => ((a(i), i))
-    )
-
-    /** A copy of this array with all elements of an array appended. */
-    inline def appendedAll[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = {
-      a.asInstanceOf[NArr[T]].concat(suffix).asInstanceOf[NArray[B]]
-    }
-
-    inline def :++ [B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll(suffix)
-
-    inline def concat[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll(suffix)
-
-    inline def ++[B >: T : ClassTag](xs: NArray[B]): NArray[B] = appendedAll(xs)
-
-    /** Tests whether this array contains a given value as an element.
+     * If `x,,1,,`, `x,,2,,`, ..., `x,,n,,` are the elements of this array, the
+     * result is `op( op( ... op( op(z, x,,1,,), x,,2,,) ... ), x,,n,,)`.
      *
-     * @param elem the element to test.
-     * @return `true` if this array has an element that is equal (as
-     *         determined by `==`) to `elem`, `false` otherwise.
+     * @param z  An initial value.
+     * @param op A binary operator.
+     * @tparam B The result type of the binary operator.
+     * @return The result of applying `op` to `z` and all elements of this array,
+     *         going left to right. Returns `z` if this array is empty.
      */
-    def contains(elem: T): Boolean = {
-      var i:Int = 0; while (i < a.length) {
-        if (a(i) == elem) return true
+    def foldLeft[B](z: B)(op: (B, T) => B): B = {
+      var v: B = z
+      var i = 0
+      while (i < a.length) {
+        v = op(v, a(i))
         i += 1
       }
-      false
+      v
     }
 
-    /** Apply `f` to each element for
-       side effects.
-     * Note: [U] parameter needed to help scalac'
-       pe
-      ference.
+    /** Produces an array containing cumulative results of applying the binary
+     * operator going left to right.
+     *
+     * @param z  the start value.
+     * @param op the binary operator.
+     * @tparam B the result type of the binary operator.
+     * @return array with intermediate values.
+     *
+     *         Example:
+     * {{{
+     *    Array(1, 2, 3, 4).scanLeft(0)(_ + _) == Array(0, 1, 3, 6, 10)
+     *   }}}
+     *
      */
-    def foreach[U](f: T => U): Unit = {
-      var i: Int = 0
-      while (i < a.length) {
-        f(a(i))
-        i = i + 1
+    def scanLeft[ B : ClassTag ](z: B)(op: (B, T) => B): NArray[B] = {
+      var v = z
+      var i = 0
+      val res = NArray.ofSize[B](a.length + 1)
+      while(i < a.length) {
+        res(i) = v
+        v = op(v, a(i))
+        i += 1
       }
+      res(i) = v
+      res
     }
+
+
+    /** Computes a prefix scan of the elements of the array.
+     *
+     * Note: The neutral element `z` may be applied more than once.
+     *
+     * @tparam B element type of the resulting array
+     * @param z  neutral element for the operator `op`
+     * @param op the associative operator for the scan
+     * @return a new array containing the prefix scan of the elements in this array
+     */
+    def scan[B >: T : ClassTag](z: B)(op: (B, B) => B): NArray[B] = scanLeft(z)(op)
+
+    /** Produces an array containing cumulative results of applying the binary
+     * operator going right to left.
+     *
+     * @param z  the start value.
+     * @param op the binary operator.
+     * @tparam B the result type of the binary operator.
+     * @return array with intermediate values.
+     *
+     *         Example:
+     * {{{
+     *    Array(4, 3, 2, 1).scanRight(0)(_ + _) == Array(10, 6, 3, 1, 0)
+     *   }}}
+     *
+     */
+    def scanRight[ B : ClassTag ](z: B)(op: (T, B) => B): Array[B] = {
+      var v = z
+      var i = a.length - 1
+      val res = new Array[B](a.length + 1)
+      res(a.length) = z
+      while(i >= 0) {
+        v = op(a(i), v)
+        res(i) = v
+        i -= 1
+      }
+      res
+    }
+
+    /** Applies the given binary operator `op` to all elements of this array and
+     * the given initial value `z`, going right to left. Returns the initial
+     * value if this array is empty.
+     *
+     * If `x,,1,,`, `x,,2,,`, ..., `x,,n,,` are the elements of this array, the
+     * result is `op(x,,1,,, op(x,,2,,, op( ... op(x,,n,,, z) ... )))`.
+     *
+     * @param z  An initial value.
+     * @param op A binary operator.
+     * @tparam B The result type of the binary operator.
+     * @return The result of applying `op` to all elements of this array
+     *         and `z`, going right to left. Returns `z` if this array
+     *         is empty.
+     */
+    def foldRight[B](z: B)(op: (T, B) => B): B = {
+      var v = z
+      var i = a.length - 1
+      while (i >= 0) {
+        v = op(a(i), v)
+        i -= 1
+      }
+      v
+    }
+
+    /** Alias for [[foldLeft]].
+     *
+     * The type parameter is more restrictive than for `foldLeft` to be
+     * consistent with [[IterableOnceOps.fold]].
+     *
+     * @tparam A1 The type parameter for the binary operator, a supertype of `A`.
+     * @param z  An initial value.
+     * @param op A binary operator.
+     * @return The result of applying `op` to `z` and all elements of this array,
+     *         going left to right. Returns `z` if this string is empty.
+     */
+    def fold[A1 >: T](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
 
     /** Builds a new array by applying a function to all elements of this array.
      *
@@ -622,11 +687,519 @@ object Extensions {
       a
     }
 
+    /** Builds a new array by applying a function to all elements of this array
+     * and using the elements of the resulting collections.
+     *
+     * @param f the function to apply to each element.
+     * @tparam B the element type of the returned array.
+     * @return a new array resulting from applying the given collection-valued function
+     *         `f` to each element of this array and concatenating the results.
+     */
+    def flatMap[B: ClassTag](f: T => IterableOnce[B]): NArray[B] = {
+      val b = NArray.builderFor[B]()
+      var i = 0
+      while (i < a.length) {
+        b ++= f(a(i))
+        i += 1
+      }
+      b.result
+    }
+
+    def flatMap[BS, B](f: T => BS)(using asIterable: BS => Iterable[B], m: ClassTag[B]): NArray[B] =
+      flatMap[B](x => asIterable(f(x)))
+
+    /** Flattens a two-dimensional array by concatenating all its rows
+     * into a single array.
+     *
+     * @tparam B Type of row elements.
+     * @param asIterable A function that converts elements of this array to rows - Iterables of type `B`.
+     * @return An array obtained by concatenating rows of this array.
+     */
+    def flatten[B](using asIterable: T => IterableOnce[B], m: ClassTag[B]): NArray[B] = {
+      val len = a.length
+      var size = 0
+      var i = 0
+      while (i < len) {
+        a(i) match {
+          case it: IterableOnce[?] =>
+            val k = it.knownSize
+            if (k > 0) size += k
+          case ba:ByteArray => size += ba.length
+          case sa:ShortArray => size += sa.length
+          case ia:IntArray => size += ia.length
+          case fa:FloatArray => size += fa.length
+          case da:DoubleArray => size += da.length
+          case na: NativeArray[?] => size += na.length
+          case _ =>
+        }
+        i += 1
+      }
+      val b = NArray.builderFor[B](size)
+      i = 0
+      while (i < len) {
+        b ++= asIterable(a(i))
+        i += 1
+      }
+      b.result
+    }
+
+    /** Builds a new array by applying a partial function to all elements of this array
+     * on which the function is defined.
+     *
+     * @param pf the partial function which filters and maps the array.
+     * @tparam B the element type of the returned array.
+     * @return a new array resulting from applying the given partial function
+     *         `pf` to each element on which it is defined and collecting the results.
+     *         The order of the elements is preserved.
+     */
+    def collect[B: ClassTag](pf: PartialFunction[T, B]): NArray[B] = {
+      val fallback: Any => Any = Any => Extensions.fallback
+      val b = NArray.builderFor[B]()
+      var i = 0
+      while (i < a.length) {
+        val v = pf.applyOrElse(a(i), fallback)
+        if (v.asInstanceOf[AnyRef] ne fallback) b.addOne(v.asInstanceOf[B])
+        i += 1
+      }
+      b.result
+    }
+
+
+    /** Finds the first element of the array for which the given partial function is defined, and applies the
+     * partial function to it. */
+    def collectFirst[B](pf: PartialFunction[T, B]): Option[B] = {
+      val fallback: Any => Any = Extensions.fallback
+      var i = 0
+      while (i < a.length) {
+        val v = pf.applyOrElse(a(i), fallback)
+        if (v.asInstanceOf[AnyRef] ne fallback) return Some(v.asInstanceOf[B])
+        i += 1
+      }
+      None
+    }
+
+
+    /** Returns an array formed from this array and another iterable collection
+     * by combining corresponding elements in pairs.
+     * If one of the two collections is longer than the other, its remaining elements are ignored.
+     *
+     * @param that The iterable providing the second half of each result pair
+     * @tparam B the type of the second half of the returned pairs
+     * @return a new array containing pairs consisting of corresponding elements of this array and `that`.
+     *         The length of the returned array is the minimum of the lengths of this array and `that`.
+     */
+    def zip[B](that: IterableOnce[B]): NArray[(T, B)] = {
+      val k = that.knownSize
+      val b = NArray.builderFor[(T, B)](if (k >= 0) Math.min(k, a.length) else a.length)
+
+      var i = 0
+      val it = that.iterator
+      while (i < a.length && it.hasNext) {
+        b += ((a(i), it.next()))
+        i += 1
+      }
+      b.result
+    }
+
+
+    /** Returns an array formed from this array and another iterable collection
+     * by combining corresponding elements in pairs.
+     * If one of the two collections is shorter than the other,
+     * placeholder elements are used to extend the shorter collection to the length of the longer.
+     *
+     * @param that     the iterable providing the second half of each result pair
+     * @param thisElem the element to be used to fill up the result if this array is shorter than `that`.
+     * @param thatElem the element to be used to fill up the result if `that` is shorter than this array.
+     * @return a new array containing pairs consisting of corresponding elements of this array and `that`.
+     *         The length of the returned array is the maximum of the lengths of this array and `that`.
+     *         If this array is shorter than `that`, `thisElem` values are used to pad the result.
+     *         If `that` is shorter than this array, `thatElem` values are used to pad the result.
+     */
+    def zipAll[A1 >: T, B](that: Iterable[B], thisElem: A1, thatElem: B): NArray[(A1, B)] = {
+      val b = NArray.builderFor[(A1, B)](Math.max(that.knownSize, a.length))
+      var i = 0
+      val it = that.iterator
+      while (i < a.length && it.hasNext) {
+        b += ((a(i), it.next()))
+        i += 1
+      }
+      while (it.hasNext) {
+        b += ((thisElem, it.next()))
+        i += 1
+      }
+      while (i < a.length) {
+        b += ((a(i), thatElem))
+        i += 1
+      }
+      b.result
+    }
+
+    /** Zips this array with its indices.
+     *
+     * @return A new array containing pairs consisting of all elements of this array paired with their index.
+     *         Indices start at `0`.
+     */
+    def zipWithIndex: NArray[(T, Int)] = NArray.tabulate[(T, Int)](a.length)(
+      (i:Int) => ((a(i), i))
+    )
+
+    /** A copy of this array with an element appended. */
+    def appended[B >: T : ClassTag](x: B): NArray[B] = {
+      val dest = NArray.ofSize[B](a.length + 1)
+      dest(a.length) = x
+      NArray.copy(a.asInstanceOf[NArray[B]], 0, dest, 0, a.length)
+      dest
+    }
+
+
+    inline def :+[B >: T : ClassTag](x: B): NArray[B] = appended(x)
+
+    /** A copy of this array with an element prepended. */
+    def prepended[B >: T : ClassTag](x: B): NArray[B] = {
+      val dest = NArray.ofSize[B](a.length + 1)
+      dest(0) = x
+      NArray.copy(a.asInstanceOf[NArray[B]], 0, dest, 1, a.length)
+      dest
+    }
+
+    inline def +:[B >: T : ClassTag](x: B): NArray[B] = prepended(x)
+
+    /** A copy of this array with all elements of a collection prepended. */
+    def prependedAll[B >: T : ClassTag](prefix: IterableOnce[B]): NArray[B] = {
+      val k = prefix.knownSize
+      val b = NArray.builderFor[B]((if (k >= 0) k else 0) + a.length)
+      b.addAll(prefix)
+      b.addAll(a.asInstanceOf[NArray[B]])
+      b.result
+    }
+
+    /** A copy of this array with all elements of an array prepended. */
+    def prependedAll[B >: T : ClassTag](prefix: NArray[B] ): NArray[B] = NArray.concatenate(prefix, a.asInstanceOf[NArray[B]])
+
+    inline def ++:[B >: T : ClassTag](prefix: IterableOnce[B]): NArray[B] = prependedAll(prefix)
+
+    inline def ++:[B >: T : ClassTag](prefix: NArray[B] ): NArray[B] = prependedAll[B](prefix)
+
+    /** A copy of this array with all elements of a collection appended. */
+    def appendedAll[B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = {
+      val nab = NArray.builderFor[B]()
+      nab.addAll(a.asInstanceOf[NArray[B]])
+      val itr = suffix.iterator
+      while (itr.hasNext) nab += itr.next()
+      nab.result
+    }
+
+    /** A copy of this array with all elements of an array appended. */
+    def appendedAll[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+
+    inline def :++ [B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = appendedAll(suffix)
+
+    inline def :++ [B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+
+    inline def concat[B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = appendedAll(suffix)
+
+    inline def concat[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+
+    inline def ++[B >: T : ClassTag](xs: IterableOnce[B]): NArray[B] = appendedAll(xs)
+
+    inline def ++[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+
+    /** Tests whether this array contains a given value as an element.
+     *
+     * @param elem the element to test.
+     * @return `true` if this array has an element that is equal (as
+     *         determined by `==`) to `elem`, `false` otherwise.
+     */
+    def contains(elem: T): Boolean = {
+      var i:Int = 0; while (i < a.length) {
+        if (a(i) == elem) return true
+        i += 1
+      }
+      false
+    }
+
+
+    /** Returns a copy of this array with patched values.
+     * Patching at negative indices is the same as patching starting at 0.
+     * Patching at indices at or larger than the length of the original array appends the patch to the end.
+     * If more values are replaced than actually exist, the excess is ignored.
+     *
+     * @param from     The start index from which to patch
+     * @param other    The patch values
+     * @param replaced The number of values in the original array that are replaced by the patch.
+     */
+    def patch[B >: T : ClassTag](from: Int, other: IterableOnce[B], replaced: Int): NArray[B] = {
+      val k = other.knownSize
+      val r = if (replaced < 0) 0 else replaced
+      val b = NArray.builderFor[B](if (k >= 0) a.length + k - r else 0)
+      val chunk1 = if (from > 0) Math.min(from, a.length) else 0
+      if (chunk1 > 0) b.addAll(a.asInstanceOf[NArray[B]], 0, chunk1)
+      b.addAll(other)
+      val remaining = a.length - chunk1 - r
+      if (remaining > 0) b.addAll(a.asInstanceOf[NArray[B]], a.length - remaining, remaining)
+      b.result
+    }
+
+    /** Converts an array of pairs into an array of first elements and an array of second elements.
+     *
+     * @tparam A1 the type of the first half of the element pairs
+     * @tparam A2 the type of the second half of the element pairs
+     * @param asPair an implicit conversion which asserts that the element type
+     *               of this Array is a pair.
+     * @param ct1    a class tag for `A1` type parameter that is required to create an instance
+     *               of `Array[A1]`
+     * @param ct2    a class tag for `A2` type parameter that is required to create an instance
+     *               of `Array[A2]`
+     * @return a pair of Arrays, containing, respectively, the first and second half
+     *         of each element pair of this Array.
+     */
+    def unzip[A1, A2](using asPair: T => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      val a1 = NArray.ofSize[A1](a.length)
+      val a2 = NArray.ofSize[A2](a.length)
+      var i = 0
+      while (i < a.length) {
+        val e = asPair(a(i))
+        a1(i) = e._1
+        a2(i) = e._2
+        i += 1
+      }
+      (a1, a2)
+    }
+
+
+    /** Converts an array of triples into three arrays, one containing the elements from each position of the triple.
+     *
+     * @tparam A1 the type of the first of three elements in the triple
+     * @tparam A2 the type of the second of three elements in the triple
+     * @tparam A3 the type of the third of three elements in the triple
+     * @param asTriple an implicit conversion which asserts that the element type
+     *                 of this Array is a triple.
+     * @param ct1      a class tag for T1 type parameter that is required to create an instance
+     *                 of Array[T1]
+     * @param ct2      a class tag for T2 type parameter that is required to create an instance
+     *                 of Array[T2]
+     * @param ct3      a class tag for T3 type parameter that is required to create an instance
+     *                 of Array[T3]
+     * @return a triple of Arrays, containing, respectively, the first, second, and third
+     *         elements from each element triple of this Array.
+     */
+    def unzip3[A1, A2, A3](implicit asTriple: T => (A1, A2, A3), ct1: ClassTag[A1], ct2: ClassTag[A2],
+                           ct3: ClassTag[A3]): (NArray[A1], NArray[A2], NArray[A3]) = {
+      val a1 = NArray.ofSize[A1](a.length)
+      val a2 = NArray.ofSize[A2](a.length)
+      val a3 = NArray.ofSize[A3](a.length)
+      var i = 0
+      while (i < a.length) {
+        val e = asTriple(a(i))
+        a1(i) = e._1
+        a2(i) = e._2
+        a3(i) = e._3
+        i += 1
+      }
+      (a1, a2, a3)
+    }
+
+    /** Transposes a two dimensional array.
+     *
+     * @tparam B Type of row elements.
+     * @param asArray A function that converts elements of this array to rows - arrays of type `B`.
+     * @return An array obtained by replacing elements of this arrays with rows the represent.
+     */
+    def transpose[B](using asArray: T => NArray[B]): NArray[NArray[B]] = {
+      val aClass = a.getClass.getComponentType
+      val bb = NArray.builderFor[NArray[B]]()
+      if (a.length == 0) bb.result
+      else {
+        def mkRowBuilder() = NArray.builderFor[B]()
+
+        val bs = asArray(a(0)).map((x: B) => mkRowBuilder())
+
+        for (xs <- a) {
+          var i = 0
+          for (x <- asArray(xs)) {
+            bs(i) += x
+            i += 1
+          }
+        }
+        for (b <- bs) bb += b.result
+        bb.result
+      }
+    }
+
+    /** Apply `f` to each element for side effects.
+     * Note: [U] parameter needed to help scalac's type inference.
+     */
+    def foreach[U](f: T => U): Unit = {
+      var i: Int = 0
+      while (i < a.length) {
+        f(a(i))
+        i = i + 1
+      }
+    }
+    /** Selects all the elements of this array ignoring the duplicates.
+     *
+     * @return a new array consisting of all the elements of this array without duplicates.
+     */
+    def distinct: NArray[T] = distinctBy(identity)
+
+    /** Selects all the elements of this array ignoring the duplicates as determined by `==` after applying
+     * the transforming function `f`.
+     *
+     * @param f The transforming function whose result is used to determine the uniqueness of each element
+     * @tparam B the type of the elements after being transformed by `f`
+     * @return a new array consisting of all the elements of this array without duplicates.
+     */
+    def distinctBy[B](f: T => B): NArray[T] =
+      NArray.builderFor[T]().addAll(iterator.distinctBy(f)).result
+
+    /** A copy of this array with an element value appended until a given target length is reached.
+     *
+     * @param len  the target length
+     * @param elem the padding value
+     * @tparam B the element type of the returned array.
+     * @return a new array consisting of
+     *         all elements of this array followed by the minimal number of occurrences of `elem` so
+     *         that the resulting collection has a length of at least `len`.
+     *         that the resulting collection has a length of at least `len`.
+     */
+    def padTo[B >: T : ClassTag](len: Int, elem: B): NArray[B] = {
+      var i = a.length
+      val newlen = Math.max(i, len)
+      val dest = NArray.copyAs[T, B](a, newlen)
+      while (i < newlen) {
+        dest(i) = elem
+        i += 1
+      }
+      dest
+    }
+
     /** Produces the range of all indices of this sequence.
      *
      * @return a `Range` value from `0` to one less than the length of this array.
      */
     inline def indices: Range = Range(0, a.length)
+
+    /** Partitions this array into a map of arrays according to some discriminator function.
+     *
+     * @param f the discriminator function.
+     * @tparam K the type of keys returned by the discriminator function.
+     * @return A map from keys to arrays such that the following invariant holds:
+     * {{{
+     *                 (xs groupBy f)(k) = xs filter (x => f(x) == k)
+     *                }}}
+     *               That is, every key `k` is bound to an array of those elements `x`
+     *               for which `f(x)` equals `k`.
+     */
+    def groupBy[K](f: T => K): immutable.Map[K, NArray[T]] = {
+      val m = mutable.Map.empty[K, NArrayBuilder[T]]
+      val len = a.length
+      var i = 0
+      while(i < len) {
+        val elem = a(i)
+        val key = f(elem)
+        val bldr = m.getOrElseUpdate(key, NArray.builderFor[T]())
+        bldr += elem
+        i += 1
+      }
+      m.view.mapValues(_.result).toMap
+    }
+
+    /**
+     * Partitions this array into a map of arrays according to a discriminator function `key`.
+     * Each element in a group is transformed into a value of type `B` using the `value` function.
+     *
+     * It is equivalent to `groupBy(key).mapValues(_.map(f))`, but more efficient.
+     *
+     * {{{
+     *   case class User(name: String, age: Int)
+     *
+     *   def namesByAge(users: Array[User]): Map[Int, Array[String]] =
+     *     users.groupMap(_.age)(_.name)
+     * }}}
+     *
+     * @param key the discriminator function
+     * @param f   the element transformation function
+     * @tparam K the type of keys returned by the discriminator function
+     * @tparam B the type of values returned by the transformation function
+     */
+    def groupMap[K, B: ClassTag](key: T => K)(f: T => B): immutable.Map[K, NArray[B]] = {
+      val m = mutable.Map.empty[K, NArrayBuilder[B]]
+      val len = a.length
+      var i = 0
+      while (i < len) {
+        val elem = a(i)
+        val k = key(elem)
+        val bldr = m.getOrElseUpdate(k, NArray.builderFor[B]())
+        bldr += f(elem)
+        i += 1
+      }
+      m.view.mapValues(_.result).toMap
+    }
+
+    inline def toSeq: Seq[T] = toIndexedSeq
+
+    def toIndexedSeq: IndexedSeq[T] = {
+      //scala.collection.mutable.IndexedSeq.tabulate(a.length)((i:Int) => a(i)).toIndexedSeq
+      a.asInstanceOf[scala.scalajs.js.Array[T]].toIndexedSeq
+    }
+
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index 0.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached.
+     *
+     * @param xs the array to fill.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToNArray[B >: T](xs: NArray[B]): Int = copyToNArray(xs, 0)
+
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index `start`.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached.
+     *
+     * @param xs    the array to fill.
+     * @param start the starting index within the destination array.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToNArray[B >: T](xs: NArray[B], start: Int): Int = copyToNArray(xs, start, Int.MaxValue)
+
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index `start` with at most `len` values.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached, or `len` elements have been copied.
+     *
+     * @param xs    the array to fill.
+     * @param start the starting index within the destination array.
+     * @param len   the maximal number of elements to copy.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToNArray[B >: T](xs: NArray[B], start: Int, len: Int): Int = {
+      //val copied = scala.collection.IterableOnce.elemsToCopyToArray(a.length, xs.length, start, len)
+      val copied = Math.max(Math.min(Math.min(len, a.length), xs.length - start), 0)
+      if (copied > 0) {
+        NArray.copy[B](a.asInstanceOf[NArray[B]], 0, xs, start, copied)
+      }
+      copied
+    }
+
+    /** Create a JVM/Native style copy of this array with the specified element type. */
+    def toArray[B >: T : ClassTag]: Array[B] = {
+      val r = new Array[B](a.length)
+      var i = 0; while (i < a.length) {
+        r(i) = a(i)
+        i += 1
+      }
+      r
+    }
+
+    /** Create a copy of this array with the specified element type. */
+    def toNArray[B >: T : ClassTag]: NArray[B] = {
+      val destination = NArray.ofSize[B](a.length)
+      @annotation.unused val copied = copyToNArray[B](destination, 0)
+      //assert(copied == xs.length)
+      destination
+    }
 
     /** Counts the number of elements in this array which satisfy a predicate */
     def count(p: T => Boolean): Int = {
@@ -681,6 +1254,119 @@ object Extensions {
           i += 1
         }
         true
+      }
+    }
+
+
+    /** A copy of this array with one single replaced element.
+     *
+     * @param index the position of the replacement
+     * @param elem  the replacing element
+     * @return a new array which is a copy of this array with the element at position `index` replaced by `elem`.
+     * @throws IndexOutOfBoundsException if `index` does not satisfy `0 <= index < length`.
+     */
+    def updated[B >: T : ClassTag](index: Int, elem: B): NArray[B] = {
+      if (index < 0 || index >= a.length) throw new ArrayIndexOutOfBoundsException(s"$index is out of bounds (min 0, max ${a.length - 1})")
+      val dest = toNArray[B]
+      dest(index) = elem
+      dest
+    }
+
+    inline def view: IndexedSeqView[T] = new NArrayView[T](a)
+
+    private def occCounts[B](sq: Seq[B]): mutable.Map[B, Int] = {
+      val occ = new mutable.HashMap[B, Int]()
+      for (y <- sq) occ.updateWith(y) {
+        case None => Some(1)
+        case Some(n) => Some(n + 1)
+      }
+      occ
+    }
+
+    /** Computes the multiset difference between this array and another sequence.
+     *
+     * @param that the sequence of elements to remove
+     * @return a new array which contains all elements of this array
+     *         except some of occurrences of elements that also appear in `that`.
+     *         If an element value `x` appears
+     *         ''n'' times in `that`, then the first ''n'' occurrences of `x` will not form
+     *         part of the result, but any following occurrences will.
+     */
+    def diff[B >: T](that: Seq[B]): NArray[T] = {
+      if (isEmpty || that.isEmpty) a.copy
+      else {
+        val occ = occCounts(that)
+        val b = builderFor[T]()
+        var i = 0
+        while (i < a.length) {
+          val x = a(i)
+          occ.updateWith(x) {
+            case None => {
+              b.addOne(x)
+              None
+            }
+            case Some(1) => None
+            case Some(n) => Some(n - 1)
+          }
+          i = i + 1
+        }
+        b.result
+      }
+    }
+
+    /** Computes the multiset intersection between this array and another sequence.
+     *
+     * @param that the sequence of elements to intersect with.
+     * @return a new array which contains all elements of this array
+     *         which also appear in `that`.
+     *         If an element value `x` appears
+     *         ''n'' times in `that`, then the first ''n'' occurrences of `x` will be retained
+     *         in the result, but any following occurrences will be omitted.
+     */
+    def intersect[B >: T](that: Seq[B]): NArray[T] = {
+      if (isEmpty || that.isEmpty) a.slice(0, 0)
+      else {
+        val occ = occCounts(that)
+        val b = builderFor[T]()
+        var i = 0
+        while (i < a.length) {
+          val x = a(i)
+          occ.updateWith(x) {
+            case None => None
+            case Some(n) => {
+              b.addOne(x)
+              if (n == 1) None else Some(n - 1)
+            }
+          }
+          i = i + 1
+        }
+        b.result
+      }
+    }
+
+    /** Groups elements in fixed width blocks by passing a "sliding window"
+     * over them (as opposed to partitioning them, as is done in grouped.)
+     *
+     * @see [[scala.collection.Iterator]], method `sliding`
+     * @param width the number of elements per group
+     * @param step the distance between the first elements of successive groups
+     * @return An iterator producing arrays of width `width`, except the
+     *         last element (which may be the only element) will be truncated
+     *         if there are fewer than `width` elements remaining to be grouped.
+     */
+    def sliding(width: Int, step: Int = 1): Iterator[NArray[T]] = new Iterator[NArray[T]] {
+      var i = 0
+      var c = 0
+
+      override def hasNext: Boolean = i < a.length && c < a.length
+
+      override def next(): NArray[T] = {
+        if (hasNext) {
+          c = i + width
+          val r = a.slice(i, c)
+          i = i + step
+          r
+        } else throw new NoSuchElementException("next on empty iterator")
       }
     }
 

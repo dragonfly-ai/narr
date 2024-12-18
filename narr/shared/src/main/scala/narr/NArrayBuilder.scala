@@ -23,6 +23,8 @@
 package narr
 import narr.*
 
+import narr.native.NativeArrayBuilder
+
 import scala.compiletime.erasedValue
 import scala.reflect.ClassTag
 
@@ -53,6 +55,7 @@ object NArrayBuilder {
 //    println(s"(Math.log(MAX_NArraySize) / Math.log(2)) - (Math.log($DefaultInitialSize) / Math.log(2)) = ${(Math.log(MAX_NArraySize) / Math.log(2))} - ${(Math.log(DefaultInitialSize) / Math.log(2))} = ${Math.ceil((Math.log(MAX_NArraySize) / Math.log(2)) - (Math.log(DefaultInitialSize) / Math.log(2)))}")
 //  }
 
+
 }
 
 /**
@@ -67,21 +70,50 @@ object NArrayBuilder {
  * @tparam T type of the Array elements.
  */
 
-trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
+trait NArrayBuilder[T] {
+  def makeNArray(len:Int): NArray[T]
+  def copyInto(src: NArray[T], dest: NArray[T], dstPos:Int): Unit
+  def copyInto(src: NArray[T], srcPos:Int, dest: NArray[T], dstPos:Int, length:Int): Unit
+  def size:Int
+  def addOne(e:T):this.type
+  def addAll(es: NArray[T]):this.type
+  /** Add a slice of an array. */
+  def addAll(xs: NArray[T], offset: Int, length: Int): this.type = {
+    val offset1 = offset.max(0)
+    addAll(
+      xs.slice(
+        offset1,
+        length.max(0).min(xs.length - offset1)
+      )
+    )
+  }
+  def addAll(itr: Iterator[T]): this.type = {
+    while (itr.hasNext) addOne(itr.next())
+    this
+  }
+  def addAll(xs: IterableOnce[T]): this.type = {
+    addAll(xs.iterator)
+    this
+  }
+  def result: NArray[T]
+  def apply(idx: Int): T
+  inline def +=(e:T): this.type = addOne(e)
+  inline def ++=(xs:NArray[T]): this.type = addAll(xs)
+  inline def ++=(itr: Iterator[T]): this.type = addAll(itr)
+  inline def ++=(xs: IterableOnce[T]): this.type = addAll(xs)
+}
 
-  type AT <: NArray[T]
-  val clz:Class[T]
+trait TypedArrayBuilder[T](using ClassTag[T]) extends NArrayBuilder[T] {
+  //type AT <: NArray[T]
   protected[this] val initCapacity:Int // = NArrayBuilder.DefaultInitialSize
   private var capacity: Int = 0
+
+  def make2DNArray(len: Int): NArray[NArray[T]]
 
   private enum NArrayBuilderState:
     case UNINITIALIZED, FIRST_WORKING_ARRAY, BUCKETS
   import NArrayBuilderState.*
   private var state: NArrayBuilderState = UNINITIALIZED
-
-  def makeNArray(len:Int): NArray[T]
-  def copyInto(src: NArray[T], dest: NArray[T], dstPos:Int): Unit
-  def copyInto(src: NArray[T], srcPos:Int, dest: NArray[T], dstPos:Int, length:Int): Unit
 
   private var b: Int = 0  // next bucket index.
   private var i: Int = 0  // next workingArray index.
@@ -91,7 +123,7 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
     val ln2:Double = Math.log(2)
     val maxBucketCount:Double = Math.log(NArrayBuilder.MAX_NArraySize) / ln2
 
-    NArray.ofSize[NArray[T]](
+    make2DNArray(
       1 + (
         if (i <= 0) Math.ceil(maxBucketCount - (Math.log(workingArray.length) / ln2)).toInt
         else Math.ceil(maxBucketCount - (Math.log(initCapacity) / ln2)).toInt
@@ -127,7 +159,7 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
 
   }
 
-  def addOne(e:T):this.type = {
+  override def addOne(e:T):this.type = {
     state match {
       case UNINITIALIZED =>
         allocateNextWorkingArray(initCapacity)
@@ -147,7 +179,7 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
 
   // Einstein spent 9 years unemployed.
 
-  def addAll(es: NArray[T]):this.type = {
+  override def addAll(es: NArray[T]):this.type = {
     state match {
       case UNINITIALIZED =>
         allocateNextWorkingArray(
@@ -173,17 +205,7 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
     this
   }
 
-  def addAll(itr: Iterator[T]): this.type = {
-    while (itr.hasNext) addOne(itr.next())
-    this
-  }
-
-  def addAll(xs: IterableOnce[T]): this.type = {
-    addAll(xs.iterator)
-    this
-  }
-
-  def result: NArray[T] = {
+  override def result: NArray[T] = {
     // this method should store the result in buckets(0) and clear all other buckets.
     state match {
       case UNINITIALIZED => makeNArray(size)
@@ -205,7 +227,7 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
     }
   }
 
-  def apply(idx: Int): T = {
+  override def apply(idx: Int): T = {
     state match {
       case UNINITIALIZED => throw new ArrayIndexOutOfBoundsException(s"NArrayBuilder not yet initialized.")
       case FIRST_WORKING_ARRAY => workingArray(idx)
@@ -222,10 +244,13 @@ trait NArrayBuilder[T](using ClassTag[T], ClassTag[NArray[T]]) {
   }
 }
 
-case class ByteArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends NArrayBuilder[Byte] {
-  override type AT = ByteArray
-  override val clz:Class[Byte] = classOf[Byte]
+case class ByteArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends TypedArrayBuilder[Byte] {
+  //override type AT = ByteArray
+  //override val clz:Class[Byte] = classOf[Byte]
   override inline def makeNArray(len: Int): NArray[Byte] = new ByteArray(len)
+
+  override inline def make2DNArray(len: Int): NArray[NArray[Byte]] = NArray.ofSize[NArray[Byte]](len)
+
   override def toString = "ArrayBuilder.ofRef"
 
   override inline def copyInto(src: ByteArray, dest: ByteArray, dstPos: Int): Unit = NArray.copyByteArray(
@@ -234,12 +259,15 @@ case class ByteArrayBuilder (override val initCapacity:Int = NArrayBuilder.Defau
   override inline def copyInto(src: ByteArray, srcPos: Int, dest: ByteArray, dstPos: Int, length: Int): Unit = {
     NArray.copyByteArray(src, srcPos, dest, dstPos, length)
   }
+
 }
 
 
-case class ShortArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends NArrayBuilder[Short] {
-  override val clz:Class[Short] = classOf[Short]
+case class ShortArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends TypedArrayBuilder[Short] {
+  //override val clz:Class[Short] = classOf[Short]
   override inline def makeNArray(len: Int): NArray[Short] = new ShortArray(len)
+
+  override inline def make2DNArray(len: Int): NArray[NArray[Short]] = NArray.ofSize[NArray[Short]](len)
 
   override inline def copyInto(src: ShortArray, dest: ShortArray, dstPos: Int): Unit = NArray.copyShortArray(
     src, dest, dstPos
@@ -250,9 +278,11 @@ case class ShortArrayBuilder (override val initCapacity:Int = NArrayBuilder.Defa
 }
 
 
-case class IntArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends NArrayBuilder[Int] {
-  override val clz:Class[Int] = classOf[Int]
+case class IntArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends TypedArrayBuilder[Int] {
+  //override val clz:Class[Int] = classOf[Int]
   override inline def makeNArray(len: Int): NArray[Int] = new IntArray(len)
+
+  override inline def make2DNArray(len: Int): NArray[NArray[Int]] = NArray.ofSize[NArray[Int]](len)
 
   override inline def copyInto(src: IntArray, dest: IntArray, dstPos: Int): Unit = NArray.copyIntArray(
     src, dest, dstPos
@@ -263,9 +293,11 @@ case class IntArrayBuilder (override val initCapacity:Int = NArrayBuilder.Defaul
 }
 
 
-case class FloatArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends NArrayBuilder[Float] {
-  override val clz:Class[Float] = classOf[Float]
+case class FloatArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends TypedArrayBuilder[Float] {
+  //override val clz:Class[Float] = classOf[Float]
   override inline def makeNArray(len: Int): NArray[Float] = new FloatArray(len)
+
+  override inline def make2DNArray(len: Int): NArray[NArray[Float]] = NArray.ofSize[NArray[Float]](len)
 
   override inline def copyInto(src: FloatArray, dest: FloatArray, dstPos: Int): Unit = NArray.copyFloatArray(
     src, dest, dstPos
@@ -276,27 +308,16 @@ case class FloatArrayBuilder (override val initCapacity:Int = NArrayBuilder.Defa
 }
 
 
-case class DoubleArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends NArrayBuilder[Double] {
-  override val clz:Class[Double] = classOf[Double]
+case class DoubleArrayBuilder (override val initCapacity:Int = NArrayBuilder.DefaultInitialSize) extends TypedArrayBuilder[Double] {
+  //override val clz:Class[Double] = classOf[Double]
   override inline def makeNArray(len: Int): NArray[Double] = new DoubleArray(len)
+
+  override inline def make2DNArray(len: Int): NArray[NArray[Double]] = NArray.ofSize[NArray[Double]](len)
 
   override inline def copyInto(src: DoubleArray, dest: DoubleArray, dstPos: Int): Unit = NArray.copyDoubleArray(
     src, dest, dstPos
   )
   override inline def copyInto(src: DoubleArray, srcPos: Int, dest: DoubleArray, dstPos: Int, length: Int): Unit = {
     NArray.copyDoubleArray(src, srcPos, dest, dstPos, length)
-  }
-}
-
-
-case class NativeArrayBuilder[T:ClassTag](override val initCapacity:Int = NArrayBuilder.DefaultInitialSize)(using ClassTag[NArray[T]]) extends NArrayBuilder[T] {
-  override val clz:Class[T] = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
-  override inline def makeNArray(len: Int): NArray[T] = NArray.ofSize[T](len)
-
-  override inline def copyInto(src: NArray[T], dest: NArray[T], dstPos: Int): Unit = NArray.copyNArray(
-    src, dest, dstPos
-  )
-  override inline def copyInto(src: NArray[T], srcPos: Int, dest: NArray[T], dstPos: Int, length: Int): Unit = {
-    NArray.copyNArray(src, srcPos, dest, dstPos, length)
   }
 }

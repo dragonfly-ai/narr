@@ -36,7 +36,7 @@ package object native {
   type NArr[T] = Array[T]
   type SortableNArr[T] = Array[T]
 
-  inline def makeNativeArrayOfSize[A:ClassTag](n:Int):NativeArray[A] = new Array[A](n)
+  inline def makeNativeArrayOfSize[A](n:Int)(using ClassTag[A]):NativeArray[A] = new Array[A](n)
 
   object NArray {
     export Array.*
@@ -55,7 +55,7 @@ package object native {
     inline def copyIntArray(src: IntArray, dest: IntArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
     inline def copyFloatArray(src: FloatArray, dest: FloatArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
     inline def copyDoubleArray(src: DoubleArray, dest: DoubleArray, destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
-    inline def copyNArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
+    inline def copyNativeArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = Array.copy(src, 0, dest, destPos, src.length)
 
     /** Copy one array to another.
      * Equivalent to Java's
@@ -76,7 +76,25 @@ package object native {
     inline def copyIntArray(src: IntArray, srcPos: Int, dest: IntArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
     inline def copyFloatArray(src: FloatArray, srcPos: Int, dest: FloatArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
     inline def copyDoubleArray(src: DoubleArray, srcPos: Int, dest: DoubleArray, destPos: Int, length: Int): Unit = java.lang.System.arraycopy(src, srcPos, dest, destPos, length)
-    inline def copyNArray[T](src: NArray[T], srcPos: Int, dest: NArray[T], destPos: Int, length: Int): Unit = Array.copy(src, srcPos, dest, destPos, length)
+    inline def copyNativeArray[T](src: NativeArray[T], srcPos: Int, dest: NativeArray[T], destPos: Int, length: Int): Unit = Array.copy(src, srcPos, dest, destPos, length)
+
+    /** Copy one array to another, truncating or padding with default values (if
+     * necessary) so the copy has the specified length. The new array can have
+     * a different type than the original one as long as the values are
+     * assignment-compatible. When copying between primitive and object arrays,
+     * boxing and unboxing are supported.
+     *
+     * Equivalent to Java's
+     * `java.util.Arrays.copyOf(original, newLength, newType)`,
+     * except that this works for all combinations of primitive and object arrays
+     * in a single method.
+     *
+     * @see `java.util.Arrays#copyOf`
+     */
+    inline def copyAs[T, B >: T](original: NArray[T], newLength: Int)(using ClassTag[B]): NArray[B] = {
+      Array.copyAs[B](original, newLength)
+    }
+
   }
 
   object Extensions {

@@ -26,6 +26,8 @@ class CopyTest extends munit.FunSuite {
 
     var N: Int = 11
 
+    // TODO: test NArray.{copyOf, copyAs}
+
     ////////////////
     // Value Types:
     ////////////////

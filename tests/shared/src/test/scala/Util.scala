@@ -30,6 +30,15 @@ object Util {
     }
   }
 
+  def assertArray2NArrayEquality[T](arr1: Array[T], nArr2: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+    assertEquals(arr1.length, nArr2.length)
+    var i: Int = 0
+    while (i < arr1.length) {
+      assertEquals(arr1(i), nArr2(i))
+      i += 1
+    }
+  }
+
   def assertThrows[T <: Throwable]( f: () => Any ): Unit = assert({
     try {
       f()

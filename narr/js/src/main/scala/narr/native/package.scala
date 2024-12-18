@@ -76,10 +76,9 @@ package object native {
     inline def copyIntArray(src: IntArray, dest: IntArray, destPos: Int): Unit = dest.set(src, destPos)
     inline def copyFloatArray(src: FloatArray, dest: FloatArray, destPos: Int): Unit = dest.set(src, destPos)
     inline def copyDoubleArray(src: DoubleArray, dest: DoubleArray, destPos: Int): Unit = dest.set(src, destPos)
-    inline def copyNArray[T](src: NArray[T], dest: NArray[T], destPos: Int): Unit = {
-      //println(s"copyNArray[T](src, dest, $destPos)")
-      val availableSpace = dest.length - destPos
-      if (src.length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
+    inline def copyNativeArray[T](src: NativeArray[T], dest: NativeArray[T], destPos: Int): Unit = {
+      //val availableSpace = dest.length - destPos
+      //if (src.length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
       var i:Int = 0; while (i < src.length) {
         dest(destPos + i) = src(i)
         i = i + 1
@@ -131,18 +130,49 @@ package object native {
       }
       else dest.set(src, destPos)
     }
-    inline def copyNArray[T](src: NArray[T], srcPos: Int, dest: NArray[T], destPos: Int, length:Int): Unit = {
-      val availableSpace = dest.length - destPos
-      if (length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
+    inline def copyNativeArray[T](src: NativeArray[T], srcPos: Int, dest: NativeArray[T], destPos: Int, length:Int): Unit = {
+      //val availableSpace = dest.length - destPos
+      //if (length > availableSpace) throw Exception(s"Can't copy source array into destination.  The source is too long.")
       var i: Int = 0; while (i < length) {
         dest(destPos + i) = src(srcPos + i)
         i = i + 1
       }
     }
+
+    /** Copy one array to another, truncating or padding with default values (if
+     * necessary) so the copy has the specified length. The new array can have
+     * a different type than the original one as long as the values are
+     * assignment-compatible. When copying between primitive and object arrays,
+     * boxing and unboxing are supported.
+     *
+     * Equivalent to Java's
+     * `java.util.Arrays.copyOf(original, newLength, newType)`,
+     * except that this works for all combinations of primitive and object arrays
+     * in a single method.
+     *
+     * @see `java.util.Arrays#copyOf`
+     */
+    def copyAs[T, B >: T](original: NArray[T], newLength: Int)(using ClassTag[B]): NArray[B] = {
+      narr.NArray.copy( original.asInstanceOf[NArray[B]], narr.NArray.ofSize[B](newLength), 0 )
+    }
+
+    /** Copy one array to another, truncating or padding with default values (if
+     * necessary) so the copy has the specified length.
+     *
+     * Equivalent to Java's
+     * `java.util.Arrays.copyOf(original, newLength)`,
+     * except that this works for primitive and object arrays in a single method.
+     *
+     * @see `java.util.Arrays#copyOf`
+     */
+    def copyOf[T: ClassTag](original: NArray[T], newLength: Int): NArray[T] = {
+      val cp = narr.NArray.ofSize[T](newLength)
+      println(s"cp = $cp, newLength = $newLength")
+      narr.NArray.copy[T]( original, cp, 0 )
+    }
   }
 
 
-
-  inline def makeNativeArrayOfSize[A: ClassTag](n:Int):NativeArray[A] = new scala.scalajs.js.Array[A](n)
+  inline def makeNativeArrayOfSize[A](n:Int)(using ClassTag[A]):NativeArray[A] = (new scala.scalajs.js.Array[Any](n)).asInstanceOf[NativeArray[A]]
 
 }
