@@ -16,6 +16,7 @@
 
 import narr.*
 import Util.*
+import Util.NArrayType.*
 
 import scala.reflect.ClassTag
 import scala.util.Random as r
@@ -27,6 +28,7 @@ class NArrayOpsTest extends munit.FunSuite {
 
   private trait HasNArray[T:ClassTag] {
     val a: NArray[T]
+    val nt: NArrayType
   }
 
   private trait UniversalNArrayOpsTest[T:ClassTag] extends HasNArray[T] {
@@ -58,21 +60,28 @@ class NArrayOpsTest extends munit.FunSuite {
       val start:Int = middleIndex - r.nextInt(middleIndex - 1)
       val end:Int = middleIndex + r.nextInt(middleIndex - 1)
 
+      val sliced = a.slice(start, end)
+      assertNArrayType(sliced, nt)
+      val tabulated = NArray.tabulate[T](end - start)((i:Int) => a(start + i))
+      assertNArrayType(tabulated, nt)
       assertNArrayEquality[T](
-        a.slice(start, end),
-        NArray.tabulate[T](end - start)((i:Int) => a(start + i))
+        sliced,
+        tabulated,
+        nt
       )
 
       // tail
       assertNArrayEquality[T](
         a.tail,
-        NArray.tabulate[T](lastIndex)((i: Int) => a(1 + i))
+        NArray.tabulate[T](lastIndex)((i: Int) => a(1 + i)),
+        nt
       )
 
       // init
       assertNArrayEquality[T](
         a.init,
-        NArray.tabulate[T](lastIndex)((i: Int) => a(i))
+        NArray.tabulate[T](lastIndex)((i: Int) => a(i)),
+        nt
       )
 
       // reverse
@@ -100,27 +109,29 @@ class NArrayOpsTest extends munit.FunSuite {
         val rArr: Array[T] = right.toArray[T]
 
         // take
-        assertNArrayEquality[T]( a.take(fulcrum), left )
+        assertNArrayEquality[T]( a.take(fulcrum), left, nt)
 
         // drop
-        assertNArrayEquality[T]( a.drop(fulcrum), right )
+        assertNArrayEquality[T]( a.drop(fulcrum), right, nt )
 
         // takeRight
         assertNArrayEquality[T](
           a.takeRight(fulcrum),
-          NArray.tabulate[T](fulcrum)((i: Int) => a(N - fulcrum + i))
+          NArray.tabulate[T](fulcrum)((i: Int) => a(N - fulcrum + i)),
+          nt
         )
 
         // dropRight
         assertNArrayEquality[T](
           a.dropRight(fulcrum),
-          NArray.tabulate[T](N - fulcrum)((i: Int) => a(i))
+          NArray.tabulate[T](N - fulcrum)((i: Int) => a(i)),
+          nt
         )
 
         // splitAt
         val (s1:NArray[T], s2:NArray[T]) = a.splitAt(fulcrum)
-        assertNArrayEquality[T](s1, left)
-        assertNArrayEquality[T](s2, right)
+        assertNArrayEquality[T](s1, left, nt)
+        assertNArrayEquality[T](s2, right, nt)
 
         // appended
         assertArray2NArrayEquality[T](lArr.appended(arr(0)), left.appended(a(0)))
@@ -130,16 +141,16 @@ class NArrayOpsTest extends munit.FunSuite {
         // Doesn't work for Unit.  https://github.com/scala/bug/issues/13068
         if (a(0) != ()) {
           // prependedAll
-          assertNArrayEquality[T](right.prependedAll[T](left), a)
-          assertNArrayEquality[T](right.prependedAll[T](left.toSeq), a)
+          assertNArrayEquality[T](right.prependedAll[T](left), a, nt)
+          assertNArrayEquality[T](right.prependedAll[T](left.toSeq), a, nt)
 
           // appendedAll
-          assertNArrayEquality[T](left.appendedAll[T](right), a)
-          assertNArrayEquality[T](left.appendedAll[T](right.toSeq), a)
+          assertNArrayEquality[T](left.appendedAll[T](right), a, nt)
+          assertNArrayEquality[T](left.appendedAll[T](right.toSeq), a, nt)
 
           // concat, toSeq, toIndexedSeq
-          assertNArrayEquality[T](left.concat[T](right), a)
-          assertNArrayEquality[T](left.concat[T](right.toSeq), a)
+          assertNArrayEquality[T](left.concat[T](right), a, nt)
+          assertNArrayEquality[T](left.concat[T](right.toSeq), a, nt)
         }
 
         // find
@@ -153,6 +164,12 @@ class NArrayOpsTest extends munit.FunSuite {
 
         // contains
         assertEquals(true, a.contains(a(fulcrum)))
+
+        // patch
+        assertArray2NArrayEquality(
+            arr.patch[T](0, rArr.toSeq, rArr.length),
+            a.patch[T](0, right.toSeq, right.length)
+        )
 
         // startsWith
         assertEquals(a.startsWith(left), true)
@@ -239,7 +256,7 @@ class NArrayOpsTest extends munit.FunSuite {
         val group: NArray[T] = gi.next()
         val t = a.slice(i, i + groupSize)
         assertEquals(t.length, group.length)
-        assertNArrayEquality[T](group, t)
+        assertNArrayEquality[T](group, t, nt)
         i += groupSize
       }
 
@@ -277,19 +294,21 @@ class NArrayOpsTest extends munit.FunSuite {
         // takeWhile
         assertNArrayEquality[T](
           a.takeWhile((t: T) => t != a(fulcrum)),
-          left
+          left,
+          nt
         )
 
         // dropWhile
         assertNArrayEquality[T](
           a.dropWhile((t: T) => t != a(fulcrum)),
-          right
+          right,
+          nt
         )
 
         val (spanLeft, spanRight) = a.span((t: T) => t != a(fulcrum))
         // span
-        assertNArrayEquality[T](spanLeft, left)
-        assertNArrayEquality[T](spanRight, right)
+        assertNArrayEquality[T](spanLeft, left, nt)
+        assertNArrayEquality[T](spanRight, right, nt)
 
         // lastIndexWhere
         assertEquals(
@@ -319,11 +338,11 @@ class NArrayOpsTest extends munit.FunSuite {
 
   }
 
-  private case class NArrayWithDuplicateElementsOpsTest[T:ClassTag](override val a:NArray[T]) extends UniversalNArrayOpsTest[T] {
+  private case class NArrayWithDuplicateElementsOpsTest[T:ClassTag](override val a:NArray[T], override val nt:NArrayType) extends UniversalNArrayOpsTest[T] {
     def test():Unit = universalTest()
   }
 
-  private case class NArrayOfUniquelyValuedElementsOpsTest[T:ClassTag](override val a:NArray[T]) extends UniversalNArrayOpsTest[T] with NArrayOpsSearchTest[T] {
+  private case class NArrayOfUniquelyValuedElementsOpsTest[T:ClassTag](override val a:NArray[T], override val nt:NArrayType) extends UniversalNArrayOpsTest[T] with NArrayOpsSearchTest[T] {
     def test(): Unit = {
       universalTest()
       searchTest()
@@ -331,7 +350,7 @@ class NArrayOpsTest extends munit.FunSuite {
 
   }
 
-  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], selfMap: T => T) extends HasNArray[T] {
+  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], override val nt:NArrayType, selfMap: T => T) extends HasNArray[T] {
     def test(): Unit = {
 
       // mapInPlace
@@ -345,18 +364,19 @@ class NArrayOpsTest extends munit.FunSuite {
     }
   }
 
+
   ////////////////
   // Value Types:
   ////////////////
 
   test("NArrayWithDuplicateElementsOpsTest[Unit]") {
-    NArrayWithDuplicateElementsOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ())).test()
+    NArrayWithDuplicateElementsOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ()), NATIVE_ARRAY).test()
   }
   test("NArrayWithDuplicateElementsOpsTest[Boolean]") {
     val a1: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)
-    val t1 = NArrayWithDuplicateElementsOpsTest[Boolean](a1)
+    val t1 = NArrayWithDuplicateElementsOpsTest[Boolean](a1, NATIVE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Boolean](t1.a, (b: Boolean) => !b).test()
+    NArraySelfMapOpsTest[Boolean](t1.a, NATIVE_ARRAY, (b: Boolean) => !b).test()
 
     // partition
     val (t:NArray[Boolean], f:NArray[Boolean]) = a1.partition((b:Boolean) => b)
@@ -365,39 +385,39 @@ class NArrayOpsTest extends munit.FunSuite {
   }
 
   test("NArrayOfUniquelyValuedElementsOpsTest[Byte]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Byte](NArray.tabulate[Byte](N)((i:Int) => i.toByte))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Byte](NArray.tabulate[Byte](N)((i:Int) => i.toByte), BYTE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Byte](t1.a, (b: Byte) => (-b).toByte).test()
+    NArraySelfMapOpsTest[Byte](t1.a, BYTE_ARRAY, (b: Byte) => (-b).toByte).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Short]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort), SHORT_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Short](t1.a, (s: Short) => (-s).toShort).test()
+    NArraySelfMapOpsTest[Short](t1.a, SHORT_ARRAY, (s: Short) => (-s).toShort).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Int]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i), INT_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Int](t1.a, (i: Int) => -i).test()
+    NArraySelfMapOpsTest[Int](t1.a, INT_ARRAY, (i: Int) => -i).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Long]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong), NATIVE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Long](t1.a, (l: Long) => -l).test()
+    NArraySelfMapOpsTest[Long](t1.a, NATIVE_ARRAY, (l: Long) => -l).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Float]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat), FLOAT_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Float](t1.a, (f: Float) => -f).test()
+    NArraySelfMapOpsTest[Float](t1.a, FLOAT_ARRAY, (f: Float) => -f).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Double]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble), DOUBLE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Double](t1.a, (d: Double) => -d).test()
+    NArraySelfMapOpsTest[Double](t1.a, DOUBLE_ARRAY, (d: Double) => -d).test()
   }
   test("NArrayOfUniquelyValuedElementsOpsTest[Char]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => ('a'.toInt + i).toChar))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => ('a'.toInt + i).toChar), NATIVE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[Char](t1.a, (c: Char) => (c.toInt + 1).toChar).test()
+    NArraySelfMapOpsTest[Char](t1.a, NATIVE_ARRAY, (c: Char) => (c.toInt + 1).toChar).test()
   }
 
   ////////////////////
@@ -405,10 +425,10 @@ class NArrayOpsTest extends munit.FunSuite {
   ////////////////////
 
   test("NArrayOfUniquelyValuedElementsOpsTest[String]") {
-    val t1 = NArrayOfUniquelyValuedElementsOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString))
+    val t1 = NArrayOfUniquelyValuedElementsOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString), NATIVE_ARRAY)
     t1.test()
-    NArraySelfMapOpsTest[String](t1.a, (s: String) => s.reverse).test()
+    NArraySelfMapOpsTest[String](t1.a, NATIVE_ARRAY, (s: String) => s.reverse).test()
   }
-  test("NArrayOfUniquelyValuedElementsOpsTest[AnyRef]") { NArrayWithDuplicateElementsOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef())).test() }
+  test("NArrayOfUniquelyValuedElementsOpsTest[AnyRef]") { NArrayWithDuplicateElementsOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef()), NATIVE_ARRAY).test() }
 
 }

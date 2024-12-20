@@ -17,7 +17,6 @@
 package narr.native
 
 import narr.*
-import narr.NArray.builderFor
 
 import scala.collection.{IndexedSeqView, immutable, mutable}
 import scala.scalajs.js
@@ -43,6 +42,10 @@ object Extensions {
 
     def sorted: ByteArray = sorted(Ordering.Byte)
     def sorted(ord: Ordering[Byte]): ByteArray = sortByteArray(copy[Byte](a), ord)
+
+    def unzip[A1, A2](using asPair: Byte => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      narr.native.NArray.unzip[Byte, A1, A2](a)
+    }
   }
 
   extension (a: ShortArray) {
@@ -52,6 +55,10 @@ object Extensions {
 
     def sorted: ShortArray = sorted(Ordering.Short)
     def sorted(ord: Ordering[Short]): ShortArray = sortShortArray(copy[Short](a), ord)
+
+    def unzip[A1, A2](using asPair: Short => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      narr.native.NArray.unzip[Short, A1, A2](a)
+    }
   }
 
   extension (a: IntArray) {
@@ -60,6 +67,10 @@ object Extensions {
 
     def sorted:IntArray = sorted(Ordering.Int)
     def sorted(ord:Ordering[Int]): IntArray = sortIntArray(copy[Int](a), ord)
+
+    def unzip[A1, A2](using asPair: Int => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      narr.native.NArray.unzip[Int, A1, A2](a)
+    }
   }
 
   extension (a: FloatArray) {
@@ -68,6 +79,10 @@ object Extensions {
     def sort(ord: Ordering[Float]): FloatArray = sortFloatArray(a, ord)
     def sorted: FloatArray = sorted(Ordering.Float.TotalOrdering)
     def sorted(ord: Ordering[Float]): FloatArray = sortFloatArray(copy[Float](a), ord)
+
+    def unzip[A1, A2](using asPair: Float => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      narr.native.NArray.unzip[Float, A1, A2](a)
+    }
   }
 
   extension (a: DoubleArray) {
@@ -75,6 +90,10 @@ object Extensions {
     def sort(ord: Ordering[Double]): DoubleArray = sortDoubleArray(a, ord)
     def sorted: DoubleArray = sorted(Ordering.Double.TotalOrdering)
     def sorted(ord: Ordering[Double]): DoubleArray = sortDoubleArray(copy[Double](a), ord)
+
+    def unzip[A1, A2](using asPair: Double => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      narr.native.NArray.unzip[Double, A1, A2](a)
+    }
   }
 
   extension[T <: AnyRef | Boolean | Char | Long | Unit] (a:NArray[T]) {
@@ -216,7 +235,7 @@ object Extensions {
      *         of this array.
      */
     inline def slice(from: Int, until: Int): NArray[T] = {
-      a.asInstanceOf[NArr[T]].slice(from, until).asInstanceOf[NArray[T]]
+      ((a.asInstanceOf[NArr[T]]).slice(from, until)).asInstanceOf[NArray[T]]
     }
 
     /** The rest of the NArray without its first element. */
@@ -355,8 +374,8 @@ object Extensions {
 
     /** A pair of, first, all elements that satisfy predicate `p` and, second, all elements that do not. */
     def partition(p: T => Boolean)(using ClassTag[T], ClassTag[NArray[T]]): (NArray[T], NArray[T]) = {
-      val nab1 = builderFor[T]()
-      val nab2 = builderFor[T]()
+      val nab1 = NArrayBuilder[T]()
+      val nab2 = NArrayBuilder[T]()
 
       var i = 0; while (i < a.length) {
         val x = a(i)
@@ -696,7 +715,7 @@ object Extensions {
      *         `f` to each element of this array and concatenating the results.
      */
     def flatMap[B: ClassTag](f: T => IterableOnce[B]): NArray[B] = {
-      val b = NArray.builderFor[B]()
+      val b = NArrayBuilder[B]()
       var i = 0
       while (i < a.length) {
         b ++= f(a(i))
@@ -715,7 +734,7 @@ object Extensions {
      * @param asIterable A function that converts elements of this array to rows - Iterables of type `B`.
      * @return An array obtained by concatenating rows of this array.
      */
-    def flatten[B](using asIterable: T => IterableOnce[B], m: ClassTag[B]): NArray[B] = {
+    def flatten[B:ClassTag](using asIterable: T => IterableOnce[B]): NArray[B] = {
       val len = a.length
       var size = 0
       var i = 0
@@ -734,7 +753,7 @@ object Extensions {
         }
         i += 1
       }
-      val b = NArray.builderFor[B](size)
+      val b = NArrayBuilder[B](size)
       i = 0
       while (i < len) {
         b ++= asIterable(a(i))
@@ -754,7 +773,7 @@ object Extensions {
      */
     def collect[B: ClassTag](pf: PartialFunction[T, B]): NArray[B] = {
       val fallback: Any => Any = Any => Extensions.fallback
-      val b = NArray.builderFor[B]()
+      val b = NArrayBuilder[B]()
       var i = 0
       while (i < a.length) {
         val v = pf.applyOrElse(a(i), fallback)
@@ -790,7 +809,7 @@ object Extensions {
      */
     def zip[B](that: IterableOnce[B]): NArray[(T, B)] = {
       val k = that.knownSize
-      val b = NArray.builderFor[(T, B)](if (k >= 0) Math.min(k, a.length) else a.length)
+      val b = NArrayBuilder.builderFor[(T, B)]( if (k >= 0) Math.min(k, a.length) else a.length )
 
       var i = 0
       val it = that.iterator
@@ -816,7 +835,7 @@ object Extensions {
      *         If `that` is shorter than this array, `thatElem` values are used to pad the result.
      */
     def zipAll[A1 >: T, B](that: Iterable[B], thisElem: A1, thatElem: B): NArray[(A1, B)] = {
-      val b = NArray.builderFor[(A1, B)](Math.max(that.knownSize, a.length))
+      val b = NArrayBuilder.builderFor[(A1, B)](Math.max(that.knownSize, a.length))
       var i = 0
       val it = that.iterator
       while (i < a.length && it.hasNext) {
@@ -867,14 +886,19 @@ object Extensions {
     /** A copy of this array with all elements of a collection prepended. */
     def prependedAll[B >: T : ClassTag](prefix: IterableOnce[B]): NArray[B] = {
       val k = prefix.knownSize
-      val b = NArray.builderFor[B]((if (k >= 0) k else 0) + a.length)
+      val b = NArrayBuilder[B]((if (k >= 0) k else 0) + a.length)
       b.addAll(prefix)
       b.addAll(a.asInstanceOf[NArray[B]])
       b.result
     }
 
     /** A copy of this array with all elements of an array prepended. */
-    def prependedAll[B >: T : ClassTag](prefix: NArray[B] ): NArray[B] = NArray.concatenate(prefix, a.asInstanceOf[NArray[B]])
+    def prependedAll[B >: T : ClassTag](prefix: NArray[B] ): NArray[B] = {
+      val out = NArray.ofSize[B](prefix.length + a.length)
+      NArray.copy[B](prefix, out, 0)
+      NArray.copy[B](a.asInstanceOf[NArray[B]], out, prefix.length)
+      out
+    }
 
     inline def ++:[B >: T : ClassTag](prefix: IterableOnce[B]): NArray[B] = prependedAll(prefix)
 
@@ -882,7 +906,7 @@ object Extensions {
 
     /** A copy of this array with all elements of a collection appended. */
     def appendedAll[B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = {
-      val nab = NArray.builderFor[B]()
+      val nab = NArrayBuilder[B]()
       nab.addAll(a.asInstanceOf[NArray[B]])
       val itr = suffix.iterator
       while (itr.hasNext) nab += itr.next()
@@ -890,19 +914,24 @@ object Extensions {
     }
 
     /** A copy of this array with all elements of an array appended. */
-    def appendedAll[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+    def appendedAll[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = {
+      val out = NArray.ofSize[B](a.length + suffix.length)
+      NArray.copy[B](a.asInstanceOf[NArray[B]], out, 0)
+      NArray.copy[B](suffix, out, a.length)
+      out
+    }
 
     inline def :++ [B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = appendedAll(suffix)
 
-    inline def :++ [B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+    inline def :++ [B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll[B](suffix)
 
     inline def concat[B >: T : ClassTag](suffix: IterableOnce[B]): NArray[B] = appendedAll(suffix)
 
-    inline def concat[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+    inline def concat[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll[B](suffix)
 
     inline def ++[B >: T : ClassTag](xs: IterableOnce[B]): NArray[B] = appendedAll(xs)
 
-    inline def ++[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = NArray.concatenate(a, suffix)
+    inline def ++[B >: T : ClassTag](suffix: NArray[B]): NArray[B] = appendedAll[B](suffix)
 
     /** Tests whether this array contains a given value as an element.
      *
@@ -931,7 +960,7 @@ object Extensions {
     def patch[B >: T : ClassTag](from: Int, other: IterableOnce[B], replaced: Int): NArray[B] = {
       val k = other.knownSize
       val r = if (replaced < 0) 0 else replaced
-      val b = NArray.builderFor[B](if (k >= 0) a.length + k - r else 0)
+      val b = NArrayBuilder[B](if (k >= 0) a.length + k - r else 0)
       val chunk1 = if (from > 0) Math.min(from, a.length) else 0
       if (chunk1 > 0) b.addAll(a.asInstanceOf[NArray[B]], 0, chunk1)
       b.addAll(other)
@@ -954,18 +983,8 @@ object Extensions {
      *         of each element pair of this Array.
      */
     def unzip[A1, A2](using asPair: T => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
-      val a1 = NArray.ofSize[A1](a.length)
-      val a2 = NArray.ofSize[A2](a.length)
-      var i = 0
-      while (i < a.length) {
-        val e = asPair(a(i))
-        a1(i) = e._1
-        a2(i) = e._2
-        i += 1
-      }
-      (a1, a2)
+      narr.native.NArray.unzip[T, A1, A2](a)
     }
-
 
     /** Converts an array of triples into three arrays, one containing the elements from each position of the triple.
      *
@@ -1007,10 +1026,10 @@ object Extensions {
      */
     def transpose[B](using asArray: T => NArray[B]): NArray[NArray[B]] = {
       val aClass = a.getClass.getComponentType
-      val bb = NArray.builderFor[NArray[B]]()
+      val bb = NArrayBuilder.builderFor[NArray[B]]()
       if (a.length == 0) bb.result
       else {
-        def mkRowBuilder() = NArray.builderFor[B]()
+        def mkRowBuilder() = NArrayBuilder.builderFor[B]()
 
         val bs = asArray(a(0)).map((x: B) => mkRowBuilder())
 
@@ -1050,7 +1069,7 @@ object Extensions {
      * @return a new array consisting of all the elements of this array without duplicates.
      */
     def distinctBy[B](f: T => B): NArray[T] =
-      NArray.builderFor[T]().addAll(iterator.distinctBy(f)).result
+      NArrayBuilder.builderFor[T]().addAll(iterator.distinctBy(f)).result
 
     /** A copy of this array with an element value appended until a given target length is reached.
      *
@@ -1097,7 +1116,7 @@ object Extensions {
       while(i < len) {
         val elem = a(i)
         val key = f(elem)
-        val bldr = m.getOrElseUpdate(key, NArray.builderFor[T]())
+        val bldr = m.getOrElseUpdate(key, NArrayBuilder.builderFor[T]())
         bldr += elem
         i += 1
       }
@@ -1129,7 +1148,7 @@ object Extensions {
       while (i < len) {
         val elem = a(i)
         val k = key(elem)
-        val bldr = m.getOrElseUpdate(k, NArray.builderFor[B]())
+        val bldr = m.getOrElseUpdate(k, NArrayBuilder[B]())
         bldr += f(elem)
         i += 1
       }
@@ -1296,7 +1315,7 @@ object Extensions {
       if (isEmpty || that.isEmpty) a.copy
       else {
         val occ = occCounts(that)
-        val b = builderFor[T]()
+        val b = NArrayBuilder.builderFor[T]()
         var i = 0
         while (i < a.length) {
           val x = a(i)
@@ -1327,7 +1346,7 @@ object Extensions {
       if (isEmpty || that.isEmpty) a.slice(0, 0)
       else {
         val occ = occCounts(that)
-        val b = builderFor[T]()
+        val b = NArrayBuilder.builderFor[T]()
         var i = 0
         while (i < a.length) {
           val x = a(i)

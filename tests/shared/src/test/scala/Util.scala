@@ -21,8 +21,32 @@ object Util {
   import munit.*
   import munit.Assertions.*
 
-  def assertNArrayEquality[T](nArr1: NArray[T], nArr2: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+  enum NArrayType:
+    case BYTE_ARRAY, SHORT_ARRAY, INT_ARRAY, FLOAT_ARRAY, DOUBLE_ARRAY, NATIVE_ARRAY
+  import NArrayType.*
+
+  def getNArrayType[T](narr: NArray[T]): NArrayType = {
+    narr match {
+      case _: ByteArray => BYTE_ARRAY
+      case _: ShortArray => SHORT_ARRAY
+      case _: IntArray => INT_ARRAY
+      case _: FloatArray => FLOAT_ARRAY
+      case _: DoubleArray => DOUBLE_ARRAY
+      case _: NativeArray[?] => NATIVE_ARRAY
+    }
+  }
+
+  def assertNArrayType[T](narr: NArray[T], expectedNArrType: NArrayType)(using loc: Location, compare: Compare[NArrayType, NArrayType]): Unit = {
+    assertEquals[NArrayType, NArrayType](
+      expectedNArrType,
+      getNArrayType(narr)
+    )
+  }
+
+  def assertNArrayEquality[T](nArr1: NArray[T], nArr2: NArray[T], nt:NArrayType)(using loc: Location, compare: Compare[T, T]): Unit = {
     assertEquals(nArr1.length, nArr2.length)
+    assertEquals[NArrayType, NArrayType](getNArrayType[T](nArr1), nt)
+    assertEquals[NArrayType, NArrayType](getNArrayType[T](nArr2), nt)
     var i: Int = 0
     while (i < nArr1.length) {
       assertEquals(nArr1(i), nArr2(i))
@@ -30,11 +54,12 @@ object Util {
     }
   }
 
-  def assertArray2NArrayEquality[T](arr1: Array[T], nArr2: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
-    assertEquals(arr1.length, nArr2.length)
+  def assertArray2NArrayEquality[T](arr: Array[T], nArr: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+    assertEquals(arr.length, nArr.length)
     var i: Int = 0
-    while (i < arr1.length) {
-      assertEquals(arr1(i), nArr2(i))
+    while (i < arr.length) {
+      val comparison:Boolean = arr(i) == nArr(i)
+      assertEquals(comparison, true)
       i += 1
     }
   }

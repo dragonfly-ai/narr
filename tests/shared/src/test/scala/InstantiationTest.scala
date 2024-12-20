@@ -15,131 +15,234 @@
  */
 
 import narr.*
+import Util.*
+import Util.NArrayType.*
+
+import scala.reflect.ClassTag
 
 class InstantiationTest extends munit.FunSuite {
 
-  test(" NArray constructors and factories ") {
+  var N: Int = 11
 
-    var N: Int = 11
+  def tabulateTypeTest[T](f: (Int) => T, nt:NArrayType)(using ClassTag[T]): Unit = {
+    assertNArrayType(NArray.tabulate[T](N)(f), nt)
+  }
 
-    ////////////////
-    // Value Types:
-    ////////////////
+  ////////////////
+  // Value Types:
+  ////////////////
+
+  test(" NArray[Unit] constructors and factories ") {
 
     // Unit
-    val uaNew: NArray[Unit] = new NArray[Unit](N)
-    val uaOfSize: NArray[Unit] = NArray.ofSize[Unit](N)
-    val uaFill: NArray[Unit] = NArray.fill[Unit](N)(())
-    val uaTabulate: NArray[Unit] = NArray.tabulate[Unit](N)(_ => ())
-    assertEquals(uaNew.length, uaOfSize.length)
-    assertEquals(uaOfSize.length, uaFill.length)
-    assertEquals(uaFill.length, uaTabulate.length)
+    val f = (_:Int) => ()
+    val na: NArray[Unit] = new NArray[Unit](N)
+    val aos: NArray[Unit] = NArray.ofSize[Unit](N)
+    val af: NArray[Unit] = NArray.fill[Unit](N)(())
+    val at: NArray[Unit] = NArray.tabulate[Unit](N)(f)
 
-    N += 1
+    assertNArrayType[Unit](na, NATIVE_ARRAY)
+    assertNArrayType[Unit](aos, NATIVE_ARRAY)
+    assertNArrayType[Unit](af, NATIVE_ARRAY)
+    assertNArrayType[Unit](at, NATIVE_ARRAY)
+    tabulateTypeTest[Unit](f, NATIVE_ARRAY)
+
+    assertEquals(na.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Boolean] constructors and factories ") {
+    val f = (i: Int) => i % 2 == 0
     // Boolean
-    val boolArrNew: NArray[Boolean] = new NArray[Boolean](N)
-    val boolArrOfSize: NArray[Boolean] = NArray.ofSize[Boolean](N)
-    val boolArrFill: NArray[Boolean] = NArray.fill[Boolean](N)(false)
-    val boolArrTabulate: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)
-    assertEquals(boolArrNew.length, boolArrOfSize.length)
-    assertEquals(boolArrOfSize.length, boolArrFill.length)
-    assertEquals(boolArrFill.length, boolArrTabulate.length)
+    val an: NArray[Boolean] = new NArray[Boolean](N)
+    val aos: NArray[Boolean] = NArray.ofSize[Boolean](N)
+    val af: NArray[Boolean] = NArray.fill[Boolean](N)(false)
+    val at: NArray[Boolean] = NArray.tabulate[Boolean](N)(f)
 
-    N += 1
+    assertNArrayType[Boolean](an, NATIVE_ARRAY)
+    assertNArrayType[Boolean](aos, NATIVE_ARRAY)
+    assertNArrayType[Boolean](af, NATIVE_ARRAY)
+    assertNArrayType[Boolean](at, NATIVE_ARRAY)
+    tabulateTypeTest[Boolean](f, NATIVE_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Byte] constructors and factories ") {
+    val f = (i: Int) => i.toByte
     // Byte
-    val baNew: NArray[Byte] = new NArray[Byte](N)
-    val baOfSize: NArray[Byte] = NArray.ofSize[Byte](N)
-    val baFill: NArray[Byte] = NArray.fill[Byte](N)(1)
-    val baTabulate: NArray[Byte] = NArray.tabulate[Byte](N)((i: Int) => i.toByte)
-    assertEquals(baNew.length, baOfSize.length)
-    assertEquals(baOfSize.length, baFill.length)
-    assertEquals(baFill.length, baTabulate.length)
+    val an: NArray[Byte] = new NArray[Byte](N)
+    val aos: NArray[Byte] = NArray.ofSize[Byte](N)
+    val af: NArray[Byte] = NArray.fill[Byte](N)(1)
+    val at: NArray[Byte] = NArray.tabulate[Byte](N)(f)
 
-    N += 1
+    assertNArrayType[Byte](an, BYTE_ARRAY)
+    assertNArrayType[Byte](aos, BYTE_ARRAY)
+    assertNArrayType[Byte](af, BYTE_ARRAY)
+    assertNArrayType[Byte](at, BYTE_ARRAY)
+    tabulateTypeTest[Byte](f, BYTE_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Short] constructors and factories ") {
+    val f = (i: Int) => i.toShort
     // Short
-    val saNew: NArray[Short] = new NArray[Short](N)
-    val saOfSize: NArray[Short] = NArray.ofSize[Short](N)
-    val saFill: NArray[Short] = NArray.fill[Short](N)(1)
-    val saTabulate: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => i.toShort)
-    assertEquals(saNew.length, saOfSize.length)
-    assertEquals(saOfSize.length, saFill.length)
-    assertEquals(saFill.length, saTabulate.length)
+    val an: NArray[Short] = new NArray[Short](N)
+    val aos: NArray[Short] = NArray.ofSize[Short](N)
+    val af: NArray[Short] = NArray.fill[Short](N)(1)
+    val at: NArray[Short] = NArray.tabulate[Short](N)(f)
 
-    N += 1
+    assertNArrayType[Short](an, SHORT_ARRAY)
+    assertNArrayType[Short](aos, SHORT_ARRAY)
+    assertNArrayType[Short](af, SHORT_ARRAY)
+    assertNArrayType[Short](at, SHORT_ARRAY)
+    tabulateTypeTest[Short](f, SHORT_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Int] constructors and factories ") {
+    val f = (i: Int) => i
     // Int
-    val iaNew: NArray[Int] = new NArray[Int](N)
-    val iaOfSize: NArray[Int] = NArray.ofSize[Int](N)
-    val iaFill: NArray[Int] = NArray.fill[Int](N)(1)
-    val iaTabulate: NArray[Int] = NArray.tabulate[Int](N)((i: Int) => i)
-    assertEquals(iaNew.length, iaOfSize.length)
-    assertEquals(iaOfSize.length, iaFill.length)
-    assertEquals(iaFill.length, iaTabulate.length)
+    val an: NArray[Int] = new NArray[Int](N)
+    val aos: NArray[Int] = NArray.ofSize[Int](N)
+    val af: NArray[Int] = NArray.fill[Int](N)(1)
+    val at: NArray[Int] = NArray.tabulate[Int](N)(f)
 
-    N += 1
+    assertNArrayType[Int](an, INT_ARRAY)
+    assertNArrayType[Int](aos, INT_ARRAY)
+    assertNArrayType[Int](af, INT_ARRAY)
+    assertNArrayType[Int](at, INT_ARRAY)
+    tabulateTypeTest[Int](f, INT_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Long] constructors and factories ") {
+    val f = (i: Int) => i.toLong
     // Long
-    val laNew: NArray[Long] = new NArray[Long](N)
-    val laOfSize: NArray[Long] = NArray.ofSize[Long](N)
-    val laFill: NArray[Long] = NArray.fill[Long](N)(1L)
-    val laTabulate: NArray[Long] = NArray.tabulate[Long](N)((i: Int) => i.toLong)
-    assertEquals(laNew.length, laOfSize.length)
-    assertEquals(laOfSize.length, laFill.length)
-    assertEquals(laFill.length, laTabulate.length)
+    val an: NArray[Long] = new NArray[Long](N)
+    val aos: NArray[Long] = NArray.ofSize[Long](N)
+    val af: NArray[Long] = NArray.fill[Long](N)(1L)
+    val at: NArray[Long] = NArray.tabulate[Long](N)(f)
 
-    N += 1
+    assertNArrayType[Long](an, NATIVE_ARRAY)
+    assertNArrayType[Long](aos, NATIVE_ARRAY)
+    assertNArrayType[Long](af, NATIVE_ARRAY)
+    assertNArrayType[Long](at, NATIVE_ARRAY)
+    tabulateTypeTest[Long](f, NATIVE_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Float] constructors and factories ") {
+    val f = (i: Int) => i.toFloat
     // Float
-    val faNew: NArray[Float] = new NArray[Float](N)
-    val faOfSize: NArray[Float] = NArray.ofSize[Float](N)
-    val faFill: NArray[Float] = NArray.fill[Float](N)(1L)
-    val faTabulate: NArray[Float] = NArray.tabulate[Float](N)((i: Int) => i.toFloat)
-    assertEquals(faNew.length, faOfSize.length)
-    assertEquals(faOfSize.length, faFill.length)
-    assertEquals(faFill.length, faTabulate.length)
+    val an: NArray[Float] = new NArray[Float](N)
+    val aos: NArray[Float] = NArray.ofSize[Float](N)
+    val af: NArray[Float] = NArray.fill[Float](N)(1L)
+    val at: NArray[Float] = NArray.tabulate[Float](N)(f)
 
-    N += 1
+    assertNArrayType[Float](an, FLOAT_ARRAY)
+    assertNArrayType[Float](aos, FLOAT_ARRAY)
+    assertNArrayType[Float](af, FLOAT_ARRAY)
+    assertNArrayType[Float](at, FLOAT_ARRAY)
+    tabulateTypeTest[Float](f, FLOAT_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Double] constructors and factories ") {
+    val f = (i: Int) => i.toDouble
     // Double
-    val daNew: NArray[Double] = new NArray[Double](N)
-    val daOfSize: NArray[Double] = NArray.ofSize[Double](N)
-    val daFill: NArray[Double] = NArray.fill[Double](N)(1L)
-    val daTabulate: NArray[Double] = NArray.tabulate[Double](N)((i: Int) => i.toDouble)
-    assertEquals(daNew.length, daOfSize.length)
-    assertEquals(daOfSize.length, daFill.length)
-    assertEquals(daFill.length, daTabulate.length)
+    val an: NArray[Double] = new NArray[Double](N)
+    val aos: NArray[Double] = NArray.ofSize[Double](N)
+    val af: NArray[Double] = NArray.fill[Double](N)(1L)
+    val at: NArray[Double] = NArray.tabulate[Double](N)(f)
 
-    N += 1
+    assertNArrayType[Double](an, DOUBLE_ARRAY)
+    assertNArrayType[Double](aos, DOUBLE_ARRAY)
+    assertNArrayType[Double](af, DOUBLE_ARRAY)
+    assertNArrayType[Double](at, DOUBLE_ARRAY)
+    tabulateTypeTest[Double](f, DOUBLE_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[Char] constructors and factories ") {
+    val f = (i: Int) => i.toChar
     // Char
-    val caNew: NArray[Char] = new NArray[Char](N)
-    val caOfSize: NArray[Char] = NArray.ofSize[Char](N)
-    val caFill: NArray[Char] = NArray.fill[Char](N)('a')
-    val caTabulate: NArray[Char] = NArray.tabulate[Char](N)((i: Int) => i.toChar)
-    assertEquals(caNew.length, caOfSize.length)
-    assertEquals(caOfSize.length, caFill.length)
-    assertEquals(caFill.length, caTabulate.length)
+    val an: NArray[Char] = new NArray[Char](N)
+    val aos: NArray[Char] = NArray.ofSize[Char](N)
+    val af: NArray[Char] = NArray.fill[Char](N)('a')
+    val at: NArray[Char] = NArray.tabulate[Char](N)(f)
 
+    assertNArrayType[Char](an, NATIVE_ARRAY)
+    assertNArrayType[Char](aos, NATIVE_ARRAY)
+    assertNArrayType[Char](af, NATIVE_ARRAY)
+    assertNArrayType[Char](at, NATIVE_ARRAY)
+    tabulateTypeTest[Char](f, NATIVE_ARRAY)
 
-    ////////////////////
-    // Reference Types:
-    ////////////////////
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
 
-    N += 1
+  ////////////////////
+  // Reference Types:
+  ////////////////////
+
+  test(" NArray[String] constructors and factories ") {
+    val f = (i: Int) => i.toString
     // String
-    val strArrNew: NArray[String] = new NArray[String](N)
-    val strArrOfSize: NArray[String] = NArray.ofSize[String](N)
-    val strArrFill: NArray[String] = NArray.fill[String](N)("Asdf.")
-    val strArrTabulate: NArray[String] = NArray.tabulate[String](N)((i: Int) => i.toString)
-    assertEquals(strArrNew.length, strArrOfSize.length)
-    assertEquals(strArrOfSize.length, strArrFill.length)
-    assertEquals(strArrFill.length, strArrTabulate.length)
+    val an: NArray[String] = new NArray[String](N)
+    val aos: NArray[String] = NArray.ofSize[String](N)
+    val af: NArray[String] = NArray.fill[String](N)("Asdf.")
+    val at: NArray[String] = NArray.tabulate[String](N)(f)
 
-    N += 1
+    assertNArrayType[String](an, NATIVE_ARRAY)
+    assertNArrayType[String](aos, NATIVE_ARRAY)
+    assertNArrayType[String](af, NATIVE_ARRAY)
+    assertNArrayType[String](at, NATIVE_ARRAY)
+    tabulateTypeTest[String](f, NATIVE_ARRAY)
+
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
+  }
+
+  test(" NArray[AnyRef] constructors and factories ") {
+    val f = (_:Int) => new AnyRef()
     // AnyRef
-    val anyRefArrNew: NArray[AnyRef] = new NArray[AnyRef](N)
-    val anyRefArrOfSize: NArray[AnyRef] = NArray.ofSize[AnyRef](N)
-    val anyRefArrFill: NArray[AnyRef] = NArray.fill[AnyRef](N)(new AnyRef())
-    val anyRefArrTabulate: NArray[AnyRef] = NArray.tabulate[AnyRef](N)(_ => new AnyRef())
-    assertEquals(anyRefArrNew.length, anyRefArrOfSize.length)
-    assertEquals(anyRefArrOfSize.length, anyRefArrFill.length)
-    assertEquals(anyRefArrFill.length, anyRefArrTabulate.length)
+    val an: NArray[AnyRef] = new NArray[AnyRef](N)
+    val aos: NArray[AnyRef] = NArray.ofSize[AnyRef](N)
+    val af: NArray[AnyRef] = NArray.fill[AnyRef](N)(new AnyRef())
+    val at: NArray[AnyRef] = NArray.tabulate[AnyRef](N)(f)
 
+    assertNArrayType[AnyRef](an, NATIVE_ARRAY)
+    assertNArrayType[AnyRef](aos, NATIVE_ARRAY)
+    assertNArrayType[AnyRef](af, NATIVE_ARRAY)
+    assertNArrayType[AnyRef](at, NATIVE_ARRAY)
+    tabulateTypeTest[AnyRef](f, NATIVE_ARRAY)
 
+    assertEquals(an.length, aos.length)
+    assertEquals(aos.length, af.length)
+    assertEquals(af.length, at.length)
   }
 }

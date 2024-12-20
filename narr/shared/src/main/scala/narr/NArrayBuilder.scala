@@ -23,8 +23,6 @@
 package narr
 import narr.*
 
-import narr.native.NativeArrayBuilder
-
 import scala.compiletime.erasedValue
 import scala.reflect.ClassTag
 
@@ -32,14 +30,14 @@ object NArrayBuilder {
   val DefaultInitialSize:Int = 16
   val MAX_NArraySize:Int = 2147483639
 
-  transparent inline def apply[A:ClassTag](initialCapacity: Int = DefaultInitialSize)(using ClassTag[NArray[A]]):NArrayBuilder[A] = (inline erasedValue[A] match {
-    case _: Byte => ByteArrayBuilder(initialCapacity)
-    case _: Short => ShortArrayBuilder(initialCapacity)
-    case _: Int => IntArrayBuilder(initialCapacity)
-    case _: Float => FloatArrayBuilder(initialCapacity)
-    case _: Double => DoubleArrayBuilder(initialCapacity)
-    case _ => NativeArrayBuilder[A](initialCapacity)
-  }).asInstanceOf[NArrayBuilder[A]]
+//  transparent inline def apply[A:ClassTag](initialCapacity: Int = DefaultInitialSize)(using ClassTag[NArray[A]]):NArrayBuilder[A] = (inline erasedValue[A] match {
+//    case _: Byte => ByteArrayBuilder(initialCapacity)
+//    case _: Short => ShortArrayBuilder(initialCapacity)
+//    case _: Int => IntArrayBuilder(initialCapacity)
+//    case _: Float => FloatArrayBuilder(initialCapacity)
+//    case _: Double => DoubleArrayBuilder(initialCapacity)
+//    case _ => NativeArrayBuilder[A](initialCapacity)
+//  }).asInstanceOf[NArrayBuilder[A]]
 
 //  def main(args:Array[String]):Unit = {
 //    var i:Int = DefaultInitialSize
@@ -55,6 +53,24 @@ object NArrayBuilder {
 //    println(s"(Math.log(MAX_NArraySize) / Math.log(2)) - (Math.log($DefaultInitialSize) / Math.log(2)) = ${(Math.log(MAX_NArraySize) / Math.log(2))} - ${(Math.log(DefaultInitialSize) / Math.log(2))} = ${Math.ceil((Math.log(MAX_NArraySize) / Math.log(2)) - (Math.log(DefaultInitialSize) / Math.log(2)))}")
 //  }
 
+
+  inline def apply[T](initialCapacity: Int = DefaultInitialSize)(using ct:ClassTag[T]): NArrayBuilder[T] = (ct match {
+    case ClassTag.Byte => ByteArrayBuilder(initialCapacity)
+    case ClassTag.Short => ShortArrayBuilder(initialCapacity)
+    case ClassTag.Int => IntArrayBuilder(initialCapacity)
+    case ClassTag.Float => FloatArrayBuilder(initialCapacity)
+    case ClassTag.Double => DoubleArrayBuilder(initialCapacity)
+    case _ => narr.native.NativeArrayBuilder[T](initialCapacity)
+  }).asInstanceOf[NArrayBuilder[T]]
+
+  inline def builderFor[T](initialCapacity: Int = NArrayBuilder.DefaultInitialSize): NArrayBuilder[T] = (inline erasedValue[T] match {
+    case _: Byte => ByteArrayBuilder()
+    case _: Short => ShortArrayBuilder()
+    case _: Int => IntArrayBuilder()
+    case _: Float => FloatArrayBuilder()
+    case _: Double => DoubleArrayBuilder()
+    case _ => narr.native.NativeArrayBuilder[Any]()
+  }).asInstanceOf[NArrayBuilder[T]]
 
 }
 
@@ -83,14 +99,16 @@ trait NArrayBuilder[T] {
     addAll(
       xs.slice(
         offset1,
-        length.max(0).min(xs.length - offset1)
+        offset1 + length.max(0).min(xs.length - offset1)
       )
     )
   }
+
   def addAll(itr: Iterator[T]): this.type = {
     while (itr.hasNext) addOne(itr.next())
     this
   }
+
   def addAll(xs: IterableOnce[T]): this.type = {
     addAll(xs.iterator)
     this

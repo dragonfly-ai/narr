@@ -170,8 +170,34 @@ package object native {
       println(s"cp = $cp, newLength = $newLength")
       narr.NArray.copy[T]( original, cp, 0 )
     }
-  }
 
+
+    /** Converts an array of pairs into an array of first elements and an array of second elements.
+     *
+     * @tparam A1 the type of the first half of the element pairs
+     * @tparam A2 the type of the second half of the element pairs
+     * @param asPair an implicit conversion which asserts that the element type
+     *               of this Array is a pair.
+     * @param ct1    a class tag for `A1` type parameter that is required to create an instance
+     *               of `Array[A1]`
+     * @param ct2    a class tag for `A2` type parameter that is required to create an instance
+     *               of `Array[A2]`
+     * @return a pair of Arrays, containing, respectively, the first and second half
+     *         of each element pair of this Array.
+     */
+    def unzip[T, A1, A2](a: NArray[T])(using asPair: T => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      val a1 = narr.NArray.ofSize[A1](a.length)
+      val a2 = narr.NArray.ofSize[A2](a.length)
+      var i = 0
+      while (i < a.length) {
+        val e = asPair(a(i))
+        a1(i) = e._1
+        a2(i) = e._2
+        i += 1
+      }
+      (a1, a2)
+    }
+  }
 
   inline def makeNativeArrayOfSize[A](n:Int)(using ClassTag[A]):NativeArray[A] = (new scala.scalajs.js.Array[Any](n)).asInstanceOf[NativeArray[A]]
 

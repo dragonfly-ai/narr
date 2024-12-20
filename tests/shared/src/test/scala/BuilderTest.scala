@@ -14,104 +14,163 @@
  * limitations under the License.
  */
 
-import Util.assertNArrayEquality
+import munit.{Compare, Location}
 import narr.*
+import Util.*
+import Util.NArrayType.*
 
 import scala.reflect.ClassTag
 import scala.util.Random
 
 class BuilderTest extends munit.FunSuite {
   val r:Random = new Random()
+  val N: Int = 8192
 
-  class AddOneByOneTest[T: ClassTag](nab: NArrayBuilder[T], r0: () => T) {
+  class AddOneByOneTest[T: ClassTag](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
 
     def runTests(): Unit = {
 
-      val n: Int = 8192
-      val truth: NArray[T] = NArray.tabulate[T](n)((i: Int) => r0())
-
-      var i: Int = 0; while (i < n) {
-        nab.addOne(truth(i))
+      var i: Int = 0; while (i < N) {
+        nab.addOne(values(i))
         i = i + 1
       }
       val result: NArray[T] = nab.result
-      assertEquals(result.length, n)
-      assertNArrayEquality[T](truth, result)
+      assertEquals(result.length, N)
+      assertNArrayEquality[T](values, result, nt)
 
       // accessor test
       var accumulator = true
-      i = 0; while (i < n) {
-        if (truth(i) != nab(i)) println(s"truth($i) == nab($i): ${truth(i)} == ${nab(i)}")
-        accumulator = accumulator && (truth(i) == nab(i))
+      i = 0; while (i < N) {
+        if (values(i) != nab(i)) println(s"values($i) == nab($i): ${values(i)} == ${nab(i)}")
+        accumulator = accumulator && (values(i) == nab(i))
         i = i + 1
       }
       assert(accumulator)
     }
   }
 
-  class AddAllTest[T: ClassTag](nab: NArrayBuilder[T], r0: () => T) {
+  class AddAllTest[T: ClassTag](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
 
     def runTests(): Unit = {
-
-      val n: Int = 8192
-      val truth: NArray[T] = NArray.tabulate[T](n)((i: Int) => r0())
-      var i: Int = 0; while (i < n) {
-        val j:Int = Math.min(r.nextInt(128), n - i)
-        val s:NArray[T] = truth.slice( i, i + j )
-        nab.addAll(s)
-        i = i + j
+      var i: Int = 0; while (i < N) {
+        val j:Int = Math.min(r.nextInt(128), N - i)
+        if (Math.random() > 0.5) {
+          val s: NArray[T] = values.slice(i, i + j)
+          nab.addAll(s)
+          i = i + j
+        } else {
+          nab.addAll(values, i, j)
+          i = i + j
+        }
       }
       val result: NArray[T] = nab.result
-      assertEquals(result.length, n)
-      assertNArrayEquality[T](truth, result)
+      assertEquals(result.length, N)
+      assertNArrayEquality[T](values, result, nt)
     }
   }
 
+  private class BuilderResultTypeTest[T: ClassTag](expectedNArrType: NArrayType) {
+
+    def runTests(): Unit = {
+      // Indirect
+      assertNArrayType[T](NArrayBuilder[T]().result, expectedNArrType)
+    }
+  }
+
+  // builderFor
+  test(" NArray.builderFor[]()") {
+    // Direct
+    assertNArrayType[Byte](NArrayBuilder.builderFor[Byte]().result, BYTE_ARRAY)
+    assertNArrayType[Short](NArrayBuilder.builderFor[Short]().result, SHORT_ARRAY)
+    assertNArrayType[Int](NArrayBuilder.builderFor[Int]().result, INT_ARRAY)
+    assertNArrayType[Float](NArrayBuilder.builderFor[Float]().result, FLOAT_ARRAY)
+    assertNArrayType[Double](NArrayBuilder.builderFor[Double]().result, DOUBLE_ARRAY)
+    assertNArrayType[Unit](NArrayBuilder.builderFor[Unit]().result, NATIVE_ARRAY)
+    assertNArrayType[Boolean](NArrayBuilder.builderFor[Boolean]().result, NATIVE_ARRAY)
+    assertNArrayType[Long](NArrayBuilder.builderFor[Long]().result, NATIVE_ARRAY)
+    assertNArrayType[String](NArrayBuilder.builderFor[String]().result, NATIVE_ARRAY)
+    assertNArrayType[Any](NArrayBuilder.builderFor[Any]().result, NATIVE_ARRAY)
+  }
+
   test(" NArrayBuilder[Boolean] ") {
-    AddOneByOneTest[Boolean](NArrayBuilder[Boolean](), () => r.nextBoolean()).runTests()
-    AddAllTest[Boolean](NArrayBuilder[Boolean](), () => r.nextBoolean()).runTests()
+    val f = () => r.nextBoolean()
+    val values: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => f())
+    AddOneByOneTest[Boolean](NArrayBuilder[Boolean](), values, NATIVE_ARRAY).runTests()
+    AddAllTest[Boolean](NArrayBuilder[Boolean](), values, NATIVE_ARRAY).runTests()
+    BuilderResultTypeTest[Boolean](NATIVE_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Byte] ") {
-    AddOneByOneTest[Byte](NArrayBuilder[Byte](), () => r.nextBytes(1)(0)).runTests()
-    AddAllTest[Byte](NArrayBuilder[Byte](), () => r.nextBytes(1)(0)).runTests()
+    val f = () => r.nextBytes(1)(0)
+    val values: NArray[Byte] = NArray.tabulate[Byte](N)((i: Int) => f())
+    AddOneByOneTest[Byte](NArrayBuilder[Byte](), values, BYTE_ARRAY).runTests()
+    AddAllTest[Byte](NArrayBuilder[Byte](), values, BYTE_ARRAY).runTests()
+    //assertBuilderResultType[Byte](values.builder[Byte]().result, BYTE_ARRAY)
+    BuilderResultTypeTest[Byte](BYTE_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Short] ") {
-    AddOneByOneTest[Short](NArrayBuilder[Short](), () => r.nextInt().toShort).runTests()
-    AddAllTest[Short](NArrayBuilder[Short](), () => r.nextInt().toShort).runTests()
+    val f = () => r.nextInt().toShort
+    val values: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => f())
+    AddOneByOneTest[Short](NArrayBuilder[Short](), values, SHORT_ARRAY).runTests()
+    AddAllTest[Short](NArrayBuilder[Short](), values, SHORT_ARRAY).runTests()
+    //assertBuilderResultType[Short](values.builder[Short]().result, SHORT_ARRAY)
+    BuilderResultTypeTest[Short](SHORT_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Int] ") {
-    AddOneByOneTest[Int](NArrayBuilder[Int](), () => r.nextInt()).runTests()
-    AddAllTest[Int](NArrayBuilder[Int](), () => r.nextInt()).runTests()
+    val f = () => r.nextInt()
+    val values: NArray[Int] = NArray.tabulate[Int](N)((i: Int) => f())
+    AddOneByOneTest[Int](NArrayBuilder[Int](), values, INT_ARRAY).runTests()
+    AddAllTest[Int](NArrayBuilder[Int](), values, INT_ARRAY).runTests()
+    //assertBuilderResultType[Int](values.builder[Int]().result, INT_ARRAY)
+    BuilderResultTypeTest[Int](INT_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Long] ") {
-    AddOneByOneTest[Long](NArrayBuilder[Long](), () => r.nextLong()).runTests()
-    AddAllTest[Long](NArrayBuilder[Long](), () => r.nextLong()).runTests()
-
+    val f = () => r.nextLong()
+    val values: NArray[Long] = NArray.tabulate[Long](N)((i: Int) => f())
+    AddOneByOneTest[Long](NArrayBuilder[Long](), values, NATIVE_ARRAY).runTests()
+    AddAllTest[Long](NArrayBuilder[Long](), values, NATIVE_ARRAY).runTests()
+    //assertBuilderResultType[Long](values.builder[Long]().result, NATIVE_ARRAY)
+    BuilderResultTypeTest[Long](NATIVE_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Float] ") {
-    AddOneByOneTest[Float](NArrayBuilder[Float](), () => r.nextFloat()).runTests()
-    AddAllTest[Float](NArrayBuilder[Float](), () => r.nextFloat()).runTests()
+    val f = () => r.nextFloat()
+    val values: NArray[Float] = NArray.tabulate[Float](N)((i: Int) => f())
+    AddOneByOneTest[Float](NArrayBuilder[Float](), values, FLOAT_ARRAY).runTests()
+    AddAllTest[Float](NArrayBuilder[Float](), values, FLOAT_ARRAY).runTests()
+    //assertBuilderResultType[Float](values.builder[Float]().result, FLOAT_ARRAY)
+    BuilderResultTypeTest[Float](FLOAT_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Double] ") {
-    AddOneByOneTest[Double](NArrayBuilder[Double](), () => r.nextDouble()).runTests()
-    AddAllTest[Double](NArrayBuilder[Double](), () => r.nextDouble()).runTests()
+    val f = () => r.nextDouble()
+    val values: NArray[Double] = NArray.tabulate[Double](N)((i: Int) => f())
+    AddOneByOneTest[Double](NArrayBuilder[Double](), values, DOUBLE_ARRAY).runTests()
+    AddAllTest[Double](NArrayBuilder[Double](), values, DOUBLE_ARRAY).runTests()
+    //assertBuilderResultType[Double](values.builder[Double]().result, DOUBLE_ARRAY)
+    BuilderResultTypeTest[Double](DOUBLE_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[String] ") {
-    AddOneByOneTest[String](NArrayBuilder[String](), () => r.nextString(1 + r.nextInt(9))).runTests()
-    AddAllTest[String](NArrayBuilder[String](), () => r.nextString(1 + r.nextInt(9))).runTests()
+    val f = () => r.nextString(1 + r.nextInt(9))
+    val values: NArray[String] = NArray.tabulate[String](N)((i: Int) => f())
+    AddOneByOneTest[String](NArrayBuilder[String](), values, NATIVE_ARRAY).runTests()
+    AddAllTest[String](NArrayBuilder[String](), values, NATIVE_ARRAY).runTests()
+    //assertBuilderResultType[String](values.builder[String]().result, NATIVE_ARRAY)
+    BuilderResultTypeTest[String](NATIVE_ARRAY).runTests()
   }
 
   test(" NArrayBuilder[Unit] ") {
-    AddOneByOneTest[Unit](NArrayBuilder[Unit](), () => ()).runTests()
-    AddAllTest[Unit](NArrayBuilder[Unit](), () => ()).runTests()
+    val f = () => ()
+    val values: NArray[Unit] = NArray.tabulate[Unit](N)((i: Int) => f())
+    AddOneByOneTest[Unit](NArrayBuilder[Unit](), values, NATIVE_ARRAY).runTests()
+    AddAllTest[Unit](NArrayBuilder[Unit](), values, NATIVE_ARRAY).runTests()
+    //assertBuilderResultType[Unit](values.builder[Unit]().result, NATIVE_ARRAY)
+    BuilderResultTypeTest[Unit](NATIVE_ARRAY).runTests()
   }
 
-  // add a stress test.
+  // TODO: add a stress test.
 }

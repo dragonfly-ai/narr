@@ -15,7 +15,6 @@
  */
 
 import scala.compiletime.*
-import narr.native.Extensions.*
 
 import scala.collection.AbstractIndexedSeqView
 import scala.language.implicitConversions
@@ -56,36 +55,54 @@ package object narr {
 
   object NArray {
 
-//    transparent inline def builderFrom[T](example:NArray[T]): NArrayBuilder[T] = (example match {
-//      case _: ByteArray => ByteArrayBuilder()
-//      case _: ShortArray => ShortArrayBuilder()
-//      case _: IntArray => IntArrayBuilder()
-//      case _: FloatArray => FloatArrayBuilder()
-//      case _: DoubleArray => DoubleArrayBuilder()
-//      case _ => NativeArrayBuilder[Any]()
-//    }).asInstanceOf[NArrayBuilder[T]]
-
-    transparent inline def builderFor[T](initialCapacity:Int = NArrayBuilder.DefaultInitialSize): NArrayBuilder[T] = (inline erasedValue[T] match {
-      case _: Byte => ByteArrayBuilder()
-      case _: Short => ShortArrayBuilder()
-      case _: Int => IntArrayBuilder()
-      case _: Float => FloatArrayBuilder()
-      case _: Double => DoubleArrayBuilder()
-      case _ => narr.native.NativeArrayBuilder[Any]()
-    }).asInstanceOf[NArrayBuilder[T]]
-
     def apply[A](elem: A*)(using ClassTag[A]): NArray[A] = tabulate[A](elem.size)((i: Int) => elem(i))
 
     inline def empty[A](using ClassTag[A]): NArray[A] = ofSize[A](0)
 
-    transparent inline def ofSize[A](length: Int)(using ClassTag[A]): NArr[A] & NArray[A] = (inline erasedValue[A] match {
-      case _: Byte => new ByteArray(length)
-      case _: Short => new ShortArray(length)
-      case _: Int => new IntArray(length)
-      case _: Float => new FloatArray(length)
-      case _: Double => new DoubleArray(length)
+    transparent inline def ofSize[A](length: Int)(using ct:ClassTag[A]): NArr[A] & NArray[A] = (ct match {
+      case ClassTag.Byte => new ByteArray(length)
+      case ClassTag.Short => new ShortArray(length)
+      case ClassTag.Int => new IntArray(length)
+      case ClassTag.Float => new FloatArray(length)
+      case ClassTag.Double => new DoubleArray(length)
       case _ => makeNativeArrayOfSize[A](length)
     }).asInstanceOf[NArr[A] & NArray[A]]
+
+    inline def fill[A](length: Int)(t: A)(using ClassTag[A]): NArray[A] = {
+      val out: NArray[A] = ofSize[A](length)
+      var i: Int = 0
+      while (i < length) {
+        out(i) = t
+        i += 1
+      }
+
+      out
+    }
+
+    inline def tabulate[A](length: Int)(f: Int => A)(using ClassTag[A]): NArray[A] = {
+      val out: NArray[A] = ofSize[A](length)
+      var i: Int = 0
+      while (i < length) {
+        out(i) = f(i)
+        i += 1
+      }
+      out
+    }
+
+    transparent inline def from[A](arr: Array[A])(using ClassTag[A]): NArray[A] = {
+      val out: NArray[A] = ofSize[A](arr.length)
+      var i: Int = 0
+      while (i < arr.length) {
+        out(i) = arr(i)
+        i += 1
+      }
+      out
+    }
+
+//    inline def concatenate[A](a: NArray[A], b: NArray[A]):NArray[A] = {
+//      (a.asInstanceOf[NArr[A]]).concat(b).asInstanceOf[NArray[A]]
+//    }
+
 
     def copy[T](nArr: NArray[T]): NArray[T] = nArr.slice(0, nArr.length)
 
@@ -174,40 +191,6 @@ package object narr {
      */
     def copyOf[T](original: NArray[T], newLength: Int)(using ClassTag[T]): NArray[T] = native.NArray.copyOf[T](original, newLength)
 
-    inline def fill[A](length: Int)(t: A)(using ClassTag[A]): NArray[A] = {
-      val out: NArray[A] = ofSize[A](length)
-      var i: Int = 0
-      while (i < length) {
-        out(i) = t
-        i += 1
-      }
-
-      out
-    }
-
-    inline def tabulate[A](length: Int)(f: Int => A)(using ClassTag[A]): NArray[A] = {
-      val out: NArray[A] = ofSize[A](length)
-      var i: Int = 0
-      while (i < length) {
-        out(i) = f(i)
-        i += 1
-      }
-      out
-    }
-
-    transparent inline def from[A](arr: Array[A])(using ClassTag[A]): NArray[A] = {
-      val out: NArray[A] = ofSize[A](arr.length)
-      var i: Int = 0
-      while (i < arr.length) {
-        out(i) = arr(i)
-        i += 1
-      }
-      out
-    }
-
-    inline def concatenate[A, B >: A : ClassTag](a: NArray[A], b: NArray[B]):NArray[B] = {
-      (a.asInstanceOf[NArr[A]]).concat(b).asInstanceOf[NArray[B]]
-    }
   }
 
   type NArr[T] = narr.native.NArr[T]
