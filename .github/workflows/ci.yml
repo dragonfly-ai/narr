@@ -214,7 +214,7 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: narr_3 docs_3 narr-tests_sjs1_3 narr_3 narr_3 narr-tests_3 narr-tests_native0.4_3
+          modules-ignore: narr_3 docs_3 narr-tests_sjs1_3 narr_3 narr_3 narr-tests_3 narr-tests_native0.5_3
           configs-ignore: test scala-tool scala-doc-tool test-internal
 
   site:
