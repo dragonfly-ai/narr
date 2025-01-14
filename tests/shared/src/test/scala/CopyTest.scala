@@ -17,89 +17,83 @@
 import narr.*
 
 import scala.language.implicitConversions
-
 import Util.*
+import Util.NArrayType.*
+
+import scala.reflect.ClassTag
 
 class CopyTest extends munit.FunSuite {
 
-  test(" NArray copy ") {
+  var N: Int = 11
 
-    var N: Int = 11
+  // TODO: test NArray.{copyOf, copyAs}
 
-    // TODO: test NArray.{copyOf, copyAs}
+  private case class CopyOpsTest[T](a: NArray[T], nt: NArrayType)(using ClassTag[T]) {
+    def test(): Unit = {
+      assertNArrayEquality[T](a, a.copy, nt)
+      assertNArrayEquality[T](a, narr.NArray.copy(a), nt)
 
-    ////////////////
-    // Value Types:
-    ////////////////
+      val arrU = new Array[T](N)
+      a.copyToArray(arrU)
+      assertArrayEquality(arrU, a.toArray)
 
-    // Unit
-    val uaTabulate: NArray[Unit] = NArray.tabulate[Unit](N)(_ => ())
-    assertNArrayEquality[Unit](uaTabulate, uaTabulate.copy, NArrayType.NATIVE_ARRAY)
-    assertNArrayEquality[Unit](uaTabulate, copy(uaTabulate), NArrayType.NATIVE_ARRAY)
+      val aU = NArray.ofSize[T](N)
+      a.copyToNArray[T](aU)
+      assertArray2NArrayEquality[T](arrU, aU)
+      assertNArrayEquality[T](a, a.toNArray[T], nt)
+    }
+  }
 
-    N += 1
-    // Boolean
-    val boolArrTabulate: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0)
-    assertNArrayEquality[Boolean](boolArrTabulate, boolArrTabulate.copy, NArrayType.NATIVE_ARRAY)
-    assertNArrayEquality[Boolean](boolArrTabulate, copy(boolArrTabulate), NArrayType.NATIVE_ARRAY)
+  ////////////////
+  // Value Types:
+  ////////////////
 
+  test(" Copy NArray[Unit] ") {
+    CopyOpsTest[Unit](NArray.tabulate[Unit](N)(_ => ()), NATIVE_ARRAY).test()
+  }
 
-    N += 1
-    // Byte
-    val baTabulate: NArray[Byte] = NArray.tabulate[Byte](N)((i: Int) => i.toByte)
-    assertNArrayEquality[Byte](baTabulate, baTabulate.copy, NArrayType.BYTE_ARRAY)
-    assertNArrayEquality[Byte](baTabulate, copy(baTabulate), NArrayType.BYTE_ARRAY)
+  test(" Copy NArray[Boolean] ") {
+    CopyOpsTest[Boolean](NArray.tabulate[Boolean](N)((i: Int) => i % 2 == 0), NATIVE_ARRAY).test()
+  }
 
-    N += 1
-    // Short
-    val saTabulate: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => i.toShort)
-    assertNArrayEquality[Short](saTabulate, saTabulate.copy, NArrayType.SHORT_ARRAY)
-    assertNArrayEquality[Short](saTabulate, copy(saTabulate), NArrayType.SHORT_ARRAY)
+  test(" Copy NArray[Byte] ") {
+    CopyOpsTest[Byte](NArray.tabulate[Byte](N)((i: Int) => i.toByte), BYTE_ARRAY).test()
+  }
 
-    N += 1
-    // Int
-    val iaTabulate: NArray[Int] = NArray.tabulate[Int](N)((i: Int) => i)
-    assertNArrayEquality[Int](iaTabulate, iaTabulate.copy, NArrayType.INT_ARRAY)
-    assertNArrayEquality[Int](iaTabulate, copy(iaTabulate), NArrayType.INT_ARRAY)
+  test(" Copy NArray[Short] ") {
+    CopyOpsTest[Short](NArray.tabulate[Short](N)((i: Int) => i.toShort), SHORT_ARRAY).test()
+  }
 
-    N += 1
-    // Long
-    val laTabulate: NArray[Long] = NArray.tabulate[Long](N)((i: Int) => i.toLong)
-    assertNArrayEquality[Long](laTabulate, laTabulate.copy, NArrayType.NATIVE_ARRAY)
-    assertNArrayEquality[Long](laTabulate, copy(laTabulate), NArrayType.NATIVE_ARRAY)
+  test(" Copy NArray[Int] ") {
+    CopyOpsTest[Int](NArray.tabulate[Int](N)((i: Int) => i), INT_ARRAY).test()
+  }
 
+  test(" Copy NArray[Long] ") {
+    CopyOpsTest[Long](NArray.tabulate[Long](N)((i: Int) => i.toLong), NATIVE_ARRAY).test()
+  }
 
-    N += 1
-    // Float
-    val faTabulate: NArray[Float] = NArray.tabulate[Float](N)((i: Int) => i.toFloat)
-    assertNArrayEquality[Float](faTabulate, faTabulate.copy, NArrayType.FLOAT_ARRAY)
-    assertNArrayEquality[Float](faTabulate, copy(faTabulate), NArrayType.FLOAT_ARRAY)
+  test(" Copy NArray[Float] ") {
+    CopyOpsTest[Float](NArray.tabulate[Float](N)((i: Int) => i.toFloat), FLOAT_ARRAY).test()
+  }
 
-    N += 1
-    // Double
-    val daTabulate: NArray[Double] = NArray.tabulate[Double](N)((i: Int) => i.toDouble)
-    assertNArrayEquality[Double](daTabulate, copy(daTabulate), NArrayType.DOUBLE_ARRAY)
+  test(" Copy NArray[Double] ") {
+    CopyOpsTest[Double](NArray.tabulate[Double](N)((i: Int) => i.toDouble), DOUBLE_ARRAY).test()
+  }
 
-    N += 1
-    // Char
-    val caTabulate: NArray[Char] = NArray.tabulate[Char](N)((i: Int) => i.toChar)
-    assertNArrayEquality[Char](caTabulate, copy(caTabulate), NArrayType.NATIVE_ARRAY)
+  test(" Copy NArray[Char] ") {
+    CopyOpsTest[Char](NArray.tabulate[Char](N)((i: Int) => i.toChar), NATIVE_ARRAY).test()
+  }
 
     ////////////////////
     // Reference Types:
     ////////////////////
 
-    N += 1
-    // String
-    val strArrTabulate: NArray[String] = NArray.tabulate[String](N)((i: Int) => i.toString)
-    assertNArrayEquality[String](strArrTabulate, strArrTabulate.copy, NArrayType.NATIVE_ARRAY)
-    assertNArrayEquality[String](strArrTabulate, copy(strArrTabulate), NArrayType.NATIVE_ARRAY)
-
-    N += 1
-    // AnyRef
-    val anyRefArrTabulate: NArray[AnyRef] = NArray.tabulate[AnyRef](N)(_ => new AnyRef())
-    assertNArrayEquality[AnyRef](anyRefArrTabulate, anyRefArrTabulate.copy, NArrayType.NATIVE_ARRAY)
-    assertNArrayEquality[AnyRef](anyRefArrTabulate, copy(anyRefArrTabulate), NArrayType.NATIVE_ARRAY)
-
+  test(" Copy NArray[String] ") {
+    CopyOpsTest[String](NArray.tabulate[String](N)((i: Int) => i.toString), NATIVE_ARRAY).test()
   }
+
+  test(" Copy NArray[AnyRef] ") {
+    CopyOpsTest[AnyRef](NArray.tabulate[AnyRef](N)(_ => new AnyRef()), NATIVE_ARRAY).test()
+  }
+
 }

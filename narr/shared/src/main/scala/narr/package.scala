@@ -117,12 +117,12 @@ package object narr {
      */
 
     transparent inline def copy[T](src: NArray[T], dest: NArray[T], destPos: Int): NArray[T] = (inline erasedValue[T] match {
-      case _: Byte => copyByteArray(src.asInstanceOf[ByteArray], 0, dest.asInstanceOf[ByteArray], destPos, src.length)
-      case _: Short => copyShortArray(src.asInstanceOf[ShortArray], 0, dest.asInstanceOf[ShortArray], destPos, src.length)
-      case _: Int => copyIntArray(src.asInstanceOf[IntArray], 0, dest.asInstanceOf[IntArray], destPos, src.length)
-      case _: Float => copyFloatArray(src.asInstanceOf[FloatArray], 0, dest.asInstanceOf[FloatArray], destPos, src.length)
-      case _: Double => copyDoubleArray(src.asInstanceOf[DoubleArray], 0, dest.asInstanceOf[DoubleArray], destPos, src.length)
-      case _ => copyNativeArray(src.asInstanceOf[NativeArray[T]], 0, dest.asInstanceOf[NativeArray[T]], destPos, src.length)
+      case _: Byte => copyByteArray(src.asInstanceOf[ByteArray], 0, dest.asInstanceOf[ByteArray], destPos, src.length); dest
+      case _: Short => copyShortArray(src.asInstanceOf[ShortArray], 0, dest.asInstanceOf[ShortArray], destPos, src.length); dest
+      case _: Int => copyIntArray(src.asInstanceOf[IntArray], 0, dest.asInstanceOf[IntArray], destPos, src.length); dest
+      case _: Float => copyFloatArray(src.asInstanceOf[FloatArray], 0, dest.asInstanceOf[FloatArray], destPos, src.length); dest
+      case _: Double => copyDoubleArray(src.asInstanceOf[DoubleArray], 0, dest.asInstanceOf[DoubleArray], destPos, src.length); dest
+      case _ => copyNativeArray(src.asInstanceOf[NativeArray[T]], 0, dest.asInstanceOf[NativeArray[T]], destPos, src.length); dest
     }).asInstanceOf[NArray[T]]
 
     inline def copyByteArray(src: ByteArray, dest: ByteArray, destPos: Int): Unit = native.NArray.copyByteArray(src, 0, dest, destPos, src.length)

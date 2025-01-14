@@ -153,7 +153,9 @@ package object native {
      * @see `java.util.Arrays#copyOf`
      */
     def copyAs[T, B >: T](original: NArray[T], newLength: Int)(using ClassTag[B]): NArray[B] = {
-      narr.NArray.copy( original.asInstanceOf[NArray[B]], narr.NArray.ofSize[B](newLength), 0 )
+      val out = narr.NArray.ofSize[B](newLength)
+      narr.NArray.copy(original.asInstanceOf[NArray[B]], out, 0)
+      out
     }
 
     /** Copy one array to another, truncating or padding with default values (if
@@ -196,6 +198,31 @@ package object native {
         i += 1
       }
       (a1, a2)
+    }
+
+
+    /** Partitions this array into a map of arrays according to some discriminator function.
+     *
+     * @param f the discriminator function.
+     * @tparam K the type of keys returned by the discriminator function.
+     * @return A map from keys to arrays such that the following invariant holds:
+     * {{{
+     *                 (xs groupBy f)(k) = xs filter (x => f(x) == k)
+     *                  }}}         *               That is, every key `k` is bound to an array         nts `x`
+     *               for which `f(x)` equals `k`.
+     */
+    def groupBy[T, K](a: NArray[T], f: T => K)(using ClassTag[T]): scala.collection.immutable.Map[K, NArray[T]] = {
+      val m = scala.collection.mutable.Map.empty[K, NArrayBuilder[T]]
+      val len = a.length
+      var i = 0
+      while(i < len) {
+        val elem = a(i)
+        val key = f(elem)
+        val bldr = m.getOrElseUpdate(key, NArrayBuilder[T]())
+        bldr += elem
+        i += 1
+      }
+      m.view.mapValues(_.result).toMap
     }
   }
 

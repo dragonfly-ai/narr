@@ -169,6 +169,49 @@ package object native {
         case nArr: Array[String] => util.Arrays.copyOf(nArr, nArr.length)
         case _ => util.Arrays.copyOf[T](a.asInstanceOf[Array[AnyRef & T]], a.length)
       }).asInstanceOf[NArr[T] & NArray[T]]
+
+      /** Copy elements of this array to another array.
+       * Fills the given array `xs` starting at index 0.
+       * Copying will stop once either all the elements of this array have been copied,
+       * or the end of the array is reached.
+       *
+       * @param xs the array to fill.
+       * @tparam B the type of the elements of the array.
+       */
+      inline def copyToNArray[B >: T](xs: NArray[B]): Int = a.copyToArray(xs)
+
+      /** Copy elements of this array to another array.
+       * Fills the given array `xs` starting at index `start`.
+       * Copying will stop once either all the elements of this array have been copied,
+       * or the end of the array is reached.
+       *
+       * @param xs    the array to fill.
+       * @param start the starting index within the destination array.
+       * @tparam B the type of the elements of the array.
+       */
+      inline def copyToNArray[B >: T](xs: NArray[B], start: Int): Int = a.copyToArray(xs, start, Int.MaxValue)
+
+      /** Copy elements of this array to another array.
+       * Fills the given array `xs` starting at index `start` with at most `len` values.
+       * Copying will stop once either all the elements of this array have been copied,
+       * or the end of the array is reached, or `len` elements have been copied.
+       *
+       * @param xs    the array to fill.
+       * @param start the starting index within the destination array.
+       * @param len   the maximal number of elements to copy.
+       * @tparam B the type of the elements of the array.
+       */
+      inline def copyToNArray[B >: T](xs: NArray[B], start: Int, len: Int): Int = a.copyToArray(xs, start, len)
+
+      /** Create a copy of this array with the specified element type. */
+      def toNArray[B >: T : ClassTag]: NArray[B] = {
+        val destination = narr.NArray.ofSize[B](a.length)
+        @annotation.unused val copied = copyToNArray[B](destination, 0)
+        //assert(copied == xs.length)
+        destination
+      }
+
+
     }
   }
 }

@@ -29,9 +29,6 @@ import scala.reflect.ClassTag
 
 object Extensions {
 
-  /** Avoid an allocation in [[collect]]. */
-  private val fallback: Any => Any = _ => fallback
-
   given orderingToCompareFunction[T]: Conversion[Ordering[T], js.Function2[T, T, Int]] with
     def apply(o: Ordering[T]): js.Function2[T, T, Int] = (a: T, b: T) => o.compare(a, b)
 
@@ -608,7 +605,7 @@ object Extensions {
      * @param op the associative operator for the scan
      * @return a new array containing the prefix scan of the elements in this array
      */
-    def scan[B >: T : ClassTag](z: B)(op: (B, B) => B): NArray[B] = scanLeft(z)(op)
+    inline def scan[B >: T : ClassTag](z: B)(op: (B, B) => B): NArray[B] = scanLeft(z)(op)
 
     /** Produces an array containing cumulative results of applying the binary
      * operator going right to left.
@@ -624,10 +621,10 @@ object Extensions {
      *   }}}
      *
      */
-    def scanRight[ B : ClassTag ](z: B)(op: (T, B) => B): Array[B] = {
+    def scanRight[ B : ClassTag ](z: B)(op: (T, B) => B): NArray[B] = {
       var v = z
       var i = a.length - 1
-      val res = new Array[B](a.length + 1)
+      val res = NArray.ofSize[B](a.length + 1)
       res(a.length) = z
       while(i >= 0) {
         v = op(a(i), v)
@@ -772,13 +769,19 @@ object Extensions {
      *         The order of the elements is preserved.
      */
     def collect[B: ClassTag](pf: PartialFunction[T, B]): NArray[B] = {
-      val fallback: Any => Any = Any => Extensions.fallback
+      var matched = true
+
+      def d(x: T): B = {
+        matched = false
+        null.asInstanceOf[B]
+      }
+
       val b = NArrayBuilder[B]()
-      var i = 0
-      while (i < a.length) {
-        val v = pf.applyOrElse(a(i), fallback)
-        if (v.asInstanceOf[AnyRef] ne fallback) b.addOne(v.asInstanceOf[B])
-        i += 1
+      for (x <- a) {
+        matched = true
+        val v = pf.applyOrElse(x, d)
+        if (matched)
+          b += v
       }
       b.result
     }
@@ -787,11 +790,20 @@ object Extensions {
     /** Finds the first element of the array for which the given partial function is defined, and applies the
      * partial function to it. */
     def collectFirst[B](pf: PartialFunction[T, B]): Option[B] = {
-      val fallback: Any => Any = Extensions.fallback
       var i = 0
-      while (i < a.length) {
-        val v = pf.applyOrElse(a(i), fallback)
-        if (v.asInstanceOf[AnyRef] ne fallback) return Some(v.asInstanceOf[B])
+      var matched = true
+
+      def d(x: T): B = {
+        matched = false
+        null.asInstanceOf[B]
+      }
+
+      val len = a.length
+      while (i < len) {
+        matched = true
+        val v = pf.applyOrElse(a(i), d)
+        if (matched)
+          return Some(v)
         i += 1
       }
       None
@@ -1059,7 +1071,7 @@ object Extensions {
      *
      * @return a new array consisting of all the elements of this array without duplicates.
      */
-    def distinct: NArray[T] = distinctBy(identity)
+    def distinct(using ClassTag[T]): NArray[T] = distinctBy[T](identity)
 
     /** Selects all the elements of this array ignoring the duplicates as determined by `==` after applying
      * the transforming function `f`.
@@ -1068,8 +1080,8 @@ object Extensions {
      * @tparam B the type of the elements after being transformed by `f`
      * @return a new array consisting of all the elements of this array without duplicates.
      */
-    def distinctBy[B](f: T => B): NArray[T] =
-      NArrayBuilder.builderFor[T]().addAll(iterator.distinctBy(f)).result
+    def distinctBy[B](f: T => B)(using ClassTag[T]): NArray[T] =
+      NArrayBuilder[T]().addAll(iterator.distinctBy(f)).result
 
     /** A copy of this array with an element value appended until a given target length is reached.
      *
@@ -1109,19 +1121,7 @@ object Extensions {
      *               That is, every key `k` is bound to an array of those elements `x`
      *               for which `f(x)` equals `k`.
      */
-    def groupBy[K](f: T => K): immutable.Map[K, NArray[T]] = {
-      val m = mutable.Map.empty[K, NArrayBuilder[T]]
-      val len = a.length
-      var i = 0
-      while(i < len) {
-        val elem = a(i)
-        val key = f(elem)
-        val bldr = m.getOrElseUpdate(key, NArrayBuilder.builderFor[T]())
-        bldr += elem
-        i += 1
-      }
-      m.view.mapValues(_.result).toMap
-    }
+    def groupBy[K](f: T => K)(using ClassTag[T]): immutable.Map[K, NArray[T]] = narr.native.NArray.groupBy[T, K](a, f)
 
     /**
      * Partitions this array into a map of arrays according to a discriminator function `key`.
@@ -1202,6 +1202,54 @@ object Extensions {
       copied
     }
 
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index 0.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached.
+     *
+     * @param xs the array to fill.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToArray[B >: T](xs: Array[B]): Int = copyToArray(xs, 0)
+
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index `start`.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached.
+     *
+     * @param xs    the array to fill.
+     * @param start the starting index within the destination array.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToArray[B >: T](xs: Array[B], start: Int): Int = copyToArray(xs, start, Int.MaxValue)
+
+    /** Copy elements of this array to another array.
+     * Fills the given array `xs` starting at index `start` with at most `len` values.
+     * Copying will stop once either all the elements of this array have been copied,
+     * or the end of the array is reached, or `len` elements have been copied.
+     *
+     * @param xs    the array to fill.
+     * @param start the starting index within the destination array.
+     * @param len   the maximal number of elements to copy.
+     * @tparam B the type of the elements of the array.
+     */
+    def copyToArray[B >: T](xs: Array[B], start: Int, len: Int): Int = {
+      //val copied = scala.collection.IterableOnce.elemsToCopyToArray(a.length, xs.length, start, len)
+      val copied = Math.max(Math.min(Math.min(len, a.length), xs.length - start), 0)
+      if (copied > 0) {
+        //NArray.copy[B](a.asInstanceOf[NArray[B]], 0, xs, start, copied)
+        var i = 0
+        var j = start
+        val srcUntil = copied
+        while (i < srcUntil) {
+          xs(j) = a(i)
+          i += 1
+          j += 1
+        }
+      }
+      copied
+    }
+
     /** Create a JVM/Native style copy of this array with the specified element type. */
     def toArray[B >: T : ClassTag]: Array[B] = {
       val r = new Array[B](a.length)
@@ -1230,7 +1278,6 @@ object Extensions {
       }
       res
     }
-
 
     /** Tests whether this array starts with the given array. */
     inline def startsWith[B >: T](that: NArray[B]): Boolean = startsWith(that, 0)
@@ -1388,6 +1435,35 @@ object Extensions {
         } else throw new NoSuchElementException("next on empty iterator")
       }
     }
+
+    /** Iterates over combinations. */
+    def combinations(n: Int): scala.collection.Iterator[NArray[T]] = ???
+
+    /** Iterates over distinct permutations. */
+    def permutations: scala.collection.Iterator[NArray[T]] = ???
+
+    // we have another overload here, so we need to duplicate this method
+    /** Tests whether this array contains the given sequence at a given index.
+     *
+     * @param that
+     * the sequence to test
+     * @param offset
+     * the index where the sequence is searched.
+     * @return
+     * `true` if the sequence `that` is contained in this array at index
+     * `offset`, otherwise `false`.
+     */
+    //def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = ???
+
+    // we have another overload here, so we need to duplicate this method
+    /** Tests whether this array ends with the given sequence.
+     *
+     * @param that
+     * the sequence to test
+     * @return
+     * `true` if this array has `that` as a suffix, `false` otherwise.
+     */
+    //def endsWith[B >: T](that: scala.collection.Iterable[B]): Boolean = ???
 
   }
 }

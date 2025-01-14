@@ -1,4 +1,4 @@
-<b>ArrayOps Features</b>:<br />
+<s>ArrayOps Features</s>:<br />
 <table style="">
 <tr>
 <td>Method Signature</td>
@@ -20,7 +20,7 @@
 <td>
 
 ```scala
-def size: Int
+def width: Int
 ```
 </td>
 <td>✓</td>
@@ -64,7 +64,7 @@ def nonEmpty: Boolean
 <td>
 
 ```scala
-def head: A
+def head: T
 ```
 </td>
 <td>✓</td>
@@ -75,7 +75,7 @@ def head: A
 <td>
 
 ```scala
-def last: A
+def last: T
 ```
 </td>
 <td>✓</td>
@@ -86,7 +86,7 @@ def last: A
 <td>
 
 ```scala
-def headOption: Option[A]
+def headOption: Option[T]
 ```
 </td>
 <td>✓</td>
@@ -97,7 +97,7 @@ def headOption: Option[A]
 <td>
 
 ```scala
-def lastOption: Option[A]
+def lastOption: Option[T]
 ```
 </td>
 <td>✓</td>
@@ -152,7 +152,7 @@ def lengthIs: Int
 <td>
 
 ```scala
-def slice(from: Int, until: Int): Array[A]
+def slice(from: Int, until: Int): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -163,7 +163,7 @@ def slice(from: Int, until: Int): Array[A]
 <td>
 
 ```scala
-def tail: Array[A]
+def tail: Array[T]
 ```
 </td>
 <td>✓</td>
@@ -174,7 +174,7 @@ def tail: Array[A]
 <td>
 
 ```scala
-def init: Array[A]
+def init: Array[T]
 ```
 </td>
 <td>✓</td>
@@ -185,18 +185,7 @@ def init: Array[A]
 <td>
 
 ```scala
-def tails: Iterator[Array[A]]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def inits: Iterator[Array[A]]
+def tails: Iterator[Array[T]]
 ```
 </td>
 <td>✓</td>
@@ -207,7 +196,18 @@ def inits: Iterator[Array[A]]
 <td>
 
 ```scala
-def take(n: Int): Array[A]
+def inits: Iterator[Array[T]]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def take(n: Int): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -218,7 +218,7 @@ def take(n: Int): Array[A]
 <td>
 
 ```scala
-def drop(n: Int): Array[A]
+def drop(n: Int): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -229,7 +229,7 @@ def drop(n: Int): Array[A]
 <td>
 
 ```scala
-def takeRight(n: Int): Array[A]
+def takeRight(n: Int): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -240,7 +240,7 @@ def takeRight(n: Int): Array[A]
 <td>
 
 ```scala
-def dropRight(n: Int): Array[A]
+def dropRight(n: Int): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -251,7 +251,7 @@ def dropRight(n: Int): Array[A]
 <td>
 
 ```scala
-def takeWhile(p: A => Boolean): Array[A]
+def takeWhile(p: T => Boolean): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -262,7 +262,7 @@ def takeWhile(p: A => Boolean): Array[A]
 <td>
 
 ```scala
-def dropWhile(p: A => Boolean): Array[A]
+def dropWhile(p: T => Boolean): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -273,7 +273,7 @@ def dropWhile(p: A => Boolean): Array[A]
 <td>
 
 ```scala
-def iterator: Iterator[A]
+def iterator: Iterator[T]
 ```
 </td>
 <td>✓</td>
@@ -285,7 +285,7 @@ def iterator: Iterator[A]
 
 ```scala
 def stepper[S <: Stepper[_]](
-  implicit shape: StepperShape[A, S]
+  implicit shape: StepperShape[T, S]
 ): S with EfficientSplit
 ```
 </td>
@@ -297,7 +297,7 @@ def stepper[S <: Stepper[_]](
 <td>
 
 ```scala
-def grouped(size: Int): Iterator[Array[A]]
+def grouped(width: Int): Iterator[Array[T]]
 ```
 </td>
 <td>✓</td>
@@ -308,7 +308,7 @@ def grouped(size: Int): Iterator[Array[A]]
 <td>
 
 ```scala
-def span(p: A => Boolean): (Array[A], Array[A])
+def span(p: T => Boolean): (Array[T], Array[T])
 ```
 </td>
 <td>✓</td>
@@ -319,7 +319,7 @@ def span(p: A => Boolean): (Array[A], Array[A])
 <td>
 
 ```scala
-def splitAt(n: Int): (Array[A], Array[A])
+def splitAt(n: Int): (Array[T], Array[T])
 ```
 </td>
 <td>✓</td>
@@ -330,19 +330,19 @@ def splitAt(n: Int): (Array[A], Array[A])
 <td>
 
 ```scala
-def partition(p: A => Boolean): (Array[A], Array[A])
+def partition(p: T => Boolean): (Array[T], Array[T])
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
 def partitionMap[A1: ClassTag, A2: ClassTag](
-  f: A => Either[A1, A2]
+  f: T => Either[A1, A2]
 ): (Array[A1], Array[A2])
 ```
 </td>
@@ -354,7 +354,7 @@ def partitionMap[A1: ClassTag, A2: ClassTag](
 <td>
 
 ```scala
-def reverse: Array[A]
+def reverse: Array[T]
 ```
 </td>
 <td>✓</td>
@@ -367,7 +367,7 @@ def reverse: Array[A]
 <td>
 
 ```scala
-def reverseIterator: Iterator[A]
+def reverseIterator: Iterator[T]
 ```
 </td>
 <td>✓</td>
@@ -378,18 +378,7 @@ def reverseIterator: Iterator[A]
 <td>
 
 ```scala
-def filter(p: A => Boolean): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def filterNot(p: A => Boolean): Array[A]
+def filter(p: T => Boolean): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -400,40 +389,7 @@ def filterNot(p: A => Boolean): Array[A]
 <td>
 
 ```scala
-def sorted[B >: A](implicit ord: Ordering[B]): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def sortWith(lt: (A, A) => Boolean): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def sortBy[B](f: A => B)(implicit ord: Ordering[B]): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def withFilter(p: A => Boolean): ArrayOps.WithFilter[A]
+def filterNot(p: T => Boolean): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -444,7 +400,7 @@ def withFilter(p: A => Boolean): ArrayOps.WithFilter[A]
 <td>
 
 ```scala
-def indexOf(elem: A, from: Int = 0): Int
+def sorted[B >: T](implicit ord: Ordering[B]): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -455,7 +411,7 @@ def indexOf(elem: A, from: Int = 0): Int
 <td>
 
 ```scala
-def indexWhere(p: A => Boolean, from: Int = 0): Int
+def sortWith(lt: (T, T) => Boolean): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -466,7 +422,7 @@ def indexWhere(p: A => Boolean, from: Int = 0): Int
 <td>
 
 ```scala
-def lastIndexOf(elem: A, end: Int = xs.length - 1): Int
+def sortBy[B](f: T => B)(implicit ord: Ordering[B]): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -477,51 +433,7 @@ def lastIndexOf(elem: A, end: Int = xs.length - 1): Int
 <td>
 
 ```scala
-def lastIndexWhere(p: A => Boolean, end: Int = xs.length - 1): Int
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def find(p: A => Boolean): Option[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def exists(p: A => Boolean): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def forall(p: A => Boolean): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def foldLeft[B](z: B)(op: (B, A) => B): B
+def withFilter(p: T => Boolean): ArrayOps.WithFilter[T]
 ```
 </td>
 <td>✓</td>
@@ -532,7 +444,95 @@ def foldLeft[B](z: B)(op: (B, A) => B): B
 <td>
 
 ```scala
-def scanLeft[ B : ClassTag ](z: B)(op: (B, A) => B): Array[B]
+def indexOf(elem: T, from: Int = 0): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def indexWhere(p: T => Boolean, from: Int = 0): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def lastIndexOf(elem: T, end: Int = xs.length - 1): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def lastIndexWhere(p: T => Boolean, end: Int = xs.length - 1): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def find(p: T => Boolean): Option[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def exists(p: T => Boolean): Boolean
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def forall(p: T => Boolean): Boolean
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def foldLeft[B](z: B)(op: (B, T) => B): B
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def scanLeft[ B : ClassTag ](z: B)(op: (B, T) => B): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -543,7 +543,18 @@ def scanLeft[ B : ClassTag ](z: B)(op: (B, A) => B): Array[B]
 <td>
 
 ```scala
-def scan[B >: A : ClassTag](z: B)(op: (B, B) => B): Array[B]
+def scan[B >: T : ClassTag](z: B)(op: (B, B) => B): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def scanRight[ B : ClassTag ](z: B)(op: (T, B) => B): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -554,40 +565,7 @@ def scan[B >: A : ClassTag](z: B)(op: (B, B) => B): Array[B]
 <td>
 
 ```scala
-def scanRight[ B : ClassTag ](z: B)(op: (A, B) => B): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def foldRight[B](z: B)(op: (A, B) => B): B
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def fold[A1 >: A](z: A1)(op: (A1, A1) => A1): A1
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def map[B](f: A => B)(implicit ct: ClassTag[B]): Array[B]
+def foldRight[B](z: B)(op: (T, B) => B): B
 ```
 </td>
 <td>✓</td>
@@ -598,7 +576,29 @@ def map[B](f: A => B)(implicit ct: ClassTag[B]): Array[B]
 <td>
 
 ```scala
-def mapInPlace(f: A => A): Array[A]
+def fold[A1 >: T](z: A1)(op: (A1, A1) => A1): A1
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def map[B](f: T => B)(implicit ct: ClassTag[B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def mapInPlace(f: T => T): Array[T]
 ```
 </td>
 <td>✓</td>
@@ -610,45 +610,45 @@ def mapInPlace(f: A => A): Array[A]
 
 ```scala
 def flatMap[B : ClassTag](
-  f: A => IterableOnce[B]
+  f: T => IterableOnce[B]
 ): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def flatMap[BS, B](f: A => BS)(
+def flatMap[BS, B](f: T => BS)(
   implicit asIterable: BS => Iterable[B], m: ClassTag[B]
 ): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
 def flatten[B](
-  implicit asIterable: A => IterableOnce[B], m: ClassTag[B]
+  implicit asIterable: T => IterableOnce[B], m: ClassTag[B]
 ): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def collect[B: ClassTag](pf: PartialFunction[A, B]): Array[B]
+def collect[B: ClassTag](pf: PartialFunction[T, B]): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -659,7 +659,7 @@ def collect[B: ClassTag](pf: PartialFunction[A, B]): Array[B]
 <td>
 
 ```scala
-def collectFirst[B](pf: PartialFunction[A, B]): Option[B]
+def collectFirst[B](pf: PartialFunction[T, B]): Option[B]
 ```
 </td>
 <td>✓</td>
@@ -670,7 +670,7 @@ def collectFirst[B](pf: PartialFunction[A, B]): Option[B]
 <td>
 
 ```scala
-def zip[B](that: IterableOnce[B]): Array[(A, B)]
+def zip[B](that: IterableOnce[B]): Array[(T, B)]
 ```
 </td>
 <td>✓</td>
@@ -681,7 +681,7 @@ def zip[B](that: IterableOnce[B]): Array[(A, B)]
 <td>
 
 ```scala
-def lazyZip[B](that: Iterable[B]): LazyZip2[A, B, Array[A]]
+def lazyZip[B](that: Iterable[B]): LazyZip2[T, B, Array[T]]
 ```
 </td>
 <td>✓</td>
@@ -692,7 +692,7 @@ def lazyZip[B](that: Iterable[B]): LazyZip2[A, B, Array[A]]
 <td>
 
 ```scala
-def zipAll[A1 >: A, B](
+def zipAll[A1 >: T, B](
   that: Iterable[B], thisElem: A1, thatElem: B
 ): Array[(A1, B)]
 ```
@@ -705,7 +705,7 @@ def zipAll[A1 >: A, B](
 <td>
 
 ```scala
-def zipWithIndex: Array[(A, Int)]
+def zipWithIndex: Array[(T, Int)]
 ```
 </td>
 <td>✓</td>
@@ -716,29 +716,18 @@ def zipWithIndex: Array[(A, Int)]
 <td>
 
 ```scala
-def appended[B >: A : ClassTag](x: B): Array[B]
+def appended[B >: T : ClassTag](x: B): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def :+ [B >: A : ClassTag](x: B): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def prepended[B >: A : ClassTag](x: B): Array[B]
+def :+ [B >: T : ClassTag](x: B): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -749,7 +738,18 @@ def prepended[B >: A : ClassTag](x: B): Array[B]
 <td>
 
 ```scala
-def +: [B >: A : ClassTag](x: B): Array[B]
+def prepended[B >: T : ClassTag](x: B): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def +: [B >: T : ClassTag](x: B): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -760,7 +760,7 @@ def +: [B >: A : ClassTag](x: B): Array[B]
 <td>
 
 ```scala
-def prependedAll[B >: A : ClassTag](prefix: IterableOnce[B]): Array[B]
+def prependedAll[B >: T : ClassTag](prefix: IterableOnce[B]): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -771,7 +771,107 @@ def prependedAll[B >: A : ClassTag](prefix: IterableOnce[B]): Array[B]
 <td>
 
 ```scala
-def prependedAll[B >: A : ClassTag](prefix: Array[_ <: B]): Array[B]
+def prependedAll[B >: T : ClassTag](prefix: Array[_ <: B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def ++: [B >: T : ClassTag](prefix: IterableOnce[B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def ++: [B >: T : ClassTag](prefix: Array[_ <: B]): Array[B]
+
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def appendedAll[B >: T : ClassTag](suffix: IterableOnce[B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def appendedAll[B >: T : ClassTag](suffix: Array[_ <: B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def :++ [B >: T : ClassTag](suffix: IterableOnce[B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def :++ [B >: T : ClassTag](suffix: Array[_ <: B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def concat[B >: T : ClassTag](suffix: IterableOnce[B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def concat[B >: T : ClassTag](suffix: Array[_ <: B]): Array[B]
+```
+</td>
+<td>✓</td>
+<td>❌</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def ++[B >: T : ClassTag](xs: IterableOnce[B]): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -782,41 +882,7 @@ def prependedAll[B >: A : ClassTag](prefix: Array[_ <: B]): Array[B]
 <td>
 
 ```scala
-def ++: [B >: A : ClassTag](prefix: IterableOnce[B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def ++: [B >: A : ClassTag](prefix: Array[_ <: B]): Array[B]
-
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def appendedAll[B >: A : ClassTag](suffix: IterableOnce[B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def appendedAll[B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
+def ++[B >: T : ClassTag](xs: Array[_ <: B]): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -827,18 +893,7 @@ def appendedAll[B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
 <td>
 
 ```scala
-def :++ [B >: A : ClassTag](suffix: IterableOnce[B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def :++ [B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
+def contains(elem: T): Boolean
 ```
 </td>
 <td>✓</td>
@@ -849,89 +904,34 @@ def :++ [B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
 <td>
 
 ```scala
-def concat[B >: A : ClassTag](suffix: IterableOnce[B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>❌</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def concat[B >: A : ClassTag](suffix: Array[_ <: B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>❌</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def ++[B >: A : ClassTag](xs: IterableOnce[B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def ++[B >: A : ClassTag](xs: Array[_ <: B]): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def contains(elem: A): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def patch[B >: A : ClassTag](
+def patch[B >: T : ClassTag](
   from: Int, other: IterableOnce[B], replaced: Int
 ): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
 def unzip[A1, A2](
-  implicit asPair: A => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]
+  implicit asPair: T => (A1, A2), ct1: ClassTag[A1], ct2: ClassTag[A2]
 ): (Array[A1], Array[A2])
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
 def unzip3[A1, A2, A3](
-  implicit asTriple: A => (A1, A2, A3),
+  implicit asTriple: T => (A1, A2, A3),
   ct1: ClassTag[A1],
   ct2: ClassTag[A2],
   ct3: ClassTag[A3]
@@ -940,13 +940,13 @@ def unzip3[A1, A2, A3](
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def transpose[B](implicit asArray: A => Array[B]): Array[Array[B]]
+def transpose[B](implicit asArray: T => Array[B]): Array[Array[B]]
 ```
 </td>
 <td>✓</td>
@@ -957,7 +957,7 @@ def transpose[B](implicit asArray: A => Array[B]): Array[Array[B]]
 <td>
 
 ```scala
-def foreach[U](f: A => U): Unit
+def foreach[U](f: T => U): Unit
 ```
 </td>
 <td>✓</td>
@@ -968,34 +968,34 @@ def foreach[U](f: A => U): Unit
 <td>
 
 ```scala
-def distinct: Array[A]
+def distinct: Array[T]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def distinctBy[B](f: A => B): Array[A]
+def distinctBy[B](f: T => B): Array[T]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
-def padTo[B >: A : ClassTag](len: Int, elem: B): Array[B]
+def padTo[B >: T : ClassTag](len: Int, elem: B): Array[B]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1012,21 +1012,142 @@ def indices: Range
 <td>
 
 ```scala
-def groupBy[K](f: A => K): immutable.Map[K, Array[A]]
+def groupBy[K](f: T => K): immutable.Map[K, Array[T]]
 ```
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
 
 ```scala
 def groupMap[K, B : ClassTag](
-  key: A => K
+  key: T => K
 )(
-  f: A => B): immutable.Map[K, Array[B]]
+  f: T => B): immutable.Map[K, Array[B]]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def toSeq: immutable.Seq[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def toIndexedSeq: immutable.IndexedSeq[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def copyToArray[B >: T](xs: Array[B]): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def copyToArray[B >: T](xs: Array[B], start: Int): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def copyToArray[B >: T](xs: Array[B], start: Int, len: Int): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def toArray[B >: T: ClassTag]: Array[B]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def count(p: T => Boolean): Int
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def startsWith[B >: T](that: Array[B]): Boolean
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def startsWith[B >: T](that: Array[B], offset: Int): Boolean
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def endsWith[B >: T](that: Array[B]): Boolean
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def updated[B >: T : ClassTag](index: Int, elem: B): Array[B]
 ```
 </td>
 <td>✓</td>
@@ -1037,7 +1158,51 @@ def groupMap[K, B : ClassTag](
 <td>
 
 ```scala
-def toSeq: immutable.Seq[A]
+def view: IndexedSeqView[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def diff[B >: T](that: Seq[B]): Array[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def intersect[B >: T](that: Seq[B]): Array[T]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def sliding(width: Int, step: Int = 1): Iterator[Array[T]]
+```
+</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def combinations(n: Int): Iterator[Array[T]]
 ```
 </td>
 <td>✓</td>
@@ -1048,7 +1213,7 @@ def toSeq: immutable.Seq[A]
 <td>
 
 ```scala
-def toIndexedSeq: immutable.IndexedSeq[A]
+def permutations: Iterator[Array[T]]
 ```
 </td>
 <td>✓</td>
@@ -1059,7 +1224,7 @@ def toIndexedSeq: immutable.IndexedSeq[A]
 <td>
 
 ```scala
-def copyToArray[B >: A](xs: Array[B]): Int
+def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean
 ```
 </td>
 <td>✓</td>
@@ -1070,172 +1235,7 @@ def copyToArray[B >: A](xs: Array[B]): Int
 <td>
 
 ```scala
-def copyToArray[B >: A](xs: Array[B], start: Int): Int
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def copyToArray[B >: A](xs: Array[B], start: Int, len: Int): Int
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def toArray[B >: A: ClassTag]: Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def count(p: A => Boolean): Int
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def startsWith[B >: A](that: Array[B]): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def startsWith[B >: A](that: Array[B], offset: Int): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def endsWith[B >: A](that: Array[B]): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>✓</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def updated[B >: A : ClassTag](index: Int, elem: B): Array[B]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def view: IndexedSeqView[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def diff[B >: A](that: Seq[B]): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def intersect[B >: A](that: Seq[B]): Array[A]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def sliding(size: Int, step: Int = 1): Iterator[Array[A]]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def combinations(n: Int): Iterator[Array[A]]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def permutations: Iterator[Array[A]]
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def startsWith[B >: A](that: IterableOnce[B], offset: Int = 0): Boolean
-```
-</td>
-<td>✓</td>
-<td>✓</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>
-
-```scala
-def endsWith[B >: A](that: Iterable[B]): Boolean
+def endsWith[B >: T](that: Iterable[B]): Boolean
 ```
 </td>
 <td>✓</td>
