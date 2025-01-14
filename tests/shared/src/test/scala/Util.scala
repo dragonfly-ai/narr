@@ -54,6 +54,15 @@ object Util {
     }
   }
 
+  def assertArrayEquality[T](nArr1: Array[T], nArr2: Array[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+    assertEquals(nArr1.length, nArr2.length)
+    var i: Int = 0
+    while (i < nArr1.length) {
+      assertEquals(nArr1(i), nArr2(i))
+      i += 1
+    }
+  }
+
   def assertArray2NArrayEquality[T](arr: Array[T], nArr: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
     assertEquals(arr.length, nArr.length)
     var i: Int = 0

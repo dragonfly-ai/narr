@@ -1,5 +1,5 @@
 # NArr
-pronounced: <b>(ˈnär, as in gnarly)</b> stands for: <b>Native Array</b><br />
+pronounced: <s>(ˈnär, as in gnarly)</s> stands for: <s>Native Array</s><br />
 
 NArr gives you native Array performance on all platforms: JVM, JS, and Native.
 

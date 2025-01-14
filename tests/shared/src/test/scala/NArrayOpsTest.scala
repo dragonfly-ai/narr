@@ -230,7 +230,7 @@ class NArrayOpsTest extends munit.FunSuite {
         assertEquals(a(i).hashCode(), ampd(i))
         i += 1
       }
-
+      
       // zipWithIndex
       val zippedWithIndex:NArray[(T, Int)] = a.zipWithIndex
       i = 0; while (i < N) {
@@ -260,13 +260,30 @@ class NArrayOpsTest extends munit.FunSuite {
         i += groupSize
       }
 
-
       // foreach
       i = 0; a.foreach((t:T) => i += 1)
       assertEquals(i, a.length)
 
+      // distinct
+      val arrD = arr.distinct
+      val aD = a.distinct
+      assertNArrayType[T](aD, nt)
+      assertArray2NArrayEquality[T](arrD, aD)
+
+      // padTo
+      val arr_padTo = arr.padTo[T](arr.length + 5, arr(0))
+      val a_padTo = a.padTo[T](arr.length + 5, arr(0))
+      assertNArrayType[T](a_padTo, nt)
+      assertArray2NArrayEquality[T](arr_padTo, a_padTo)
+
       // indices
-      assertEquals(N, a.indices.size)
+      val arrInd = arr.indices
+      val aInd = a.indices
+      assertEquals(arrInd.isEmpty, aInd.isEmpty)
+      assertEquals(arrInd.start, aInd.start)
+      assertEquals(arrInd.end, aInd.end)
+      assertEquals(arrInd.step, aInd.step)
+      assertEquals(arrInd.length, aInd.length)
     }
   }
 
