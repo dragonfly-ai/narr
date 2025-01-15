@@ -1,6 +1,6 @@
 # NArr
-Pronounced: <s>(ˈnär, as in gnarly)</s>.<br />
-Stands for: <s>Native Array</s><br />
+Pronounced: <i>(ˈnär, as in gnarly)</i>.<br />
+Stands for: <i>Native Array</i><br />
 Definition: A unified and optimized interface over native array types for Scala cross projects.  
 
 &nbsp;&nbsp;&nbsp;At its core, NArr provides the `narr.NArray[T]` type which, as a drop in replacement for `scala.Array[T]` and `js.Array[T]`, always reduces to the most optimized native array type available on the compilation target platform.  `NArray[T]` also provides seamless interoperability with native array types without any platform specific code.
@@ -8,9 +8,9 @@ Definition: A unified and optimized interface over native array types for Scala 
 Examples:
 <table>
 <tr>
-    <td><s>NArray Declaration</s></td>
-    <td><s>JavaScript</s></td>
-    <td><s>JVM and Native</s></td>
+    <td>NArray Declaration</td>
+    <td>JavaScript</td>
+    <td>JVM and Native</td>
 </tr>
 <tr>
 <td>
@@ -72,7 +72,7 @@ and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`,
 <br /><a href="https://dragonfly-ai.github.io/narr/FeatureGrid">Click here</a> to compare NArr features to those built into Scala JVM/Native and Scala.js.
 
 
-<s>Advantages</s>:<br />
+<b>Advantages</b>:<br />
 <ul>
 <li>Performance!<br />
 
@@ -82,7 +82,7 @@ and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`,
 &nbsp;&nbsp;When writing a cross compiled Scala.js library with accessibility from native languages, developers have to pay attention to `@JSExport` annotations and make sure that every method or field of type Array has an analogous `js.Array` exposed in the JavaScript build.  By simply replacing all references to `js.Array` or `Array` with `NArray`, the same methods and fields will interoperate seamlessly with code in either run time environment.</li>
 </ul>
 
-<s>Caveats</s>:<br />
+<b>Caveats</b>:<br />
 &nbsp;&nbsp;&nbsp;Although the `TypedArray` family of data structures avoids the following issues, they pertain to the more ubiquitous `js.Array`.
 <ul>
 <li>Type Safety Concerns.<br />
@@ -151,19 +151,19 @@ sla.sort(Ordering.Long) // Better pass the ordering explicitly!
 </li>
 </ul>
 
-<s>When to use NArr</s>:
+<b>When to use NArr</b>:
 <table>
 <tr>
-    <td><s>Array Dependency</s></td>    
-    <td><s>Convenience</s></td>
-    <td colspan="3"><s>Performance Increase</s></td>
-    <td><s>Notes</s></td>
+    <td><b>Array Dependency</b></td>    
+    <td><b>Convenience</b></td>
+    <td colspan="3"><b>Performance Increase</b></td>
+    <td><b>Notes</b></td>
 </tr>
 <tr>
     <td colspan="2"></td>
-    <td><s>JS</s></td>
-    <td><s>JVM</s></td>
-    <td><s>Native</s></td>
+    <td><b>JS</b></td>
+    <td><b>JVM</b></td>
+    <td><b>Native</b></td>
     <td></td>
 </tr>
 <tr>

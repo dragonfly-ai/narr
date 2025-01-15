@@ -537,7 +537,7 @@ def scanLeft[ B : ClassTag ](z: B)(op: (B, T) => B): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -559,7 +559,7 @@ def scanRight[ B : ClassTag ](z: B)(op: (T, B) => B): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -653,7 +653,7 @@ def collect[B: ClassTag](pf: PartialFunction[T, B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -664,7 +664,7 @@ def collectFirst[B](pf: PartialFunction[T, B]): Option[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -732,7 +732,7 @@ def :+ [B >: T : ClassTag](x: B): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -754,7 +754,7 @@ def +: [B >: T : ClassTag](x: B): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -765,7 +765,7 @@ def prependedAll[B >: T : ClassTag](prefix: IterableOnce[B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -876,7 +876,7 @@ def ++[B >: T : ClassTag](xs: IterableOnce[B]): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
