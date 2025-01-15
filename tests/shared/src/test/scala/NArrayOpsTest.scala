@@ -186,6 +186,17 @@ class NArrayOpsTest extends munit.FunSuite {
         assertArray2NArrayEquality(arr.intersect(lArr), a.intersect(left.toSeq))
         assertArray2NArrayEquality(arr.intersect(rArr), a.intersect(right.toSeq))
 
+        // zip
+        assertArray2NArrayEquality(lArr.zip(rArr), left.zip(right))
+
+        // zipAll
+        val e1 = a(fulcrum)
+        val e2 = a(a.length- (1 + fulcrum))
+        assertArray2NArrayEquality(lArr.zipAll(rArr, e1, e2), left.zipAll(right, e1, e2))
+
+        // updated
+        assertArray2NArrayEquality(arr.updated(fulcrum, a(0)), a.updated(fulcrum, a(0)))
+
         fulcrum += 1
       }
 
@@ -230,7 +241,7 @@ class NArrayOpsTest extends munit.FunSuite {
         assertEquals(a(i).hashCode(), ampd(i))
         i += 1
       }
-      
+
       // zipWithIndex
       val zippedWithIndex:NArray[(T, Int)] = a.zipWithIndex
       i = 0; while (i < N) {

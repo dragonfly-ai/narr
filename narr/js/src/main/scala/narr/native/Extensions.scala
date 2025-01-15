@@ -32,6 +32,54 @@ object Extensions {
   given orderingToCompareFunction[T]: Conversion[Ordering[T], js.Function2[T, T, Int]] with
     def apply(o: Ordering[T]): js.Function2[T, T, Int] = (a: T, b: T) => o.compare(a, b)
 
+  given ba2io: Conversion[ByteArray, IterableOnce[Byte]] = (a: ByteArray) => NArrayAsIterableOnce[Byte](a)
+  given sa2io: Conversion[ShortArray, IterableOnce[Short]] = (a: ShortArray) => NArrayAsIterableOnce[Short](a)
+  given ia2io: Conversion[IntArray, IterableOnce[Int]] = (a: IntArray) => NArrayAsIterableOnce[Int](a)
+  given fa2io: Conversion[FloatArray, IterableOnce[Float]] = (a: FloatArray) => NArrayAsIterableOnce[Float](a)
+  given da2io: Conversion[DoubleArray, IterableOnce[Double]] = (a: DoubleArray) => NArrayAsIterableOnce[Double](a)
+
+  given nArray2IterableOnce[T](using ct:ClassTag[T]): Conversion[NArray[T], IterableOnce[T]] with
+    def apply(a: NArray[T]):IterableOnce[T] = ct match {
+      case ClassTag.Byte => new NArrayAsIterableOnce[Byte](a)
+      case ClassTag.Short => new NArrayAsIterableOnce[Short](a)
+      case ClassTag.Int => new NArrayAsIterableOnce[Int](a)
+      case ClassTag.Float => new NArrayAsIterableOnce[Float](a)
+      case ClassTag.Double => new NArrayAsIterableOnce[Double](a)
+      case _ => NArrayAsIterableOnce[T](a)
+    }
+
+  extension[T:ClassTag] (aa: NArray[NArray[T]]) {
+    def flatten: NArray[T] = {
+      var c = 0
+      var i:Int = 0; while (i < aa.length) {
+        c = c + aa(i).length
+        i = i + 1
+      }
+      val out = NArray.ofSize[T](c)
+      i = 0
+      var j = 0
+      while (i < aa.length) {
+        var k = 0
+        while (k < aa(i).length) {
+          out(j) = aa(i)(k)
+          k = k + 1
+          j = j + 1
+        }
+        i = i + 1
+      }
+      out
+    }
+    def toArray: Array[Array[T]] = {
+      val arr: Array[Array[T]] = new Array[Array[T]](aa.length)
+      var i = 0;
+      while (i < arr.length) {
+        arr(i) = aa(i).toArray
+        i = i + 1
+      }
+      arr
+    }
+  }
+
   extension (a: ByteArray) {
     inline def head: Byte = a(0)
     def sort(): ByteArray = sortByteArray(a)
@@ -810,6 +858,15 @@ object Extensions {
     }
 
 
+    def zip[B](that: NArray[B]): NArray[(T, B)] = {
+      val out = new native.NativeArray[(T, B)](Math.min(a.length, that.length))
+      var i = 0; while (i < out.length) {
+        out(i) = (a(i), that(i))
+        i = i + 1
+      }
+      out
+    }
+
     /** Returns an array formed from this array and another iterable collection
      * by combining corresponding elements in pairs.
      * If one of the two collections is longer than the other, its remaining elements are ignored.
@@ -832,6 +889,24 @@ object Extensions {
       b.result
     }
 
+    def zipAll[A1 >: T, B](that: NArray[B], thisElem: A1, thatElem: B): NArray[(A1, B)] = {
+      val out = new native.NativeArray[(A1, B)](Math.max(a.length, that.length))
+      var i = 0
+      val it = that.iterator
+      while (i < a.length && i < that.length) {
+        out(i) = ((a(i), it.next()))
+        i += 1
+      }
+      while (i < that.length) {
+        out(i) = ((thisElem, it.next()))
+        i += 1
+      }
+      while (i < a.length) {
+        out(i) = ((a(i), thatElem))
+        i += 1
+      }
+      out
+    }
 
     /** Returns an array formed from this array and another iterable collection
      * by combining corresponding elements in pairs.

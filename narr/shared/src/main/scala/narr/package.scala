@@ -199,6 +199,20 @@ package object narr {
 
   @inline implicit def nArray2NArr[T](nArr:NArray[T]): NArr[T] & NArray[T] = nArr.asInstanceOf[NArr[T] & NArray[T]]
 
+  class NArrayAsIterableOnce[T](a:NArray[T]) extends IterableOnce[T] {
+    override def iterator: Iterator[T] = new Iterator[T] {
+      var i = 0
+      override def hasNext: Boolean = i < a.length
+      override def next(): T = {
+        if (hasNext) {
+          val r = a(i)
+          i = i + 1
+          r
+        } else throw new NoSuchElementException("next on empty iterator")
+      }
+    }
+  }
+
   val Extensions: narr.native.Extensions.type = narr.native.Extensions
   export Extensions.*
   export Extensions.given

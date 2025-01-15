@@ -675,7 +675,7 @@ def zip[B](that: IterableOnce[B]): Array[(T, B)]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -699,7 +699,7 @@ def zipAll[A1 >: T, B](
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -1152,7 +1152,7 @@ def updated[B >: T : ClassTag](index: Int, elem: B): Array[B]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
