@@ -1229,7 +1229,7 @@ def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>❌*</td>
 </tr>
 <tr>
 <td>
@@ -1240,7 +1240,30 @@ def endsWith[B >: T](that: Iterable[B]): Boolean
 </td>
 <td>✓</td>
 <td>✓</td>
+<td>❌*</td>
+</tr>
+<tr>
+<tr>
+<td>
+
+```scala
+def startsWithIterable[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean
+```
+</td>
 <td>❌</td>
+<td>❌</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>
+
+```scala
+def endsWithIterable[B >: T](that: Iterable[B]): Boolean
+```
+</td>
+<td>❌</td>
+<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 </table>

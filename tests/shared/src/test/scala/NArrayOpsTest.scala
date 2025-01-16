@@ -197,11 +197,13 @@ class NArrayOpsTest extends munit.FunSuite {
         assertEquals(a.startsWith(left), true)
         assertEquals(a.startsWith(right, fulcrum), true)
 
-//        assertEquals(a.startsWith(left.toSeq), true)
-//        assertEquals(a.startsWith(right.toSeq, fulcrum), true)
+        assertEquals(a.startsWithIterable(left.toSeq), true)
+        assertEquals(a.startsWithIterable(right.toSeq, fulcrum), true)
 
         // endsWith
         assertEquals(a.endsWith(right), true)
+
+        assertEquals(a.endsWithIterable(right.toSeq), true)
 
         // diff
         assertArray2NArrayEquality(arr.diff(lArr), a.diff(left.toSeq))

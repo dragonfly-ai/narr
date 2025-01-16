@@ -1641,15 +1641,16 @@ object Extensions {
      * `true` if the sequence `that` is contained in this array at index
      * `offset`, otherwise `false`.
      */
-//    def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = {
-//      val itr = that.iterator
-//      var out = true
-//      var i = offset; while (itr.hasNext && i < a.length && out) {
-//        out = itr.next == a(i)
-//        i = i + 1
-//      }
-//      out
-//    }
+    def startsWithIterable[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = {
+      val itr = that.iterator
+      var out = true
+      var i = offset;
+      while (itr.hasNext && i < a.length && out) {
+        out = itr.next == a(i)
+        i = i + 1
+      }
+      out
+    }
 
     /** Tests whether this array ends with the given sequence.
      *
@@ -1658,7 +1659,7 @@ object Extensions {
      * @return
      * `true` if this array has `that` as a suffix, `false` otherwise.
      */
-    //def endsWith[B >: T](that: scala.collection.Iterable[B]): Boolean = ???
+    def endsWithIterable[B >: T](that: scala.collection.Iterable[B]): Boolean = a.toSeq.endsWith(that)
 
   }
 }

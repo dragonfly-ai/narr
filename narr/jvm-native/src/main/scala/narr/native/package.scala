@@ -211,7 +211,9 @@ package object native {
         destination
       }
 
+      def startsWithIterable[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = a.startsWith(that, offset)
 
+      def endsWithIterable[B >: T](that: scala.collection.Iterable[B]): Boolean = a.endsWith(that)
     }
   }
 }
