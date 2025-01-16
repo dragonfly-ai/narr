@@ -289,6 +289,47 @@ object Extensions {
     /** The initial part of the NArray without its last element. */
     inline def init: NArray[T] = slice(0, a.length - 1)
 
+
+    /** Iterates over the tails of this array.
+     *
+     * The first value will be this array and the final one will be an empty
+     * array, with the intervening values the results of successive applications
+     * of `tail`.
+     *
+     * @return an iterator over all the tails of this array
+     */
+    def tails: scala.collection.Iterator[NArray[T]] = new Iterator[NArray[T]] {
+      var i = 0
+      override def hasNext: Boolean = i < a.length + 1
+      override def next(): NArray[T] = {
+        val out = if (hasNext) {
+          a.slice(i)
+        } else throw new NoSuchElementException("next on empty iterator")
+        i = i + 1
+        out
+      }
+    }
+
+    /** Iterates over the inits of this array.
+     *
+     * The first value will be this array and the final one will be an empty
+     * array, with the intervening values the results of successive applications
+     * of `init`.
+     *
+     * @return an iterator over all the inits of this array
+     */
+    def inits: scala.collection.Iterator[NArray[T]] = new Iterator[NArray[T]] {
+      var i = a.length
+      override def hasNext: Boolean = i > -1
+      override def next(): NArray[T] = {
+        val out = if (hasNext) {
+          a.slice(0, i)
+        } else throw new NoSuchElementException("next on empty iterator")
+        i = i - 1
+        out
+      }
+    }
+
     /** An NArray containing the first `n` elements of this NArray. */
     inline def take(n: Int): NArray[T] = slice(0, n)
 
@@ -341,7 +382,6 @@ object Extensions {
       }
     }
 
-
     /** Returns a new array with the elements in reversed order. */
     def reverse: NArray[T] = {
       val len = a.length
@@ -377,6 +417,35 @@ object Extensions {
         this
       }
     }
+
+    /** Selects all elements of this array which satisfy a predicate.
+     *
+     * @param p
+     * the predicate used to test elements.
+     * @return
+     * a new array consisting of all elements of this array that satisfy the
+     * given predicate `p`.
+     */
+    def filter(p: T => Boolean)(using ClassTag[T]): NArray[T] = {
+      val b = NArrayBuilder[T]()
+      var i = 0; while (i < a.length) {
+        val x = a(i)
+        if (p(x)) b.addOne(x)
+        i = i + 1
+      }
+      b.result
+    }
+
+    /** Selects all elements of this array which do not satisfy a predicate.
+     *
+     * @param pred
+     * the predicate used to test elements.
+     * @return
+     * a new array consisting of all elements of this array that do not
+     * satisfy the given predicate `pred`.
+     */
+    def filterNot(p: T => Boolean)(using ClassTag[T]): NArray[T] = filter(x => !p(x))
+
 
     def grouped(groupSize: Int): Iterator[NArray[T]] = new scala.collection.AbstractIterator[NArray[T]] {
       private[this] var i = 0
@@ -418,7 +487,7 @@ object Extensions {
     def splitAt(n: Int): (NArray[T], NArray[T]) = (take(n), drop(n))
 
     /** A pair of, first, all elements that satisfy predicate `p` and, second, all elements that do not. */
-    def partition(p: T => Boolean)(using ClassTag[T], ClassTag[NArray[T]]): (NArray[T], NArray[T]) = {
+    def partition(p: T => Boolean)(using ClassTag[T]): (NArray[T], NArray[T]) = {
       val nab1 = NArrayBuilder[T]()
       val nab2 = NArrayBuilder[T]()
 
@@ -429,6 +498,48 @@ object Extensions {
       }
       (nab1.result, nab2.result)
     }
+
+
+    /** Applies a function `f` to each element of the array and returns a pair of
+     * arrays: the first one made of those values returned by `f` that were
+     * wrapped in [[scala.util.Left]], and the second one made of those wrapped
+     * in [[scala.util.Right]].
+     *
+     * Example:
+     * {{{
+     *  val xs = js.Array(1, "one", 2, "two", 3, "three").partitionMap {
+     *    case i: Int    => Left(i)
+     *    case s: String => Right(s)
+     *  }
+     *  // xs == (js.Array(1, 2, 3),
+     *  //        js.Array("one", "two", "three"))
+     *   }}}
+     *
+     *  @tparam A1
+     *    the element type of the first resulting collection
+     *  @tparam A2
+     *    the element type of the second resulting collection
+     *  @param f
+     *    the 'split function' mapping the elements of this array to an [[scala.util.Either]]
+     *  @return
+     *    a pair of arrays: the first one made of those values returned by `f`
+     *    that were wrapped in [[scala.util.Left]],  and the second one made of
+     *    those wrapped in [[scala.util.Right]].
+     */
+    def partitionMap[A1, A2](f: T => Either[A1, A2])(using ClassTag[A1], ClassTag[A2]): (NArray[A1], NArray[A2]) = {
+      val b1 = NArrayBuilder[A1]()
+      val b2 = NArrayBuilder[A2]()
+
+      var i = 0; while (i < a.length) {
+        f(a(i)) match {
+          case Left(x)  => b1.addOne(x)
+          case Right(x) => b2.addOne(x)
+        }
+        i = i + 1
+      }
+      (b1.result, b2.result)
+    }
+
 
     /** Sorts this array according to a comparison function.
      *
@@ -1105,32 +1216,35 @@ object Extensions {
       (a1, a2, a3)
     }
 
-    /** Transposes a two dimensional array.
-     *
-     * @tparam B Type of row elements.
-     * @param asArray A function that converts elements of this array to rows - arrays of type `B`.
-     * @return An array obtained by replacing elements of this arrays with rows the represent.
-     */
-    def transpose[B](using asArray: T => NArray[B]): NArray[NArray[B]] = {
-      val aClass = a.getClass.getComponentType
-      val bb = NArrayBuilder.builderFor[NArray[B]]()
-      if (a.length == 0) bb.result
-      else {
-        def mkRowBuilder() = NArrayBuilder.builderFor[B]()
-
-        val bs = asArray(a(0)).map((x: B) => mkRowBuilder())
-
-        for (xs <- a) {
-          var i = 0
-          for (x <- asArray(xs)) {
-            bs(i) += x
-            i += 1
-          }
-        }
-        for (b <- bs) bb += b.result
-        bb.result
-      }
-    }
+//    /** Transposes a two dimensional array.
+//     *
+//     * @tparam B Type of row elements.
+//     * @param asArray A function that converts elements of this array to rows - arrays of type `B`.
+//     * @return An array obtained by replacing elements of this arrays with rows the represent.
+//     */
+//    def transpose[B](using ctb: ClassTag[B], ctnb: ClassTag[NArray[B]], asArray: T => NArray[B]): NArray[NArray[B]] = {
+//      val bb = NArrayBuilder[NArray[B]]()
+//      if (a.length == 0) bb.result
+//      else {
+//        val bs = asArray(a(0)).map((x: B) => NArrayBuilder[B]())
+//
+//        var ia = 0; while (ia < a.length) {
+//          val xs = asArray(a(ia))
+//          var i = 0
+//          var ix = 0; while (ix < xs.length) {
+//            bs(i).addOne(xs(ix))
+//            ix = ix + 1
+//            i += 1
+//          }
+//          ia = ia + 1
+//        }
+//        var ib = 0; while (ib < bs.length) {
+//          bb.addAll( bs(ib).result )
+//          ib = ib + 1
+//        }
+//        bb.result
+//      }
+//    }
 
     /** Apply `f` to each element for side effects.
      * Note: [U] parameter needed to help scalac's type inference.
@@ -1355,7 +1469,7 @@ object Extensions {
     }
 
     /** Tests whether this array starts with the given array. */
-    inline def startsWith[B >: T](that: NArray[B]): Boolean = startsWith(that, 0)
+    inline def startsWith[B >: T](that: NArray[B]): Boolean = startsWith[B](that, 0)
 
     /** Tests whether this array contains the given array at a given index.
      *
@@ -1365,12 +1479,12 @@ object Extensions {
      *         index `offset`, otherwise `false`.
      */
     def startsWith[B >: T](that: NArray[B], offset: Int): Boolean = {
-      val safeOffset = offset.max(0)
-      val thatl = that.length
-      if (thatl > a.length - safeOffset) thatl == 0
+      val safeOffset = Math.max(offset, 0)
+      val thatLength = that.length
+      if (thatLength > a.length - safeOffset) thatLength == 0
       else {
         var i = 0
-        while (i < thatl) {
+        while (i < thatLength) {
           if (a(i + safeOffset) != that(i)) return false
           i += 1
         }
@@ -1512,12 +1626,11 @@ object Extensions {
     }
 
     /** Iterates over combinations. */
-    def combinations(n: Int): scala.collection.Iterator[NArray[T]] = ???
+    //def combinations(n: Int): scala.collection.Iterator[NArray[T]] = ???
 
     /** Iterates over distinct permutations. */
-    def permutations: scala.collection.Iterator[NArray[T]] = ???
+    //def permutations: scala.collection.Iterator[NArray[T]] = ???
 
-    // we have another overload here, so we need to duplicate this method
     /** Tests whether this array contains the given sequence at a given index.
      *
      * @param that
@@ -1528,9 +1641,16 @@ object Extensions {
      * `true` if the sequence `that` is contained in this array at index
      * `offset`, otherwise `false`.
      */
-    //def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = ???
+//    def startsWith[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = {
+//      val itr = that.iterator
+//      var out = true
+//      var i = offset; while (itr.hasNext && i < a.length && out) {
+//        out = itr.next == a(i)
+//        i = i + 1
+//      }
+//      out
+//    }
 
-    // we have another overload here, so we need to duplicate this method
     /** Tests whether this array ends with the given sequence.
      *
      * @param that

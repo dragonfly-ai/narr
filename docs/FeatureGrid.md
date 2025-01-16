@@ -1,4 +1,4 @@
-<s>ArrayOps Features</s>:<br />
+<b>ArrayOps Features</b>:<br />
 <table style="">
 <tr>
 <td>Method Signature</td>
@@ -190,7 +190,7 @@ def tails: Iterator[Array[T]]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -201,7 +201,7 @@ def inits: Iterator[Array[T]]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -348,7 +348,7 @@ def partitionMap[A1: ClassTag, A2: ClassTag](
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -383,7 +383,7 @@ def filter(p: T => Boolean): Array[T]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>
@@ -394,7 +394,7 @@ def filterNot(p: T => Boolean): Array[T]
 </td>
 <td>✓</td>
 <td>✓</td>
-<td>❌</td>
+<td>✓</td>
 </tr>
 <tr>
 <td>

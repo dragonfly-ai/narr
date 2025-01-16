@@ -34,7 +34,6 @@ class FlatMapTest extends munit.FunSuite {
     }
   }
 
-  // foldLeft
   test("TestFlatMap[Byte, Byte]") {
     TestFlatMap[Byte, Byte](
       NArray.tabulate[Byte](N)((i: Int) => i.toByte),

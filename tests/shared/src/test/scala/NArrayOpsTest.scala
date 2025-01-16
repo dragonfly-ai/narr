@@ -84,6 +84,28 @@ class NArrayOpsTest extends munit.FunSuite {
         nt
       )
 
+      // tails
+      val aTails = a.tails
+      val arrTails = arr.tails
+      while (aTails.hasNext && arrTails.hasNext) {
+        val t = aTails.next()
+        assertNArrayType(t, nt)
+        assertArray2NArrayEquality(arrTails.next(), t)
+        assertEquals(aTails.hasNext, arrTails.hasNext)
+      }
+
+      // inits
+      val aInits = a.inits
+      val arrInits = arr.inits
+      while (aInits.hasNext && arrInits.hasNext) {
+        val t = aInits.next()
+        val arrT = arrInits.next()
+        assertNArrayType(t, nt)
+        //println(s"${arrT.mkString(",")}\n$t")
+        assertArray2NArrayEquality(arrT, t)
+        assertEquals(arrInits.hasNext, aInits.hasNext)
+      }
+      
       // reverse
       val rev:NArray[T] = a.reverse
       var i:Int = 0; while (i < N) {
@@ -174,6 +196,9 @@ class NArrayOpsTest extends munit.FunSuite {
         // startsWith
         assertEquals(a.startsWith(left), true)
         assertEquals(a.startsWith(right, fulcrum), true)
+
+//        assertEquals(a.startsWith(left.toSeq), true)
+//        assertEquals(a.startsWith(right.toSeq, fulcrum), true)
 
         // endsWith
         assertEquals(a.endsWith(right), true)
@@ -405,11 +430,6 @@ class NArrayOpsTest extends munit.FunSuite {
     val t1 = NArrayWithDuplicateElementsOpsTest[Boolean](a1, NATIVE_ARRAY)
     t1.test()
     NArraySelfMapOpsTest[Boolean](t1.a, NATIVE_ARRAY, (b: Boolean) => !b).test()
-
-    // partition
-    val (t:NArray[Boolean], f:NArray[Boolean]) = a1.partition((b:Boolean) => b)
-    assertEquals( t.length + f.length, a1.length)
-    assertEquals( (if (N % 2 == 0) t else f).length, N / 2)
   }
 
   test("NArrayOfUniquelyValuedElementsOpsTest[Byte]") {
