@@ -3,7 +3,7 @@ import laika.format.Markdown
 import laika.helium.Helium
 import laika.helium.config.{HeliumIcon, IconLink}
 
-val appVersion:String = "0.106"
+val appVersion:String = "1.0"
 val globalScalaVersion = "3.3.4"
 
 ThisBuild / organization := "ai.dragonfly"
@@ -15,7 +15,6 @@ ThisBuild / scalaVersion := globalScalaVersion
 
 ThisBuild / tlBaseVersion := appVersion
 ThisBuild / tlCiReleaseBranches := Seq()
-ThisBuild / tlSonatypeUseLegacyHost := false
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
