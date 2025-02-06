@@ -339,9 +339,16 @@ class NArrayOpsTest extends munit.FunSuite {
 
         // indexWhere
         assertEquals(
-          a.indexWhere((t: T) => t == a(fulcrum)),
+          a.indexWhere(_ == a(fulcrum)),
           fulcrum
         )
+
+        // indexWhere
+        assertEquals(
+          a.indexWhere(_ == a(fulcrum), fulcrum / 2),
+          fulcrum
+        )
+
 
         // lastIndexOf
         assertEquals( a.lastIndexOf( a( fulcrum ) ), fulcrum )

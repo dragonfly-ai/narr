@@ -15,8 +15,12 @@ ThisBuild / scalaVersion := globalScalaVersion
 
 ThisBuild / tlBaseVersion := appVersion
 ThisBuild / tlCiReleaseBranches := Seq()
-ThisBuild / tlSonatypeUseLegacyHost := false
-//ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
+
+ThisBuild / nativeConfig ~= {
+  _.withLTO(scala.scalanative.build.LTO.thin)
+    .withMode(scala.scalanative.build.Mode.releaseFast)
+    .withGC(scala.scalanative.build.GC.commix)
+}
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)

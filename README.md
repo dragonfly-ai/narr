@@ -1,7 +1,9 @@
 # NArr
 Pronounced: <i>(ˈnär, as in gnarly)</i>.<br />
 Stands for: <i>Native Array</i><br />
-Definition: A unified and optimized interface over native array types for Scala cross projects.  
+Definition: A fully cross compiled Scala Array library to optimally unify native array types across all compilation targets.
+
+&nbsp;&nbsp;&nbsp;Although Scala Native and Scala JVM share a unified Array type, Scala.js presents no fewer than 14: `scala.Array`, `js.Array`, `Int8Array`, `Uint8Array`, `Uint8ClampedArray`, `Int16Array`, `Uint16Array`, `Int32Array`, `Uint32Array`, `Float16Array`, `Float32Array`, `Float64Array`, `BigInt64Array`, and `BigUint64Array`.
 
 &nbsp;&nbsp;&nbsp;At its core, NArr provides the `narr.NArray[T]` type which, as a drop in replacement for `scala.Array[T]` and `js.Array[T]`, always reduces to the most optimized native array type available on the compilation target platform.  `NArray[T]` also provides seamless interoperability with native array types without any platform specific code.
 
@@ -64,8 +66,6 @@ val bao: scala.Array[Array[AnyRef]]
 NArr saves time; run time, code time, maintenance time.<br />
 NArr shrinks the code base and the memory footprint.<br />
 NArr simplifies native interoperability.<br />
-
-and the most relevant subset of the JavaScript `TypedArray` family: `Int8Array`, `Int16Array`, `Int32Array`, `Float32Array`, `Float64Array`.  It also includes TypeClasses and extension methods to polyfill native JavaScript Arrays with features like: `indices`, `tabulate` and `fill`.&nbsp;&nbsp;It also provides extensions for a growing subset of `ArrayOps` methods.&nbsp;&nbsp;Using `NArray[T]` instead of `Array[T]` or `js.Array[T]` ensures that a project will always use the native Array type of the platform it compiles to.
 
 <br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
 <br />
