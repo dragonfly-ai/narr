@@ -311,7 +311,7 @@ https://github.com/dragonfly-ai/img
 
 ## Gotcha
 
-You may see this error, when working with higher kinded types, for example a `Matrix[A]` and narr.
+You may see this error, when working with higher kinded types, for example a hypothetical `Matrix[A]` and narr.
 
 ```scala
 Matrix(
