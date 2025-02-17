@@ -109,7 +109,7 @@ Output from `toString()` differs by platform.  For example:
 println(new NArray[Int](3))
 ```
 
-yields different results depending on the platform on which it runs. 
+yields different results depending on the platform on which it runs.
 <ul>
 <li>
 
@@ -131,7 +131,7 @@ In Scala Native, it prints something like: `scala.scalanative.runtime.IntArray@2
 </li>
 <li>
 
-In Scala.js, accessing an index of newly allocated Array yields: `undefined` and, on the JVM and Native, yields `null`.   
+In Scala.js, accessing an index of newly allocated Array yields: `undefined` and, on the JVM and Native, yields `null`.
 
 </li>
 <li>
@@ -154,7 +154,7 @@ sla.sort(Ordering.Long) // Better pass the ordering explicitly!
 <b>When to use NArr</b>:
 <table>
 <tr>
-    <td><b>Array Dependency</b></td>    
+    <td><b>Array Dependency</b></td>
     <td><b>Convenience</b></td>
     <td colspan="3"><b>Performance Increase</b></td>
     <td><b>Notes</b></td>
@@ -276,7 +276,7 @@ val a4:NArray[Double] = NArray.tabulate[Double](42)(
 )
 
 // multi dimensional
-val a2d:NArray[NArray[Double]] = NArray[NArray[Double]]( 
+val a2d:NArray[NArray[Double]] = NArray[NArray[Double]](
   NArray.tabulate[Double](5)( (i:Int) => i * Math.random() ),
   NArray.tabulate[Double](5)( (i:Int) => i * Math.random() ),
   NArray.tabulate[Double](5)( (i:Int) => i * Math.random() ),
@@ -308,3 +308,31 @@ https://github.com/dragonfly-ai/color
 https://github.com/dragonfly-ai/spatial
 
 https://github.com/dragonfly-ai/img
+
+## Gotcha
+
+You may see this error, when working with higher kinded types, for example a hypothetical `Matrix[A]` and narr.
+
+```scala
+Matrix(
+    NArray(1.0, 3.0, 2.0),
+    (3, 1)
+)
+```
+
+```scala
+Error: [137] [error] 37 |      Matrix(
+Error: [137] [error]    |      ^^^^^^
+Error: [137] [error]    |None of the overloaded alternatives of method apply in object Matrix with types
+Error: [137] [error]    | [A]
+```
+In fact, the constructor is quite valid.
+
+It seems that sometimes, the compiler needs a little help when working with generics - in this example a `Matrix[A]`. Providng the type hints, should resolve the issue.
+
+```scala
+Matrix[Double](
+    NArray[Double](1.0, 3.0, 2.0),
+    (3, 1)
+)
+```
