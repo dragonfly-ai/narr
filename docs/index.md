@@ -1,9 +1,9 @@
 # NArr
-pronounced: <s>(ˈnär, as in gnarly)</s> stands for: <s>Native Array</s><br />
+pronounced: (ˈnär, as in gnarly) stands for: Native Array<br />
 
-NArr gives you native Array performance on all platforms: JVM, JS, and Native.
+NArr gives you native Array performance on all platforms: JVM, JS, and Native without wrappers, conversions, or boilerplate.  You also get Scala `ArrayOps` semantics on JavaScript `TypedArray`s. 
 
-<br>&nbsp;&nbsp;&nbsp;Why?  Because: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"Arrays are really good!  As good as you think Arrays are, they are better, uhm, they are just super, super, good!"</a> - Daniel Spiewak
+<br>Please visit the <a href="https://github.com/dragonfly-ai/narr">project homepage</a> to learn more.
 <br />
 
 <a href="https://dragonfly-ai.github.io/narr/FeatureGrid">Click here</a> to compare coverage of ArrayOps between Scala, Scala.js, and NArr.
