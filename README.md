@@ -1,14 +1,14 @@
 # NArr
 Pronounced: <i>(ˈnär, as in gnarly)</i>.&nbsp;&nbsp;Stands for: <i>Native Array</i><br />
 
-&nbsp;&nbsp;&nbsp;Why Arrays?&nbsp;&nbsp;Because they have the lowest memory footprint and the deepest hardware optimization!&nbsp;&nbsp;As Daniel Spiewak famously understated the matter: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"As good as you think Arrays are, they are better!"</a>&nbsp;&nbsp;Arrays are so light and fast that the <a href="https://www.biblegateway.com/quicksearch/?quicksearch=Array&version=KJV">Hebrew Bible</a> mentions them over 40 times!&nbsp;&nbsp;Unfortunately, this sacred and holy data structure causes a host of problems in cross-compiled Scala projects, mostly because of JavaScript idiosyncracies.&nbsp;&nbsp;More specifically, although Scala Native and Scala JVM share a single unified Array type, Scala.js presents no fewer than 14: `scala.Array`, `js.Array`, `Int8Array`, `Uint8Array`, `Uint8ClampedArray`, `Int16Array`, `Uint16Array`, `Int32Array`, `Uint32Array`, `Float16Array`, `Float32Array`, `Float64Array`, `BigInt64Array`, and `BigUint64Array`.&nbsp;&nbsp;This wide diversity begets a web of frustrating design tradeoffs, but fear not!&nbsp;&nbsp;The text to follow not only maps them out but also shows how NArr addresses them all. 
+&nbsp;&nbsp;&nbsp;Why Arrays?&nbsp;&nbsp;Because they have the lowest memory footprint and the deepest hardware optimization!&nbsp;&nbsp;As Daniel Spiewak famously understated the matter: <a href="https://youtu.be/n5u7DgFwLGE?t=720">"As good as you think Arrays are, they are better!"</a>&nbsp;&nbsp;Arrays are so light and fast that the <a href="https://www.biblegateway.com/quicksearch/?quicksearch=Array&version=KJV">Hebrew Bible</a> mentions them over 40 times!&nbsp;&nbsp;Unfortunately, this sacred and holy data structure causes a host of problems in cross-compiled Scala projects, mostly because of JavaScript idiosyncracies.&nbsp;&nbsp;More specifically, although Scala Native and Scala JVM share a single unified Array type, Scala.js presents no fewer than 14: `scala.Array`, `js.Array`, `Int8Array`, `Uint8Array`, `Uint8ClampedArray`, `Int16Array`, `Uint16Array`, `Int32Array`, `Uint32Array`, `Float16Array`, `Float32Array`, `Float64Array`, `BigInt64Array`, and `BigUint64Array`.&nbsp;&nbsp;This wide diversity begets a web of frustrating design tradeoffs, but fear not!&nbsp;&nbsp;The following text not only maps them out but also shows how NArr addresses them all. 
 <ol>
 <li>
 
 &nbsp;&nbsp;Choosing the Right Array Type.
 
-&nbsp;&nbsp;&nbsp;Scala supports `scala.Array[T]` on all compilation targets, so what's the harm in always using that?&nbsp;&nbsp;True, but in Scala.js, `scala.Array[T]` wraps either JavaScript's signature associative array or the most relevant `TypedArray` depending on the value of `T`.  As a system of aliases for native types, NArr wraps nothing!  As such, it not only eliminates wrapper related memory overhead, but also all friction related to native interoperability.  For more about how NArr streamlines native interop, see the section about it below.<br />
-&nbsp;&nbsp;&nbsp;What about `js.Array[T]` then?&nbsp;&nbsp;That improves JavaScript interop and eliminates overhead for Arrays of objects, Bytes, Chars, and Longs, but disqualifies lighter alternatives for Arrays where `T ∈ {Byte, Short, Int, Float, Double}`.&nbsp;&nbsp;Worse, Scala JVM and Native don't support `js.Array[T]` so using it necessitates parallel implementations of methods, classes, or even entire programs.  NArr, by contrast, proliferates the most optimized possible Array type across an entire codebase, eliminating the need for any platform specific code.<br />
+&nbsp;&nbsp;&nbsp;"Scala supports `scala.Array[T]` on all compilation targets, so what's the harm in always using that?"&nbsp;&nbsp;True, but in Scala.js, `scala.Array[T]` wraps either JavaScript's signature associative array or the most relevant `TypedArray` depending on the value of `T`.  As a system of aliases for native types, NArr wraps nothing!  As such, it not only eliminates wrapper related memory overhead, but also all friction related to native interoperability.  For more about how NArr streamlines native interop, see the section about it below.<br />
+&nbsp;&nbsp;&nbsp;"What about `js.Array[T]` then?"&nbsp;&nbsp;That improves JavaScript interop and eliminates overhead for Arrays of objects, Bytes, Chars, and Longs, but disqualifies lighter alternatives for Arrays where `T ∈ {Byte, Short, Int, Float, Double}`.&nbsp;&nbsp;Worse, Scala JVM and Native don't support `js.Array[T]` so using it necessitates parallel implementations of methods, classes, or even entire programs.  NArr, by contrast, proliferates the most optimized possible Array type across an entire codebase, eliminating the need for any platform specific code.<br />
 &nbsp;&nbsp;&nbsp;Maybe one of the `TypedArray`s?  Again, these aren't supported on JVM or Native.  Trying to rely on them in a cross project requires a lot of duplicate code.<br /><br />
 &nbsp;&nbsp;&nbsp;Instead of these, use `narr.NArray[T]` as a drop in replacement for any other Array type because it always reduces to the most optimized native array type available on the compilation target platform.  As a system of type aliases, `narr.NArray[T]` introduces no runtime costs on any platform, necessitates no parallel implementations of Array related methods and classes, and provides seamless interoperability with native code.  The following table articulates the system of type aliases across all three platforms:
 <table>
@@ -74,11 +74,11 @@ scala.Array[Array[AnyRef]]
 
 ```scala
 type NArray[T] = T match
-  case Byte => Int8Array
-  case Short => Int16Array
-  case Int => Int32Array
-  case Float => Float32Array
-  case Double => Float64Array
+  case Byte => scala.scalajs.js.typedarray.Int8Array
+  case Short => scala.scalajs.js.typedarray.Int16Array
+  case Int => scala.scalajs.js.typedarray.Int32Array
+  case Float => scala.scalajs.js.typedarray.Float32Array
+  case Double => scala.scalajs.js.typedarray.Float64Array
   case _ => scala.scalajs.js.Array[T]
 ```
 </li>
