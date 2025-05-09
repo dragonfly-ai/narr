@@ -156,7 +156,7 @@ In this way, all platforms share the exact same code without any conversions or 
 ## Caveats:
 
 <ul>
-<li>NArr relies heavily on Scala 3 features and offers no Scala 2 compatibility.</li>
+<li>NArr relies heavily on Scala 3 features and sadly offers no support for Scala 2.</li>
 <li>
 
 In some cases, type inference fails on higher kinds, for example, consider the following class:
@@ -165,7 +165,7 @@ In some cases, type inference fails on higher kinds, for example, consider the f
 class Foo[T](a:NArray[T])
 ```
 
-We might expect the compiler to infer that `T = Int` from in statements like: 
+We might expect the compiler to infer that `T = Int` from statements like: 
 
 ```scala
 val a = NArray(1, 2, 3)

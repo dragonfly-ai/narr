@@ -15,7 +15,7 @@
  */
 
 import Util.*
-import Util.NArrayType.*
+//import Util.NArrayType.*
 import narr.*
 
 import scala.reflect.ClassTag
