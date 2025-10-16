@@ -443,14 +443,14 @@ def copy(a0:NArray[Double]): NArray[Double] = NArray.tabulate[Double](a0.length)
 <hr />
 Projects that rely on NArr:
 
-https://github.com/dragonfly-ai/bitfrost
+https://github.com/dragonfly-ai/slash
 
-https://github.com/dragonfly-ai/vector
-
-https://github.com/dragonfly-ai/matrix
-
-https://github.com/dragonfly-ai/color
+https://github.com/dragonfly-ai/mesh
 
 https://github.com/dragonfly-ai/spatial
+
+https://github.com/dragonfly-ai/uriel
+
+https://github.com/dragonfly-ai/beacon
 
 https://github.com/dragonfly-ai/img
