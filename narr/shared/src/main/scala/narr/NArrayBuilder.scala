@@ -64,12 +64,12 @@ object NArrayBuilder {
   }).asInstanceOf[NArrayBuilder[T]]
 
   inline def builderFor[T](initialCapacity: Int = NArrayBuilder.DefaultInitialSize): NArrayBuilder[T] = (inline erasedValue[T] match {
-    case _: Byte => ByteArrayBuilder()
-    case _: Short => ShortArrayBuilder()
-    case _: Int => IntArrayBuilder()
-    case _: Float => FloatArrayBuilder()
-    case _: Double => DoubleArrayBuilder()
-    case _ => narr.native.NativeArrayBuilder[Any]()
+    case _: Byte => ByteArrayBuilder(initialCapacity)
+    case _: Short => ShortArrayBuilder(initialCapacity)
+    case _: Int => IntArrayBuilder(initialCapacity)
+    case _: Float => FloatArrayBuilder(initialCapacity)
+    case _: Double => DoubleArrayBuilder(initialCapacity)
+    case _ => narr.native.NativeArrayBuilder[Any](initialCapacity)
   }).asInstanceOf[NArrayBuilder[T]]
 
 }
@@ -121,7 +121,7 @@ trait NArrayBuilder[T] {
   inline def ++=(xs: IterableOnce[T]): this.type = addAll(xs)
 }
 
-trait TypedArrayBuilder[T](using ClassTag[T]) extends NArrayBuilder[T] {
+trait TypedArrayBuilder[T] extends NArrayBuilder[T] {
   //type AT <: NArray[T]
   protected[this] val initCapacity:Int // = NArrayBuilder.DefaultInitialSize
   private var capacity: Int = 0

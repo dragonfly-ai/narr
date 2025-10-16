@@ -103,7 +103,10 @@ package object native {
 
     extension (ua: NArray[Unit]) {
       inline def sort(): NArray[Unit] = ua
-      inline def sort(ot: Ordering[Unit]): NArray[Unit] = ua
+      inline def sort(ot: Ordering[Unit]): NArray[Unit] = {
+        quickSort[Unit](ua)(ot)
+        ua
+      }
     }
 
     extension (ba: NArray[Boolean]) {
