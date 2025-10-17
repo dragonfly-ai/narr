@@ -19,6 +19,7 @@ import narr.*
 import Util.*
 import Util.NArrayType.*
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 import scala.util.Random
 

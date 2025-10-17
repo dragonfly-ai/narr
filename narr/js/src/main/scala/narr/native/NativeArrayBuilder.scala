@@ -18,10 +18,12 @@ package narr.native
 
 import narr.{NArray, NArrayBuilder, NativeArray}
 
+import scala.annotation.nowarn
 import scala.reflect.ClassTag
 
 
 // in JavaScript, just use a js.Array.
+@nowarn("msg=unused implicit parameter")
 case class NativeArrayBuilder[T](initCapacity:Int = NArrayBuilder.DefaultInitialSize)(using ClassTag[T]) extends NArrayBuilder[T] {
   //given clz:Class[T] = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
   override inline def makeNArray(len: Int): NArray[T] = new scala.scalajs.js.Array[T]().asInstanceOf[NArray[T]]

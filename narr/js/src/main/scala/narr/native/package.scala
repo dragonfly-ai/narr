@@ -16,6 +16,7 @@
 
 package narr
 
+import scala.annotation.nowarn
 import scala.scalajs.js.typedarray.*
 //import narr.native.Extensions.*
 import narr.native.Extensions.given
@@ -226,6 +227,7 @@ package object native {
     }
   }
 
+  @nowarn("msg=unused implicit parameter")
   inline def makeNativeArrayOfSize[A](n:Int)(using ClassTag[A]):NativeArray[A] = (new scala.scalajs.js.Array[Any](n)).asInstanceOf[NativeArray[A]]
 
 }

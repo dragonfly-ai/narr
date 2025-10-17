@@ -18,6 +18,7 @@ package narr.native
 
 import narr.*
 
+import scala.annotation.nowarn
 import scala.collection.{IndexedSeqView, immutable, mutable}
 import scala.scalajs.js
 import scala.language.implicitConversions
@@ -930,6 +931,7 @@ object Extensions {
     def collect[B: ClassTag](pf: PartialFunction[T, B]): NArray[B] = {
       var matched = true
 
+      @nowarn("msg=unused explicit parameter")
       def d(x: T): B = {
         matched = false
         null.asInstanceOf[B]
@@ -952,6 +954,7 @@ object Extensions {
       var i = 0
       var matched = true
 
+      @nowarn("msg=unused explicit parameter")
       def d(x: T): B = {
         matched = false
         null.asInstanceOf[B]

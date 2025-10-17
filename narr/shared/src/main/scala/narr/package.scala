@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import scala.annotation.nowarn
 import scala.compiletime.*
-
 import scala.collection.AbstractIndexedSeqView
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
@@ -189,6 +189,7 @@ package object narr {
      *
      * @see `java.util.Arrays#copyOf`
      */
+    @nowarn("msg=unused implicit parameter")
     def copyOf[T](original: NArray[T], newLength: Int)(using ClassTag[T]): NArray[T] = native.NArray.copyOf[T](original, newLength)
 
   }
