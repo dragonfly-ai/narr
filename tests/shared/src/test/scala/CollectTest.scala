@@ -68,7 +68,7 @@ class CollectTest extends munit.FunSuite {
   val r = new scala.util.Random()
   test("Collect[Float]") {
     Collect[Float](
-      NArray.tabulate[Float](N)((i: Int) => r.nextFloat()),
+      NArray.tabulate[Float](N)(_ => r.nextFloat()),
       (f: Float) => f match {
         case f0 if f0 > 0.5f => f0
       },
@@ -78,7 +78,7 @@ class CollectTest extends munit.FunSuite {
 
   test("Collect[Double]") {
     Collect[Double](
-      NArray.tabulate[Double](N)((i: Int) => r.nextDouble()),
+      NArray.tabulate[Double](N)(_ => r.nextDouble()),
       (d: Double) => d match {
         case d0 if d0 > 0.5 => d0
       },

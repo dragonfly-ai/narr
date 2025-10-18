@@ -36,14 +36,14 @@ object Util {
     }
   }
 
-  def assertNArrayType[T](narr: NArray[T], expectedNArrType: NArrayType)(using loc: Location, compare: Compare[NArrayType, NArrayType]): Unit = {
+  def assertNArrayType[T](narr: NArray[T], expectedNArrType: NArrayType)(using loc: Location): Unit = {
     assertEquals[NArrayType, NArrayType](
       expectedNArrType,
       getNArrayType(narr)
     )
   }
 
-  def assertNArrayEquality[T](nArr1: NArray[T], nArr2: NArray[T], nt:NArrayType)(using loc: Location, compare: Compare[T, T]): Unit = {
+  def assertNArrayEquality[T](nArr1: NArray[T], nArr2: NArray[T], nt:NArrayType)(using loc: Location): Unit = {
     assertEquals(nArr1.length, nArr2.length)
     assertEquals[NArrayType, NArrayType](getNArrayType[T](nArr1), nt)
     assertEquals[NArrayType, NArrayType](getNArrayType[T](nArr2), nt)
@@ -54,7 +54,7 @@ object Util {
     }
   }
 
-  def assertArrayEquality[T](nArr1: Array[T], nArr2: Array[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+  def assertArrayEquality[T](nArr1: Array[T], nArr2: Array[T])(using loc: Location): Unit = {
     assertEquals(nArr1.length, nArr2.length)
     var i: Int = 0
     while (i < nArr1.length) {
@@ -63,7 +63,7 @@ object Util {
     }
   }
 
-  def assertArray2NArrayEquality[T](arr: Array[T], nArr: NArray[T])(using loc: Location, compare: Compare[T, T]): Unit = {
+  def assertArray2NArrayEquality[T](arr: Array[T], nArr: NArray[T])(using loc: Location): Unit = {
     assertEquals(arr.length, nArr.length)
     var i: Int = 0
     while (i < arr.length) {

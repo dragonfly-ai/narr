@@ -53,7 +53,7 @@ class FlatMapTest extends munit.FunSuite {
   test("TestFlatMap[Int, Int]") {
     TestFlatMap[Int, Int](
       NArray.tabulate[Int](N)((i: Int) => i),
-      (i: Int) => NArray.tabulate[Int](N)((i: Int) => i),
+      _ => NArray.tabulate[Int](N)((i0: Int) => i0),
       INT_ARRAY
     ).test()
   }

@@ -37,7 +37,7 @@ class FoldAndScanTest extends munit.FunSuite {
     def test(): Unit = assertEquals(a.toArray.foldRight(c)(f), a.foldRight(c)(f))
   }
 
-  private case class TestScan[T, B >: T](a: NArray[B], c: B, f: (B, B) => B, nt: NArrayType)(using ClassTag[T], ClassTag[B]) {
+  private case class TestScan[T, B >: T](a: NArray[B], c: B, f: (B, B) => B, nt: NArrayType)(using ClassTag[B]) {
     def test(): Unit = {
       val scnd = a.scan(c)(f)
       assertNArrayType(scnd, nt)

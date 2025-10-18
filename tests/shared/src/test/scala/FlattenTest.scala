@@ -26,7 +26,7 @@ class FlattenTest extends munit.FunSuite {
 
   val N:Int = 30
 
-  private case class TestFlatten[B](a: NArray[NArray[B]], nt: NArrayType)(using ClassTag[B], ClassTag[NArray[B]]) {
+  private case class TestFlatten[B](a: NArray[NArray[B]], nt: NArrayType)(using ClassTag[B]) {
 
     def test(): Unit = {
       val afltnd: NArray[B] = a.flatten
@@ -73,7 +73,7 @@ class FlattenTest extends munit.FunSuite {
   test("TestFlatten[NArray[NArray[String]]]]") {
     val rs = new Random()
     TestFlatten[String](
-      NArray.tabulate[NArray[String]](N)((i: Int) => NArray.tabulate[String](i)((i0: Int) => rs.nextString(i))),
+      NArray.tabulate[NArray[String]](N)((i: Int) => NArray.tabulate[String](i)(_ => rs.nextString(i))),
       NATIVE_ARRAY
     ).test()
   }

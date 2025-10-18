@@ -26,7 +26,7 @@ class NArrayOpsTest extends munit.FunSuite {
   val N: Int = 11
   val lastIndex: Int = N - 1
 
-  private trait HasNArray[T:ClassTag] {
+  private trait HasNArray[T] {
     val a: NArray[T]
     val nt: NArrayType
   }
@@ -299,7 +299,7 @@ class NArrayOpsTest extends munit.FunSuite {
       }
 
       // foreach
-      i = 0; a.foreach((t:T) => i += 1)
+      i = 0; a.foreach(_ => i += 1)
       assertEquals(i, a.length)
 
       // distinct
@@ -412,7 +412,7 @@ class NArrayOpsTest extends munit.FunSuite {
 
   }
 
-  private case class NArraySelfMapOpsTest[T:ClassTag](override val a:NArray[T], override val nt:NArrayType, selfMap: T => T) extends HasNArray[T] {
+  private case class NArraySelfMapOpsTest[T](override val a:NArray[T], override val nt:NArrayType, selfMap: T => T) extends HasNArray[T] {
     def test(): Unit = {
 
       // mapInPlace

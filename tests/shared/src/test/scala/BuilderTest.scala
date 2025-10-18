@@ -19,7 +19,6 @@ import narr.*
 import Util.*
 import Util.NArrayType.*
 
-import scala.annotation.nowarn
 import scala.reflect.ClassTag
 import scala.util.Random
 
@@ -27,7 +26,7 @@ class BuilderTest extends munit.FunSuite {
   val r:Random = new Random()
   val N: Int = 8192
 
-  class AddOneByOneTest[T: ClassTag](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
+  class AddOneByOneTest[T](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
 
     def runTests(): Unit = {
 
@@ -50,7 +49,7 @@ class BuilderTest extends munit.FunSuite {
     }
   }
 
-  class AddAllTest[T: ClassTag](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
+  class AddAllTest[T](nab: NArrayBuilder[T], values: NArray[T], nt: NArrayType) {
 
     def runTests(): Unit = {
       var i: Int = 0; while (i < N) {
@@ -95,7 +94,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Boolean] ") {
     val f = () => r.nextBoolean()
-    val values: NArray[Boolean] = NArray.tabulate[Boolean](N)((i: Int) => f())
+    val values: NArray[Boolean] = NArray.tabulate[Boolean](N)(_ => f())
     AddOneByOneTest[Boolean](NArrayBuilder[Boolean](), values, NATIVE_ARRAY).runTests()
     AddAllTest[Boolean](NArrayBuilder[Boolean](), values, NATIVE_ARRAY).runTests()
     BuilderResultTypeTest[Boolean](NATIVE_ARRAY).runTests()
@@ -103,7 +102,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Byte] ") {
     val f = () => r.nextBytes(1)(0)
-    val values: NArray[Byte] = NArray.tabulate[Byte](N)((i: Int) => f())
+    val values: NArray[Byte] = NArray.tabulate[Byte](N)(_ => f())
     AddOneByOneTest[Byte](NArrayBuilder[Byte](), values, BYTE_ARRAY).runTests()
     AddAllTest[Byte](NArrayBuilder[Byte](), values, BYTE_ARRAY).runTests()
     //assertBuilderResultType[Byte](values.builder[Byte]().result, BYTE_ARRAY)
@@ -112,7 +111,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Short] ") {
     val f = () => r.nextInt().toShort
-    val values: NArray[Short] = NArray.tabulate[Short](N)((i: Int) => f())
+    val values: NArray[Short] = NArray.tabulate[Short](N)(_ => f())
     AddOneByOneTest[Short](NArrayBuilder[Short](), values, SHORT_ARRAY).runTests()
     AddAllTest[Short](NArrayBuilder[Short](), values, SHORT_ARRAY).runTests()
     //assertBuilderResultType[Short](values.builder[Short]().result, SHORT_ARRAY)
@@ -121,7 +120,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Int] ") {
     val f = () => r.nextInt()
-    val values: NArray[Int] = NArray.tabulate[Int](N)((i: Int) => f())
+    val values: NArray[Int] = NArray.tabulate[Int](N)(_ => f())
     AddOneByOneTest[Int](NArrayBuilder[Int](), values, INT_ARRAY).runTests()
     AddAllTest[Int](NArrayBuilder[Int](), values, INT_ARRAY).runTests()
     //assertBuilderResultType[Int](values.builder[Int]().result, INT_ARRAY)
@@ -130,7 +129,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Long] ") {
     val f = () => r.nextLong()
-    val values: NArray[Long] = NArray.tabulate[Long](N)((i: Int) => f())
+    val values: NArray[Long] = NArray.tabulate[Long](N)(_ => f())
     AddOneByOneTest[Long](NArrayBuilder[Long](), values, NATIVE_ARRAY).runTests()
     AddAllTest[Long](NArrayBuilder[Long](), values, NATIVE_ARRAY).runTests()
     //assertBuilderResultType[Long](values.builder[Long]().result, NATIVE_ARRAY)
@@ -139,7 +138,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Float] ") {
     val f = () => r.nextFloat()
-    val values: NArray[Float] = NArray.tabulate[Float](N)((i: Int) => f())
+    val values: NArray[Float] = NArray.tabulate[Float](N)(_ => f())
     AddOneByOneTest[Float](NArrayBuilder[Float](), values, FLOAT_ARRAY).runTests()
     AddAllTest[Float](NArrayBuilder[Float](), values, FLOAT_ARRAY).runTests()
     //assertBuilderResultType[Float](values.builder[Float]().result, FLOAT_ARRAY)
@@ -148,7 +147,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Double] ") {
     val f = () => r.nextDouble()
-    val values: NArray[Double] = NArray.tabulate[Double](N)((i: Int) => f())
+    val values: NArray[Double] = NArray.tabulate[Double](N)(_ => f())
     AddOneByOneTest[Double](NArrayBuilder[Double](), values, DOUBLE_ARRAY).runTests()
     AddAllTest[Double](NArrayBuilder[Double](), values, DOUBLE_ARRAY).runTests()
     //assertBuilderResultType[Double](values.builder[Double]().result, DOUBLE_ARRAY)
@@ -157,7 +156,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[String] ") {
     val f = () => r.nextString(1 + r.nextInt(9))
-    val values: NArray[String] = NArray.tabulate[String](N)((i: Int) => f())
+    val values: NArray[String] = NArray.tabulate[String](N)(_ => f())
     AddOneByOneTest[String](NArrayBuilder[String](), values, NATIVE_ARRAY).runTests()
     AddAllTest[String](NArrayBuilder[String](), values, NATIVE_ARRAY).runTests()
     //assertBuilderResultType[String](values.builder[String]().result, NATIVE_ARRAY)
@@ -166,7 +165,7 @@ class BuilderTest extends munit.FunSuite {
 
   test(" NArrayBuilder[Unit] ") {
     val f = () => ()
-    val values: NArray[Unit] = NArray.tabulate[Unit](N)((i: Int) => f())
+    val values: NArray[Unit] = NArray.tabulate[Unit](N)(_ => f())
     AddOneByOneTest[Unit](NArrayBuilder[Unit](), values, NATIVE_ARRAY).runTests()
     AddAllTest[Unit](NArrayBuilder[Unit](), values, NATIVE_ARRAY).runTests()
     //assertBuilderResultType[Unit](values.builder[Unit]().result, NATIVE_ARRAY)
