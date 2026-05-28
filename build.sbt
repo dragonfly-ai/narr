@@ -22,9 +22,11 @@ ThisBuild / nativeConfig ~= {
     .withGC(scala.scalanative.build.GC.commix)
 }
 
-ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Run(
-  commands = List("sudo apt-get update && apt-get upgrade -y clang?"),
-  name = Some("Install native dependencies")
+ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
+  //commands = List("sudo apt-get update && apt-get upgrade -y clang?"),
+  UseRef.Public("actions", "egor-tensin/setup-clang", "v2"),
+  params = Map("version" -> "16", "platform" -> "x64"),
+  name = Some("Set up Clang")
 )
 
 
