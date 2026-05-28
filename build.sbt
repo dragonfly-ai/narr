@@ -22,6 +22,12 @@ ThisBuild / nativeConfig ~= {
     .withGC(scala.scalanative.build.GC.commix)
 }
 
+ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Run(
+  commands = List("sudo apt-get update && apt-get upgrade -y clang?"),
+  name = Some("Install native dependencies")
+)
+
+
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .settings(
