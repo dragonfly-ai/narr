@@ -24,7 +24,7 @@ ThisBuild / nativeConfig ~= {
 
 ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
   //commands = List("sudo apt-get update && apt-get upgrade -y clang?"),
-  UseRef.Public("actions", "egor-tensin/setup-clang", "v2"),
+  UseRef.Public("egor-tensin", "setup-clang", "v2"),
   params = Map("version" -> "16", "platform" -> "x64"),
   name = Some("Set up Clang")
 )
