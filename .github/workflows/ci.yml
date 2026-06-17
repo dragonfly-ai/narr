@@ -61,14 +61,6 @@ jobs:
           version: 16
           platform: x64
 
-      - uses: actions/checkout@v6
-
-      - name: Java Setup
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-
       - name: Check that workflows are up to date
         run: sbt githubWorkflowCheck
 
