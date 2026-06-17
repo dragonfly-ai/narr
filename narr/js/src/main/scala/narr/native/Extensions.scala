@@ -616,7 +616,7 @@ object Extensions {
      * @return the index `>= from` of the first element of this array that satisfies the predicate `p`,
      *         or `-1`, if none exists.
      */
-    def indexWhere(p: T => Boolean, from: Int):Int = {
+    def indexWhere(p: T => Boolean, from: Int = 0):Int = {
       var i = from
       while (!p(a(i)) && i < a.length) i += 1
       if (i >= a.length) -1
