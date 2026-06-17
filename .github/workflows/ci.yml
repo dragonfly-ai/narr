@@ -55,11 +55,19 @@ jobs:
         if: matrix.java == 'temurin@8' && steps.setup-java-temurin-8.outputs.cache-hit == 'false'
         run: sbt +update
 
-      - name: Set up Clang
+      - name: Clang Setup
         uses: egor-tensin/setup-clang@v2
         with:
           version: 16
           platform: x64
+
+      - uses: actions/checkout@v6
+
+      - name: Java Setup
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
 
       - name: Check that workflows are up to date
         run: sbt githubWorkflowCheck

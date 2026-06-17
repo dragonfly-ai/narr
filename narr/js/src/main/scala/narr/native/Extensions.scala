@@ -72,7 +72,7 @@ object Extensions {
     }
     def toArray: Array[Array[T]] = {
       val arr: Array[Array[T]] = new Array[Array[T]](aa.length)
-      var i = 0;
+      var i = 0
       while (i < arr.length) {
         arr(i) = aa(i).toArray
         i = i + 1
@@ -320,7 +320,7 @@ object Extensions {
      * @return an iterator over all the inits of this array
      */
     def inits: scala.collection.Iterator[NArray[T]] = new Iterator[NArray[T]] {
-      var i = a.length
+      var i:Int = a.length
       override def hasNext: Boolean = i > -1
       override def next(): NArray[T] = {
         val out = if (hasNext) {
@@ -379,7 +379,7 @@ object Extensions {
 
       def next(): T = {
         i += 1
-        a(i).asInstanceOf[T]
+        a(i)
       }
     }
 
@@ -439,7 +439,7 @@ object Extensions {
 
     /** Selects all elements of this array which do not satisfy a predicate.
      *
-     * @param pred
+     * @param p
      * the predicate used to test elements.
      * @return
      * a new array consisting of all elements of this array that do not
@@ -472,7 +472,7 @@ object Extensions {
      *         elements all satisfy `p`, and the rest of this array.
      */
     def span(p: T => Boolean): (NArray[T], NArray[T]) = {
-      val i = indexWhere(x => !p(x))
+      val i = indexWhere(x => !p(x), 0)
       val idx = if (i < 0) a.length else i
       (slice(0, idx), slice(idx, a.length))
     }
@@ -607,7 +607,7 @@ object Extensions {
      * @return the index `>= 0` of the first element of this array that satisfies the predicate `p`,
      *         or `-1`, if none exists.
      */
-    inline def indexWhere(p: T => Boolean): Int = indexWhere(p, 0)
+    inline def indexWhere(p: T => Boolean): Int = indexWhere(p)
 
     /** Finds index of the first element satisfying some predicate after or at some start index.
      *
@@ -678,7 +678,7 @@ object Extensions {
      *         that satisfies `p`, or `None` if none exists.
      */
     def find(p: T => Boolean): Option[T] = {
-      val idx = indexWhere(p)
+      val idx = indexWhere(p, 0)
       if (idx == -1) None else Some(a(idx))
     }
 
@@ -687,7 +687,7 @@ object Extensions {
      * @param p the predicate used to test elements.
      * @return `true` if the given predicate `p` is satisfied by at least one element of this array, otherwise `false`
      */
-    def exists(p: T => Boolean): Boolean = indexWhere(p) >= 0
+    def exists(p: T => Boolean): Boolean = indexWhere(p, 0) >= 0
 
     /** Tests whether a predicate holds for all elements of this array.
      *
@@ -1389,7 +1389,7 @@ object Extensions {
       //val copied = scala.collection.IterableOnce.elemsToCopyToArray(a.length, xs.length, start, len)
       val copied = Math.max(Math.min(Math.min(len, a.length), xs.length - start), 0)
       if (copied > 0) {
-        NArray.copy[B](a.asInstanceOf[NArray[B]], 0, xs, start, copied)
+        NArray.copy[B](a.asInstanceOf[NArray[B]], 0, xs, start, copied): Unit
       }
       copied
     }
@@ -1559,10 +1559,9 @@ object Extensions {
         while (i < a.length) {
           val x = a(i)
           occ.updateWith(x) {
-            case None => {
+            case None =>
               b.addOne(x)
               None
-            }
             case Some(1) => None
             case Some(n) => Some(n - 1)
           }
@@ -1591,10 +1590,9 @@ object Extensions {
           val x = a(i)
           occ.updateWith(x) {
             case None => None
-            case Some(n) => {
+            case Some(n) =>
               b.addOne(x)
               if (n == 1) None else Some(n - 1)
-            }
           }
           i = i + 1
         }
@@ -1647,9 +1645,9 @@ object Extensions {
     def startsWithIterable[B >: T](that: IterableOnce[B], offset: Int = 0): Boolean = {
       val itr = that.iterator
       var out = true
-      var i = offset;
+      var i = offset
       while (itr.hasNext && i < a.length && out) {
-        out = itr.next == a(i)
+        out = itr.next() == a(i)
         i = i + 1
       }
       out
