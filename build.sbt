@@ -22,7 +22,7 @@ ThisBuild / nativeConfig ~= {
     .withGC(scala.scalanative.build.GC.commix)
 }
 
-  ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
+ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
 
 ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
   UseRef.Public("egor-tensin", "setup-clang", "v2"),
