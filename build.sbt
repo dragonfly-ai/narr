@@ -22,22 +22,13 @@ ThisBuild / nativeConfig ~= {
     .withGC(scala.scalanative.build.GC.commix)
 }
 
-ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
+  ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
 
 ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
   UseRef.Public("egor-tensin", "setup-clang", "v2"),
   params = Map("version" -> "16", "platform" -> "x64"),
   name = Some("Clang Setup")
 )
-//  WorkflowStep.Use(
-//    UseRef.Public("actions", "checkout", "v6")
-//  ),
-//  WorkflowStep.Use(
-//    UseRef.Public("actions", "setup-java", "v5"),
-//    params = Map("distribution" -> "temurin", "java-version" -> "25"),
-//    name = Some("Java Setup")
-//  )
-//)
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
