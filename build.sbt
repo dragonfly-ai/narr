@@ -29,6 +29,9 @@ ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
   params = Map("version" -> "16", "platform" -> "x64"),
   name = Some("Clang Setup")
 )
+ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
+
+ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "temurin@8"))
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
