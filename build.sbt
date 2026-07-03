@@ -22,16 +22,26 @@ ThisBuild / nativeConfig ~= {
     .withGC(scala.scalanative.build.GC.commix)
 }
 
-ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
+//ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("25")
 
 ThisBuild / githubWorkflowBuildPreamble += WorkflowStep.Use(
   UseRef.Public("egor-tensin", "setup-clang", "v2"),
   params = Map("version" -> "16", "platform" -> "x64"),
   name = Some("Clang Setup")
 )
-ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
-ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "temurin@8"))
+ThisBuild / githubWorkflowJavaVersions ++= Seq(
+  //JavaSpec.temurin("11"),
+  JavaSpec.temurin("17"),
+  JavaSpec(JavaSpec.Distribution.GraalVM("22.3.2"), "11"),
+  JavaSpec.graalvm("21"),
+  JavaSpec.corretto("17"),
+  JavaSpec.semeru("17")
+)
+
+//ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
+//
+//ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "temurin@8"))
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
