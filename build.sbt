@@ -40,8 +40,8 @@ ThisBuild / githubWorkflowJavaVersions ++= Seq(
 )
 
 //ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
-//
-//ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "temurin@8"))
+
+ThisBuild / githubWorkflowBuildMatrixExclusions += MatrixExclude(Map("java" -> "temurin@8"))
 
 lazy val narr = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
