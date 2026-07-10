@@ -90,5 +90,5 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .dependsOn(narr)
   .settings(
     name := "narr-tests",
-    libraryDependencies += "org.scalameta" %%% "munit" % "1.3.3" % Test
+    libraryDependencies += "org.scalameta" %%% "munit" % "1.3.4" % Test
   )
